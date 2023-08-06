@@ -21,7 +21,7 @@
         >
             <div class="text-zinc-500 mb-2 flex items-center gap-2 round">
                 <p 
-                    class="h-2 w-2 flex items-center justify-center font-mono rounded-full"
+                    class="h-2 w-2 flex items-center justify-center font-mono rounded-full shrink-0"
                     class:bg-red-700={comment.level % 7 === 0}
                     class:bg-orange-700={comment.level % 7 === 1}
                     class:bg-yellow-700={comment.level % 7 === 2}
@@ -32,10 +32,10 @@
                 >
                     
                 </p>
-                <a href="/user/{comment.user}">{comment.user}</a> {comment.time_ago}
+                <span><a href="/user/{comment.user}">{comment.user}</a> <span>{comment.time_ago}</span></span>
             </div>
 
-            <div class="prose text-inherit prose-a:text-zinc-500 border border-zinc-300 dark:border-zinc-900 p-2 rounded max-w-full mb-4">
+            <div class="prose text-inherit prose-a:text-zinc-500 border border-zinc-300 dark:border-zinc-900 p-2 rounded max-w-full mb-4 break-words">
                 {@html comment.content}
             </div>
         </div>
