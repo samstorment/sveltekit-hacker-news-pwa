@@ -12,7 +12,7 @@
     <ul>
         {#each data.items as item}
             <li 
-                class="border-b border-zinc-300 dark:border-zinc-950 items-center last:border-none"
+                class="border-b border-zinc-300 dark:border-zinc-900 items-center last:border-none"
             >
                 <article class="flex">
                     <div class="px-4 my-4 flex-1 self-center">
@@ -31,12 +31,12 @@
                         </p>
                     </div>
 
-                    <div class="border-l border-zinc-300 dark:border-zinc-950 ml-auto flex flex-col md:hidden">
+                    <div class="border-l border-zinc-300 dark:border-zinc-900 ml-auto flex flex-col md:hidden">
                         <a href="{item.url}" class="flex-1 flex items-center justify-center text-2xl px-3">
                             <iconify-icon icon="eva:diagonal-arrow-right-up-fill"></iconify-icon>
                         </a>
                         {#if data.category !== "ask"}
-                            <a href="/item/{item.id}" class="flex-1 flex items-center justify-center text-2xl px-3 border-t border-zinc-300 dark:border-zinc-950">
+                            <a href="/item/{item.id}" class="flex-1 flex items-center justify-center text-2xl px-3 border-t border-zinc-300 dark:border-zinc-900">
                                 <iconify-icon icon="octicon:comment-24"></iconify-icon>
                             </a>
                         {/if}
@@ -51,7 +51,7 @@
         {#if data.page > 1}
             <a 
                 href="?p={data.page - 1}" 
-                class="px-4 py-4 border border-zinc-300 dark:border-zinc-950 flex-1 rounded hover:no-underline hover:shadow dark:hover:border-white flex justify-between items-center"
+                class="px-4 py-4 border border-zinc-300 dark:border-zinc-900 flex-1 rounded hover:no-underline hover:shadow dark:hover:border-white flex justify-between items-center"
             >
                 <iconify-icon icon="ph:arrow-left-bold" class="text-2xl"></iconify-icon>
                 <span>Previous</span>
@@ -60,7 +60,7 @@
             {#if data.page < data.pageLimit}
             <a 
                 href="?p={data.page + 1}" 
-                class="px-4 py-4 border border-zinc-300 dark:border-zinc-950 flex-1 rounded text-right hover:no-underline hover:shadow dark:hover:border-white flex justify-between items-center"
+                class="px-4 py-4 border border-zinc-300 dark:border-zinc-900 flex-1 rounded text-right hover:no-underline hover:shadow dark:hover:border-white flex justify-between items-center"
                 class:solo-link={data.page <= 1}
             >
                 <span>Next</span>

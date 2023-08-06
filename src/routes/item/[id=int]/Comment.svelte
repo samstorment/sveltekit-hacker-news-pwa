@@ -35,7 +35,7 @@
                 <a href="/user/{comment.user}">{comment.user}</a> {comment.time_ago}
             </div>
 
-            <div class="prose text-inherit prose-a:text-zinc-500 border border-zinc-300 dark:border-zinc-950 p-2 rounded max-w-full mb-4">
+            <div class="prose text-inherit prose-a:text-zinc-500 border border-zinc-300 dark:border-zinc-900 p-2 rounded max-w-full mb-4">
                 {@html comment.content}
             </div>
         </div>
