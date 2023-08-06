@@ -6,7 +6,7 @@
 </script>
 
 <header>
-    <nav class="px-4 py-2 flex items-center gap-4 max-w-screen-md mx-auto">
+    <nav class="p-4 flex items-center gap-4 max-w-screen-md mx-auto">
         <a href="/" class="hover:no-underline">HN</a>
         <a href="/top" class="relative nav-item" class:selected={selected === "top"}>Top</a>
         <a href="/new" class="relative nav-item" class:selected={selected === "new"}>New</a>

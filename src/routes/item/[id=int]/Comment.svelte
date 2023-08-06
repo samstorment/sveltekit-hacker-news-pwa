@@ -23,19 +23,19 @@
                 <p 
                     class="h-2 w-2 flex items-center justify-center font-mono rounded-full shrink-0"
                     class:bg-red-700={comment.level % 7 === 0}
-                    class:bg-orange-700={comment.level % 7 === 1}
-                    class:bg-yellow-700={comment.level % 7 === 2}
-                    class:bg-green-700={comment.level % 7 === 3}
-                    class:bg-blue-700={comment.level % 7 === 4}
+                    class:bg-orange-600={comment.level % 7 === 1}
+                    class:bg-yellow-400={comment.level % 7 === 2}
+                    class:bg-green-500={comment.level % 7 === 3}
+                    class:bg-blue-500={comment.level % 7 === 4}
                     class:bg-indigo-700={comment.level % 7 === 5}
-                    class:bg-violet-700={comment.level % 7 === 6}
+                    class:bg-violet-600={comment.level % 7 === 6}
                 >
                     
                 </p>
                 <span><a href="/user/{comment.user}">{comment.user}</a> <span>{comment.time_ago}</span></span>
             </div>
 
-            <div class="prose text-inherit prose-a:text-zinc-500 border border-zinc-300 dark:border-zinc-900 p-2 rounded max-w-full mb-4 break-words">
+            <div class="prose text-inherit prose-a:text-zinc-500 border border-zinc-300 dark:border-zinc-800 p-2 rounded max-w-full mb-4 break-words">
                 {@html comment.content}
             </div>
         </div>
