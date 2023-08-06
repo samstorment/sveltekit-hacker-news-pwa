@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    @apply bg-white dark:bg-black text-black dark:text-zinc-200;
+}
+
+a:hover {
+    text-decoration: underline;
+}
