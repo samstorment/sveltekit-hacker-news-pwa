@@ -8,7 +8,9 @@
 <div class="max-w-screen-md mx-auto">
     <article>
         <hgroup class="p-4">
-            <h1 class="text-3xl mb-2 inline">{data.title}</h1>
+            <h1 class="text-3xl mb-2 inline">
+                <a href="{data.url}">{data.title}</a>
+            </h1>
 
             {#if data.domain}
                 <a href="https://news.ycombinator.com/from?site={data.domain}" class="text-zinc-500">({data.domain})</a>
@@ -28,8 +30,8 @@
     </article>
 
     <div class="px-4">
-        {#each data.comments as comment}
-            <Comment {comment} />
+        {#each data.comments as comment, index}
+            <Comment {comment} {index} group={data.comments} />
         {/each}
     </div>
 </div>
