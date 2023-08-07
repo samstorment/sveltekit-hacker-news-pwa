@@ -17,6 +17,7 @@
 
     let prev = getPrevious();
     let next = getNext();
+    let root = getRoot();
 
     function getRoot() {
         let root = comment.parent;
@@ -51,8 +52,14 @@
 
         return next;
     }
-    
-    let root = getRoot();
+
+    function scrollTo(comment: Comment | undefined) {
+        if (!comment) return;
+
+        document.querySelector(`#comment-${comment.id}`)?.scrollIntoView({
+            behavior: 'smooth'
+        });
+    }
 </script>
 
 
@@ -78,26 +85,40 @@
                     
                 <div class="flex gap-1 mb-1 text-sm">
                     {#if root && comment.level > 1}
-                        <a href="#comment-{root.id}" class="flex items-center px-3 border border-zinc-800 rounded bg-black">Root</a>
+                        <button 
+                            type="button" 
+                            class="flex items-center px-3 border border-zinc-300 dark:border-zinc-800 rounded" 
+                            on:click={() => scrollTo(root)}
+                        >
+                            Root
+                        </button>
                     {/if}
                     {#if comment.parent}
-                        <a href="#comment-{comment.parent.id}" class="flex items-center px-3 border border-zinc-800 rounded bg-black">Parent</a>
+                        <button 
+                            type="button" 
+                            class="flex items-center px-3 border border-zinc-300 dark:border-zinc-800 rounded" 
+                            on:click={() => scrollTo(comment.parent)}
+                        >
+                            Parent
+                        </button>
                     {/if}
                     {#if prev}
-                        <a 
-                            href="#comment-{prev.id}" 
-                            class="flex items-center px-3 border border-zinc-800 rounded bg-black"
+                        <button 
+                            type="button" 
+                            class="flex items-center px-3 border border-zinc-300 dark:border-zinc-800 rounded" 
+                            on:click={() => scrollTo(prev)}
                         >
                             Prev
-                        </a>
+                        </button>
                     {/if}
                     {#if next}
-                        <a 
-                            href="#comment-{next.id}"
-                            class="flex items-center px-3 border border-zinc-800 rounded bg-black"
+                        <button 
+                            type="button" 
+                            class="flex items-center px-3 border border-zinc-300 dark:border-zinc-800 rounded" 
+                            on:click={() => scrollTo(next)}
                         >
                             Next
-                        </a>
+                        </button>
                     {/if}
                 </div>
             </div>
