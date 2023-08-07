@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { page } from "$app/stores";
+
 
     type Comment = {
         deleted?: boolean;
@@ -16,11 +18,13 @@
     export let group: Comment[];
 
     let visible = true;
+    let copied = false;
 
     let prev = getPrevious();
     let next = getNext();
     let root = getRoot();
 
+    
     function getRoot() {
         let root = comment.parent;
 
@@ -62,27 +66,58 @@
             behavior: 'smooth'
         });
     }
+
+
+    async function copyLink() {
+        
+        console.log($page.url);
+
+        const commentUrl = `${$page.url.origin}${$page.url.pathname}#comment-${comment.id}`;
+        
+        await navigator.clipboard.writeText(commentUrl);
+        
+        copied = true;
+    }
 </script>
 
 
 {#if !comment.deleted}
     <article id="comment-{comment.id}">
         <div 
-            class:mb-4={!visible}
+            class="mb-4 p-2 outline-black dark:outline-white rounded-sm"
             style={comment.level > 0 ? `margin-left: ${comment.level*1}rem;` : ""}
+            class:outline={$page.url.hash === `#comment-${comment.id}`}
         >
             <div class="text-zinc-500 flex flex-wrap justify-between">
                 <div class="mb-1 flex items-center gap-2 mr-2">
-                    <span 
-                        class="h-2 w-2 flex items-center justify-center font-mono rounded-full shrink-0"
-                        class:bg-red-700={comment.level % 7 === 0}
-                        class:bg-orange-600={comment.level % 7 === 1}
-                        class:bg-yellow-400={comment.level % 7 === 2}
-                        class:bg-green-500={comment.level % 7 === 3}
-                        class:bg-blue-500={comment.level % 7 === 4}
-                        class:bg-indigo-700={comment.level % 7 === 5}
-                        class:bg-violet-600={comment.level % 7 === 6}
-                    ></span>
+                    <button 
+                        class="flex items-center justify-center font-mono rounded-full shrink-0 group relative"
+                        class:text-black={comment.level % 8 === 0}
+                        class:dark:text-white={comment.level % 8 === 0}
+                        class:text-red-700={comment.level % 8 === 1}
+                        class:text-orange-600={comment.level % 8 === 2}
+                        class:text-yellow-400={comment.level % 8 === 3}
+                        class:text-green-500={comment.level % 8 === 4}
+                        class:text-blue-500={comment.level % 8 === 5}
+                        class:text-indigo-700={comment.level % 8 === 6}
+                        class:text-violet-600={comment.level % 8 === 7}
+                        aria-describedby="copy-{comment.id}"
+                        on:click={copyLink}
+                        on:focusout={() => copied = false}
+                    >
+                        <!-- <iconify-icon icon="fa-solid:link"></iconify-icon> -->
+                        <iconify-icon icon="ph:link-bold"></iconify-icon>
+                        <div 
+                            role="tooltip" 
+                            id="copy-{comment.id}" 
+                            class="absolute hidden group-focus-visible:block group-hover:block 
+                            left-full translate-x-1 bg-white dark:bg-black border border-zinc-300 dark:border-zinc-800 
+                            px-2 shadow dark:shadow-zinc-950 rounded text-zinc-500 whitespace-nowrap text-sm"
+                            class:copy-tooltip={true}
+                        >
+                            {copied ? "Link Copied!" : "Copy Link"}
+                        </div>
+                    </button>
                     <span><a href="/user/{comment.user}">{comment.user}</a> <span>{comment.time_ago}</span></span>
                 </div>
                     
@@ -135,7 +170,9 @@
             </div>
 
             {#if visible}
-                <div class="prose text-inherit prose-a:text-zinc-500 prose-pre:bg-zinc-900 rounded border border-zinc-300 dark:border-zinc-800 p-2 max-w-full mb-4 break-words">
+                <div 
+                    class="prose text-inherit prose-a:text-zinc-500 prose-pre:bg-zinc-900 rounded border border-zinc-300 dark:border-zinc-800 p-2 max-w-full break-words"
+                >
                     {@html comment.content}
                 </div>
             {/if}
@@ -152,3 +189,16 @@
         {/if}
     </article>
 {/if}
+
+
+<style lang="postcss">
+    .copy-tooltip::before {
+        display: block;
+        position: absolute;
+        content: '';
+        width: 5px;
+        height: 100%;
+        /* background-color: red; */
+        left: -5px;
+    }
+</style>
