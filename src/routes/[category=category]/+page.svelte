@@ -30,33 +30,35 @@
                             {/if}
                         </hgroup>
 
-                        <p class="text-zinc-500 flex flex-wrap">
-                            <span>{item.points} points by <a href="/users/{item.user}">{item.user}</a> {item.time_ago}<span class="mx-1">|</span></span>
-                            <a href="/item/{item.id}">{item.comments_count} {item.comments_count === 1 ? "comment" : "comments"}</a>
-                        </p>
+                        {#if data.category === "jobs"}
+                            <p class="text-zinc-500">{item.time_ago}</p>
+                        {:else}
+                            <p class="text-zinc-500 flex flex-wrap">
+                                <span>{item.points} points by <a href="/user/{item.user}">{item.user}</a> {item.time_ago}<span class="mx-1">|</span></span>
+                                <a href="/item/{item.id}">{item.comments_count} {item.comments_count === 1 ? "comment" : "comments"}</a>
+                            </p>
+                        {/if}
                     </div>
 
                     <div class="ml-auto flex flex-col md:hidden">
                         <a 
                             href="{item.url}" 
-                            class="flex-1 flex items-center justify-center text-2xl px-3 hover:bg-zinc-950"
-                            class:rounded-bl-lg={hand === "right" && (data.category !== "ask" || i === data.items.length - 1)}
+                            class="flex-1 flex items-center justify-center text-2xl px-3 hover:bg-zinc-200 dark:hover:bg-zinc-950"
+                            class:rounded-bl-lg={hand === "right" && ((data.category !== "ask" && data.category !== "jobs") || i === data.items.length - 1)}
                             class:rounded-tl-lg={hand === "right" && i === 0}
-                            class:rounded-br-lg={hand === "left" && (data.category !== "ask" || i === data.items.length - 1)}
+                            class:rounded-br-lg={hand === "left" && ((data.category !== "ask" && data.category !== "jobs") || i === data.items.length - 1)}
                             class:rounded-tr-lg={hand === "left" && i === 0}
                         >
                             <iconify-icon icon="eva:diagonal-arrow-right-up-fill"></iconify-icon>
                         </a>
-                        {#if data.category !== "ask"}
+                        {#if data.category !== "ask" && data.category !== "jobs"}
                             <a 
                                 href="/item/{item.id}" 
-                                class="flex-1 flex items-center justify-center text-2xl px-3 hover:bg-zinc-950"
+                                class="flex-1 flex items-center justify-center text-2xl px-3 hover:bg-zinc-200 dark:hover:bg-zinc-950"
                                 class:rounded-bl-lg={hand === "right" && i === data.items.length - 1}
                                 class:rounded-tl-lg={hand === "right"}
                                 class:rounded-br-lg={hand === "left" && i === data.items.length - 1}
                                 class:rounded-tr-lg={hand === "left"}
-
-
                             >
                                 
                                 <iconify-icon icon="octicon:comment-24"></iconify-icon>

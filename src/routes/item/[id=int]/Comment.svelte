@@ -15,6 +15,8 @@
     export let comment: Comment;
     export let group: Comment[];
 
+    let visible = true;
+
     let prev = getPrevious();
     let next = getNext();
     let root = getRoot();
@@ -64,8 +66,9 @@
 
 
 {#if !comment.deleted}
-    <article id="comment-{comment.id}" class="scroll-pt-4">
+    <article id="comment-{comment.id}">
         <div 
+            class:mb-4={!visible}
             style={comment.level > 0 ? `margin-left: ${comment.level*1}rem;` : ""}
         >
             <div class="text-zinc-500 flex flex-wrap justify-between">
@@ -120,20 +123,32 @@
                             Next
                         </button>
                     {/if}
+
+                    <button
+                        type="button" 
+                        class="flex items-center px-2 border border-zinc-300 dark:border-zinc-800 rounded ml-auto font-mono" 
+                        on:click={() => visible = !visible}
+                    >
+                        {visible ? "-" : "+"}
+                    </button>
                 </div>
             </div>
 
-            <div class="prose text-inherit prose-a:text-zinc-500 prose-pre:bg-zinc-900 rounded border border-zinc-300 dark:border-zinc-800 p-2 max-w-full mb-4 break-words">
-                {@html comment.content}
-            </div>
+            {#if visible}
+                <div class="prose text-inherit prose-a:text-zinc-500 prose-pre:bg-zinc-900 rounded border border-zinc-300 dark:border-zinc-800 p-2 max-w-full mb-4 break-words">
+                    {@html comment.content}
+                </div>
+            {/if}
         </div>
 
-        {#if comment.comments.length > 0}
-            <ul>
-                {#each comment.comments as child, index}
-					<li><svelte:self comment={{ ...child, parent: comment}} {index} group={comment.comments} /></li>
-				{/each}
-            </ul>
+        {#if visible}
+            {#if comment.comments.length > 0}
+                <ul>
+                    {#each comment.comments as child, index}
+                        <li><svelte:self comment={{ ...child, parent: comment}} {index} group={comment.comments} /></li>
+                    {/each}
+                </ul>
+            {/if}
         {/if}
     </article>
 {/if}

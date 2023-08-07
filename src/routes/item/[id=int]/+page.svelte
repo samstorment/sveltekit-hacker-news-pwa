@@ -18,7 +18,7 @@
         </hgroup>
 
         <div class="p-4 mb-4 text-zinc-500 py-4 flex flex-wrap gap-2 justify-between border-y border-zinc-300 dark:border-zinc-800">
-            <p>{data.points} points by <a href="/users/{data.user}">{data.user}</a> {data.time_ago}</p>
+            <p>{data.points} points by <a href="/user/{data.user}">{data.user}</a> {data.time_ago}</p>
             <p><a href="/item/{data.id}">{data.comments_count} {data.comments_count === 1 ? "comment" : "comments"}</a></p>
         </div>
 
