@@ -15,12 +15,6 @@
     export let comment: Comment;
     export let group: Comment[];
 
-    let prevIndex = index - 1;
-    let nextIndex = index + 1;
-    
-    let origPrev = prevIndex >= 0 ? group[prevIndex] : undefined;
-    let origNext = nextIndex < group.length ? group[nextIndex] : undefined;
-
     let prev = getPrevious();
     let next = getNext();
 
@@ -36,6 +30,7 @@
 
     function getPrevious() {
         let prev: Comment | undefined;
+        let prevIndex = index;
 
         do {
             if (--prevIndex < 0) return undefined;
@@ -47,6 +42,7 @@
 
     function getNext() {
         let next: Comment | undefined;
+        let nextIndex = index;
 
         do { 
             if (++nextIndex >= group.length) return undefined;
@@ -91,8 +87,6 @@
                         <a 
                             href="#comment-{prev.id}" 
                             class="flex items-center px-3 border border-zinc-800 rounded bg-black"
-                            class:outline={origPrev.deleted}
-                            class:outline-red-500={origPrev.deleted}
                         >
                             Prev
                         </a>
@@ -101,8 +95,6 @@
                         <a 
                             href="#comment-{next.id}"
                             class="flex items-center px-3 border border-zinc-800 rounded bg-black"
-                            class:outline={origNext.deleted}
-                            class:outline-red-500={origNext.deleted}
                         >
                             Next
                         </a>
