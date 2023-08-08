@@ -14,6 +14,10 @@
     $: selected = $page.url.pathname.split('/')[1] || "top";
 </script>
 
+<svelte:head>
+    <title>Hacker News</title>
+</svelte:head>
+
 <header>
     <nav class="p-2 flex items-center gap-4 max-w-screen-md mx-auto">
         <a href="/" class="hover:no-underline ml-2">HN</a>
