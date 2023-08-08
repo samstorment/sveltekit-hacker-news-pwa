@@ -123,11 +123,13 @@
                     <span class="whitespace-nowrap overflow-hidden text-ellipsis"><a href="/user/{comment.user}" class:text-blue-500={comment.user === item.user}>{comment.user}</a> <span>{comment.time_ago}</span></span>
                 </div>
                     
-                <div class="flex gap-1 mb-1 text-sm">
+                <div class="flex flex-wrap justify-end items-center gap-1 mb-1 text-sm">
+                    <span class="sm:hidden flex-1 h-[22px] border border-zinc-300 dark:border-zinc-800 rounded min-w-0 nothing"></span>
+                    <!-- <span class="flex-1 h-[1px] bg-zinc-800 min-w-0"></span> -->
                     {#if root && comment.level > 1}
                         <button 
                             type="button" 
-                            class="flex items-center px-3 border border-zinc-300 dark:border-zinc-800 rounded" 
+                            class="flex items-center px-2 border border-zinc-300 dark:border-zinc-800 rounded" 
                             on:click={() => scrollTo(root)}
                         >
                             Root
@@ -136,7 +138,7 @@
                     {#if comment.parent}
                         <button 
                             type="button" 
-                            class="flex items-center px-3 border border-zinc-300 dark:border-zinc-800 rounded" 
+                            class="flex items-center px-2 border border-zinc-300 dark:border-zinc-800 rounded" 
                             on:click={() => scrollTo(comment.parent)}
                         >
                             Parent
@@ -145,7 +147,7 @@
                     {#if prev}
                         <button 
                             type="button" 
-                            class="flex items-center px-3 border border-zinc-300 dark:border-zinc-800 rounded" 
+                            class="flex items-center px-2 border border-zinc-300 dark:border-zinc-800 rounded" 
                             on:click={() => scrollTo(prev)}
                         >
                             Prev
@@ -154,7 +156,7 @@
                     {#if next}
                         <button 
                             type="button" 
-                            class="flex items-center px-3 border border-zinc-300 dark:border-zinc-800 rounded" 
+                            class="flex items-center px-2 border border-zinc-300 dark:border-zinc-800 rounded" 
                             on:click={() => scrollTo(next)}
                         >
                             Next
@@ -220,5 +222,25 @@
         height: 100%;
         /* background-color: red; */
         left: -5px;
+    }
+
+    .dark.nothing {
+        background: repeating-linear-gradient(
+            -45deg,
+            rgb(9 9 11),
+            rgb(9 9 11) 3px,
+            black 3px,
+            black 7px
+        );
+    }
+
+    .nothing {
+        background: repeating-linear-gradient(
+            -45deg,
+            rgb(228 228 231),
+            rgb(228 228 231) 3px,
+            white 3px,
+            white 7px
+        );
     }
 </style>

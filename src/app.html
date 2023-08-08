@@ -9,6 +9,46 @@
 		%sveltekit.head%
 	</head>
 	<body data-sveltekit-preload-data="hover">
+		<script>
+			function getTheme() {
+				if (localStorage.theme === 'dark') return 'dark';
+				else if (localStorage.theme === 'light') return 'light';
+				else return 'system';
+			}
+
+			function getColorMode(theme) {
+				if (theme === 'system') {
+					return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+				}
+
+				return theme;
+			}
+
+			function applyColorMode(mode) {
+				if (mode === 'dark') {
+					document.documentElement.classList.add('dark');
+				} else {
+					document.documentElement.classList.remove('dark');
+				}
+			}
+
+			applyColorMode(getColorMode(getTheme()));
+
+			window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+				applyColorMode(getColorMode(getTheme()));
+			});
+
+			// // Whenever the user explicitly chooses light mode
+			// localStorage.theme = 'light'
+
+			// // Whenever the user explicitly chooses dark mode
+			// localStorage.theme = 'dark'
+
+			// // Whenever the user explicitly chooses to respect the OS preference
+			// localStorage.removeItem('theme')
+		</script>
+
+
 		<div style="display: contents">%sveltekit.body%</div>
 	</body>
 </html>
