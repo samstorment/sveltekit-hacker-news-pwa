@@ -224,16 +224,6 @@
         left: -5px;
     }
 
-    .dark.nothing {
-        background: repeating-linear-gradient(
-            -45deg,
-            rgb(9 9 11),
-            rgb(9 9 11) 3px,
-            black 3px,
-            black 7px
-        );
-    }
-
     .nothing {
         background: repeating-linear-gradient(
             -45deg,
@@ -243,4 +233,16 @@
             white 7px
         );
     }
+
+    /* quick, bad fix */
+    :global(.dark .nothing) {
+        background: repeating-linear-gradient(
+            -45deg,
+            rgb(9 9 11),
+            rgb(9 9 11) 3px,
+            black 3px,
+            black 7px
+        );
+    }
+
 </style>
