@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from "$app/stores";
+	import { slide } from "svelte/transition";
 
 
     type Comment = {
@@ -16,9 +17,11 @@
     export let index: number;
     export let comment: Comment;
     export let group: Comment[];
+    export let item: any;
 
     let visible = true;
     let copied = false;
+    $: highlighted = $page.url.hash === `#${comment.id}`;
 
     let prev = getPrevious();
     let next = getNext();
@@ -62,7 +65,7 @@
     function scrollTo(comment: Comment | undefined) {
         if (!comment) return;
 
-        document.querySelector(`#comment-${comment.id}`)?.scrollIntoView({
+        document.getElementById(comment.id)?.scrollIntoView({
             behavior: 'smooth'
         });
     }
@@ -72,7 +75,7 @@
         
         console.log($page.url);
 
-        const commentUrl = `${$page.url.origin}${$page.url.pathname}#comment-${comment.id}`;
+        const commentUrl = `${$page.url.origin}${$page.url.pathname}#${comment.id}`;
         
         await navigator.clipboard.writeText(commentUrl);
         
@@ -82,14 +85,13 @@
 
 
 {#if !comment.deleted}
-    <article id="comment-{comment.id}">
+    <article id="{comment.id}">
         <div 
-            class="mb-4 p-2 outline-black dark:outline-white rounded-sm"
+            class="mb-6 {highlighted ? "outline outline-offset-8 outline-black dark:outline-white rounded-sm" : ""}"
             style={comment.level > 0 ? `margin-left: ${comment.level*1}rem;` : ""}
-            class:outline={$page.url.hash === `#comment-${comment.id}`}
         >
-            <div class="text-zinc-500 flex flex-wrap justify-between">
-                <div class="mb-1 flex items-center gap-2 mr-2">
+            <div class="text-zinc-500 flex justify-between max-sm:flex-col">
+                <div class="mb-1 flex items-center gap-2 mr-2 min-w-0">
                     <button 
                         class="flex items-center justify-center font-mono rounded-full shrink-0 group relative"
                         class:text-black={comment.level % 8 === 0}
@@ -118,7 +120,7 @@
                             {copied ? "Link Copied!" : "Copy Link"}
                         </div>
                     </button>
-                    <span><a href="/user/{comment.user}">{comment.user}</a> <span>{comment.time_ago}</span></span>
+                    <span class="whitespace-nowrap overflow-hidden text-ellipsis"><a href="/user/{comment.user}" class:text-blue-500={comment.user === item.user}>{comment.user}</a> <span>{comment.time_ago}</span></span>
                 </div>
                     
                 <div class="flex gap-1 mb-1 text-sm">
@@ -161,7 +163,9 @@
 
                     <button
                         type="button" 
-                        class="flex items-center px-2 border border-zinc-300 dark:border-zinc-800 rounded ml-auto font-mono" 
+                        class="flex items-center px-2 border border-zinc-300 dark:border-zinc-800 rounded font-mono" 
+                        aria-expanded="{visible}"
+                        aria-controls="content-{comment.id}"
                         on:click={() => visible = !visible}
                     >
                         {visible ? "-" : "+"}
@@ -170,10 +174,19 @@
             </div>
 
             {#if visible}
-                <div 
-                    class="prose text-inherit prose-a:text-zinc-500 prose-pre:bg-zinc-900 rounded border border-zinc-300 dark:border-zinc-800 p-2 max-w-full break-words"
-                >
-                    {@html comment.content}
+                <div id="content-{comment.id}">
+                    <div 
+                        transition:slide
+                        class="prose text-inherit prose-a:text-zinc-500 prose-pre:bg-zinc-900 rounded border border-zinc-300 dark:border-zinc-800 p-2 max-w-full break-words"
+                    >
+                        {@html comment.content}
+                    </div>
+
+                    <div class="text-zinc-500 text-sm flex items-center gap-2 mt-1" transition:slide>
+                        <iconify-icon icon="cib:y-combinator" class="text-lg"></iconify-icon>
+                        <a href="https://news.ycombinator.com/reply?id={comment.id}&goto=item?id={item.id}#{comment.id}">Reply</a>
+                        <a href="https://news.ycombinator.com/item?id={item.id}#{comment.id}">View</a>
+                    </div>
                 </div>
             {/if}
         </div>
@@ -182,7 +195,14 @@
             {#if comment.comments.length > 0}
                 <ul>
                     {#each comment.comments as child, index}
-                        <li><svelte:self comment={{ ...child, parent: comment}} {index} group={comment.comments} /></li>
+                        <li>
+                            <svelte:self 
+                                comment={{ ...child, parent: comment}} 
+                                {index} 
+                                group={comment.comments}
+                                {item}
+                            />
+                        </li>
                     {/each}
                 </ul>
             {/if}
