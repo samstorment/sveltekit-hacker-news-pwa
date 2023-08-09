@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { settings } from '$lib/settings.js';
 
     export let data;
 
@@ -18,7 +19,7 @@
             >
                 <article 
                     class="flex"
-                    class:flex-row-reverse={hand === "left"}
+                    class:flex-row-reverse={$settings.posts.hand === "left"}
                 >
                     <div class="px-4 my-4 flex-1 self-center">
                         <hgroup>

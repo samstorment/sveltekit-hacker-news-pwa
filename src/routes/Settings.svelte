@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { settings } from "$lib/settings";
 	import { onMount } from "svelte";
 
     export let dialog: HTMLDialogElement;
@@ -13,13 +14,9 @@
         theme = localStorage.getItem("theme") ?? "system";
         // dialog.showModal();
 
-        
-
         const observer = new MutationObserver((mutations, observer) => {
             for (const mut of mutations) {
                 if (mut.type === "attributes" && mut.attributeName === "open") {
-                    console.log(`${mut.attributeName} changed`, dialog.open);
-
                     if (dialog.open) {
                         document.body.classList.add("overflow-hidden");
 
@@ -76,59 +73,67 @@
 
 <dialog 
     bind:this={dialog} 
-    class="dialog bg-transparent"
+    class="dialog p-4 bg-white text-black dark:bg-black dark:text-zinc-200 border border-zinc-300 dark:border-zinc-800 rounded"
     class:closing
 >
-    <div
-        class="bg-white text-black dark:bg-black dark:text-zinc-200 p-4 border border-zinc-300 dark:border-zinc-800 rounded"
-    >
-        <aside>
-            <ul>
-                <li>
+    <header class="flex justify-between items-center pb-4 mb-4 border-b border-zinc-300 dark:border-zinc-700">
+        <h2 class="text-3xl">Settings</h2>
+        <button type="button" on:click={closeDialog} class="text-2xl">
+            <iconify-icon icon="ic:round-close"></iconify-icon>
+        </button>
+    </header>
 
-                </li>
-            </ul>
-        </aside>
-
-        <div class="flex justify-between items-center pb-4 mb-4 border-b border-zinc-300 dark:border-zinc-700">
-            <h2 class="text-3xl">Settings</h2>
-            <button type="button" on:click={closeDialog} class="text-2xl">
-                <iconify-icon icon="ic:round-close"></iconify-icon>
-            </button>
-        </div>
-
-        <h3 class="text-xl mb-2">Theme</h3>
-        <div class="flex flex-wrap gap-2">
-            <button 
-                class="px-3 py-1 border border-zinc-300 dark:border-zinc-800 rounded flex-1"
-                class:selected={theme === "light"}
-                on:click={setLight}
-            >
-                Light
-            </button>
-            <button 
-                class="px-3 py-1 border border-zinc-300 dark:border-zinc-800 rounded flex-1"
-                class:selected={theme === "dark"}
-                on:click={setDark}
-            >
-                Dark
-            </button>
-            <button 
-                class="px-3 py-1 border border-zinc-300 dark:border-zinc-800 rounded flex-1"
-                class:selected={theme === "system"}
-                on:click={setSystem}
-            >
-                System
-            </button>
-        </div>
+    <h3 class="text-xl mb-2">Theme</h3>
+    <div class="flex flex-wrap gap-2 mb-4 pb-4 border-b border-zinc-300 dark:border-zinc-700">
+        <button 
+            class="px-3 py-1 border border-zinc-300 dark:border-zinc-800 rounded w-fit"
+            class:selected={theme === "light"}
+            on:click={setLight}
+        >
+            Light
+        </button>
+        <button 
+            class="px-3 py-1 border border-zinc-300 dark:border-zinc-800 rounded w-fit"
+            class:selected={theme === "dark"}
+            on:click={setDark}
+        >
+            Dark
+        </button>
+        <button 
+            class="px-3 py-1 border border-zinc-300 dark:border-zinc-800 rounded w-fit"
+            class:selected={theme === "system"}
+            on:click={setSystem}
+        >
+            System
+        </button>
     </div>
+
+    <h3 class="text-xl mb-2">Posts</h3>
+
+    <div class="flex flex-wrap gap-2 mb-4">
+        <button 
+            class="px-3 py-1 border border-zinc-300 dark:border-zinc-800 rounded w-fit"
+            class:selected={$settings.posts.hand === "left"}
+            on:click={() => $settings.posts.hand = "left"}
+        >
+            Left Hand Mode
+        </button>
+        <button 
+            class="px-3 py-1 border border-zinc-300 dark:border-zinc-800 rounded w-fit"
+            class:selected={$settings.posts.hand === "right"}
+            on:click={() => $settings.posts.hand = "right"}
+        >
+            Right Hand Mode
+        </button>
+    </div>
+
 </dialog>
 
 
 <style lang="postcss">
 
     button.selected {
-        @apply outline outline-black dark:outline-white;
+        @apply outline outline-2 outline-black dark:outline-white;
     }
 
     :global(body:has(.dialog[open])) {
@@ -136,7 +141,7 @@
     }
 
     dialog::backdrop {
-        @apply bg-black/70 fixed inset-0;
+        @apply backdrop-blur-sm bg-black/70 fixed inset-0;
     }
 
     dialog[open] {
