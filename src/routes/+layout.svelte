@@ -2,14 +2,9 @@
 	import { page } from "$app/stores";
 	import { onMount } from "svelte";
     import "../app.css";
+	import Settings from "./Settings.svelte";
 
     let dialog: HTMLDialogElement;
-
-    let theme: string;
-
-    onMount(() => {
-        theme = localStorage.getItem("theme") ?? "system";
-    });
 
     $: selected = $page.url.pathname.split('/')[1] || "top";
 </script>
@@ -32,53 +27,7 @@
     </nav>
 </header>
 
-<dialog bind:this={dialog} class="bg-white text-black dark:bg-black dark:text-zinc-200 p-4 border border-zinc-300 dark:border-zinc-800 max-w-800 rounded">
-    
-    <div class="flex justify-between items-center mb-4">
-        <h2 class="text-3xl">Settings</h2>
-        <button type="button" on:click={() => dialog.close()} class="text-3xl">&times;</button>
-    </div>
-    <h3 class="text-xl mb-2">Theme</h3>
-    <div class="flex flex-wrap gap-2">
-        <button 
-            class="px-3 py-1 border border-zinc-300 dark:border-zinc-800 rounded flex-1"
-            class:selected={theme === "light"}
-            on:click={() => {
-                theme = "light";
-                localStorage.setItem("theme", "light");
-                document.documentElement.classList.remove("dark");
-            }}
-        >
-            Light
-        </button>
-        <button 
-            class="px-3 py-1 border border-zinc-300 dark:border-zinc-800 rounded flex-1"
-            class:selected={theme === "dark"}
-            on:click={() => {
-                theme = "dark";
-                localStorage.setItem("theme", "dark");
-                document.documentElement.classList.add("dark");
-            }}
-        >
-            Dark
-        </button>
-        <button 
-            class="px-3 py-1 border border-zinc-300 dark:border-zinc-800 rounded flex-1"
-            class:selected={theme === "system"}
-            on:click={() => {
-                theme = "system";
-                localStorage.removeItem("theme");
-                if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                    document.documentElement.classList.add("dark");
-                } else {
-                    document.documentElement.classList.remove("dark");
-                }
-            }}
-        >
-            System
-        </button>
-    </div>
-</dialog>
+<Settings bind:dialog />
 
 <slot />
 
@@ -93,13 +42,5 @@
     .nav-item.selected::after {
         content: '';
         @apply absolute h-[2px] w-full bg-blue-500 dark:bg-white left-0 -bottom-1;
-    }
-
-    dialog::backdrop {
-        @apply backdrop-blur bg-black/50;
-    }
-
-    button.selected {
-        @apply outline outline-black dark:outline-white;
     }
 </style>
