@@ -15,14 +15,17 @@
 
 <header>
     <nav class="p-2 flex items-center gap-4 max-w-screen-md mx-auto">
-        <a href="/" class="hover:no-underline ml-2">HN</a>
-        <a href="/top" class="relative nav-item" class:selected={selected === "top"}>Top</a>
-        <a href="/new" class="relative nav-item" class:selected={selected === "new"}>New</a>
-        <a href="/show" class="relative nav-item" class:selected={selected === "show"}>Show</a>
-        <a href="/ask" class="relative nav-item" class:selected={selected === "ask"}>Ask</a>
-        <a href="/jobs" class="relative nav-item" class:selected={selected === "jobs"}>Jobs</a>
+        <div class="flex items-center gap-4 min-w-0 overflow-hidden">
+            <a href="/" class="hover:no-underline ml-2">HN</a>
+            <a href="/top" class="relative nav-item" class:selected={selected === "top"}>Top</a>
+            <a href="/new" class="relative nav-item" class:selected={selected === "new"}>New</a>
+            <a href="/show" class="relative nav-item" class:selected={selected === "show"}>Show</a>
+            <a href="/ask" class="relative nav-item" class:selected={selected === "ask"}>Ask</a>
+            <a href="/jobs" class="relative nav-item" class:selected={selected === "jobs"}>Jobs</a>
+        </div>
         <button on:click={() => dialog.showModal()} title="Settings" class="ml-auto text-2xl p-2 hover:bg-zinc-200 dark:hover:bg-zinc-900 rounded aspect-square flex items-center">
             <iconify-icon icon="carbon:settings"></iconify-icon>
+            <span class="sr-only">Open Settings</span>
         </button>
     </nav>
 </header>

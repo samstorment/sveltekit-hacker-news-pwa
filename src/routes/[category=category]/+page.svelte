@@ -1,10 +1,9 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { settings } from '$lib/settings.js';
+	import { hand, settings } from '$lib/settings.js';
 
     export let data;
 
-    let hand: "left" | "right" = "right"; 
 </script>
 
 
@@ -15,24 +14,25 @@
     <ul>
         {#each data.items as item, i}
             <li 
-                class="border-b border-zinc-300 dark:border-zinc-800 items-center last:border-none"
+                class="border-b border-zinc-300 dark:border-zinc-700 items-center last:border-none"
             >
                 <article 
-                    class="flex"
-                    class:flex-row-reverse={$settings.posts.hand === "left"}
+                    class="flex lefty:flex-row-reverse"
                 >
-                    <div class="px-4 my-4 flex-1 self-center">
+                    <div 
+                        class="px-4 my-4 flex-1 self-center min-w-0" 
+                    >
                         <hgroup>
                             <h2 class="text-lg inline"> 
                                 <a href="{item.url}">{item.title}</a>
                             </h2>
                             {#if item.domain}
-                                <a href="https://news.ycombinator.com/from?site={item.domain}" class="text-zinc-500 text-sm">({item.domain})</a>
+                                <a href="https://news.ycombinator.com/from?site={item.domain}" class="text-zinc-600 dark:text-zinc-500 text-sm break-words">({item.domain})</a>
                             {/if}
                         </hgroup>
 
                  
-                        <p class="text-zinc-500">
+                        <p class="text-zinc-600 dark:text-zinc-500">
                             <span>
                                 {#if item.points}
                                     {item.points} points 
@@ -54,28 +54,31 @@
                
                     </div>
 
-                    <div class="ml-auto flex flex-col md:hidden">
+                    <div class="ml-auto flex flex-col md:hidden shrink-0"
+                        style="view-transition-name: icons-{item.id}"
+                    >
                         <a 
                             href="{item.url}" 
                             class="flex-1 flex items-center justify-center text-2xl px-4 hover:bg-zinc-200 dark:hover:bg-zinc-900"
-                            class:rounded-bl-lg={hand === "right" && ((data.category !== "ask" && data.category !== "jobs") || i === data.items.length - 1)}
-                            class:rounded-tl-lg={hand === "right" && i === 0}
-                            class:rounded-br-lg={hand === "left" && ((data.category !== "ask" && data.category !== "jobs") || i === data.items.length - 1)}
-                            class:rounded-tr-lg={hand === "left" && i === 0}
+                            class:rounded-bl-lg={$hand === "righty" && ((data.category !== "ask" && data.category !== "jobs") || i === data.items.length - 1)}
+                            class:rounded-tl-lg={$hand === "righty" && i === 0}
+                            class:rounded-br-lg={$hand === "lefty" && ((data.category !== "ask" && data.category !== "jobs") || i === data.items.length - 1)}
+                            class:rounded-tr-lg={$hand === "lefty" && i === 0}
                         >
                             <iconify-icon icon="eva:diagonal-arrow-right-up-fill"></iconify-icon>
+                            <span class="sr-only">Open External Post Link</span>
                         </a>
                         {#if data.category !== "ask" && data.category !== "jobs"}
                             <a 
                                 href="/item/{item.id}" 
                                 class="flex-1 flex items-center justify-center text-2xl px-4 hover:bg-zinc-200 dark:hover:bg-zinc-900"
-                                class:rounded-bl-lg={hand === "right" && i === data.items.length - 1}
-                                class:rounded-tl-lg={hand === "right"}
-                                class:rounded-br-lg={hand === "left" && i === data.items.length - 1}
-                                class:rounded-tr-lg={hand === "left"}
+                                class:rounded-bl-lg={$hand === "righty" && i === data.items.length - 1}
+                                class:rounded-tl-lg={$hand === "righty"}
+                                class:rounded-br-lg={$hand === "lefty" && i === data.items.length - 1}
+                                class:rounded-tr-lg={$hand === "lefty"}
                             >
-                                
                                 <iconify-icon icon="octicon:comment-24"></iconify-icon>
+                                <span class="sr-only">Open Post Comments</span>
                             </a>
                         {/if}
                     </div>
@@ -89,7 +92,7 @@
         {#if data.page > 1}
             <a 
                 href="?p={data.page - 1}" 
-                class="px-4 py-4 border border-zinc-300 dark:border-zinc-800 flex-1 rounded hover:no-underline hover:shadow dark:hover:border-white flex justify-between items-center"
+                class="px-4 py-4 border border-zinc-300 dark:border-zinc-700 flex-1 rounded hover:no-underline hover:shadow dark:hover:border-white flex justify-between items-center"
             >
                 <iconify-icon icon="ph:arrow-left-bold" class="text-2xl"></iconify-icon>
                 <span>Previous</span>
@@ -98,7 +101,7 @@
             {#if data.page < data.pageLimit}
             <a 
                 href="?p={data.page + 1}" 
-                class="px-4 py-4 border border-zinc-300 dark:border-zinc-800 flex-1 rounded text-right hover:no-underline hover:shadow dark:hover:border-white flex justify-between items-center"
+                class="px-4 py-4 border border-zinc-300 dark:border-zinc-700 flex-1 rounded text-right hover:no-underline hover:shadow dark:hover:border-white flex justify-between items-center"
                 class:solo-link={data.page <= 1}
             >
                 <span>Next</span>

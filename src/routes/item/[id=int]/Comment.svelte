@@ -72,9 +72,6 @@
 
 
     async function copyLink() {
-        
-        console.log($page.url);
-
         const commentUrl = `${$page.url.origin}${$page.url.pathname}#${comment.id}`;
         
         await navigator.clipboard.writeText(commentUrl);
@@ -90,7 +87,7 @@
             class="mb-6 {highlighted ? "outline outline-offset-8 outline-black dark:outline-white rounded-sm" : ""}"
             style={comment.level > 0 ? `margin-left: ${comment.level*1}rem;` : ""}
         >
-            <div class="text-zinc-500 flex justify-between max-sm:flex-col">
+            <div class="text-zinc-600 dark:text-zinc-500 flex justify-between max-sm:flex-col">
                 <div class="mb-1 flex items-center gap-2 mr-2 min-w-0">
                     <button 
                         class="flex items-center justify-center font-mono rounded-full shrink-0 group relative"
@@ -113,8 +110,8 @@
                             role="tooltip" 
                             id="copy-{comment.id}" 
                             class="absolute hidden group-focus-visible:block group-hover:block 
-                            left-full translate-x-1 bg-white dark:bg-black border border-zinc-300 dark:border-zinc-800 
-                            px-2 shadow dark:shadow-zinc-950 rounded text-zinc-500 whitespace-nowrap text-sm"
+                            left-full translate-x-1 bg-white dark:bg-black border border-zinc-300 dark:border-zinc-700 
+                            px-2 shadow dark:shadow-zinc-950 rounded text-zinc-600 dark:text-zinc-500 whitespace-nowrap text-sm"
                             class:copy-tooltip={true}
                         >
                             {copied ? "Link Copied!" : "Copy Link"}
@@ -123,13 +120,13 @@
                     <span class="whitespace-nowrap overflow-hidden text-ellipsis"><a href="/user/{comment.user}" class:text-blue-500={comment.user === item.user}>{comment.user}</a> <span>{comment.time_ago}</span></span>
                 </div>
                     
-                <div class="flex flex-wrap justify-end items-center gap-1 mb-1 text-sm">
-                    <span class="sm:hidden flex-1 h-[22px] border border-zinc-300 dark:border-zinc-800 rounded min-w-0 nothing"></span>
+                <div class="flex flex-wrap justify-end lefty:justify-start items-center gap-1 mb-1 text-sm">
+                    <span class="sm:hidden flex-1 h-[22px] border border-zinc-300 dark:border-zinc-700 rounded min-w-0 nothing lefty:hidden"></span>
                     <!-- <span class="flex-1 h-[1px] bg-zinc-800 min-w-0"></span> -->
                     {#if root && comment.level > 1}
                         <button 
                             type="button" 
-                            class="flex items-center px-2 border border-zinc-300 dark:border-zinc-800 rounded" 
+                            class="flex items-center px-2 border border-zinc-300 dark:border-zinc-700 rounded" 
                             on:click={() => scrollTo(root)}
                         >
                             Root
@@ -138,7 +135,7 @@
                     {#if comment.parent}
                         <button 
                             type="button" 
-                            class="flex items-center px-2 border border-zinc-300 dark:border-zinc-800 rounded" 
+                            class="flex items-center px-2 border border-zinc-300 dark:border-zinc-700 rounded" 
                             on:click={() => scrollTo(comment.parent)}
                         >
                             Parent
@@ -147,7 +144,7 @@
                     {#if prev}
                         <button 
                             type="button" 
-                            class="flex items-center px-2 border border-zinc-300 dark:border-zinc-800 rounded" 
+                            class="flex items-center px-2 border border-zinc-300 dark:border-zinc-700 rounded" 
                             on:click={() => scrollTo(prev)}
                         >
                             Prev
@@ -156,7 +153,7 @@
                     {#if next}
                         <button 
                             type="button" 
-                            class="flex items-center px-2 border border-zinc-300 dark:border-zinc-800 rounded" 
+                            class="flex items-center px-2 border border-zinc-300 dark:border-zinc-700 rounded" 
                             on:click={() => scrollTo(next)}
                         >
                             Next
@@ -165,7 +162,7 @@
 
                     <button
                         type="button" 
-                        class="flex items-center px-2 border border-zinc-300 dark:border-zinc-800 rounded font-mono" 
+                        class="flex items-center px-2 border border-zinc-300 dark:border-zinc-700 rounded font-mono" 
                         aria-expanded="{visible}"
                         aria-controls="content-{comment.id}"
                         on:click={() => visible = !visible}
@@ -179,12 +176,12 @@
                 <div id="content-{comment.id}">
                     <div 
                         transition:slide
-                        class="prose text-inherit prose-a:text-zinc-500 prose-pre:bg-zinc-900 rounded border border-zinc-300 dark:border-zinc-800 p-2 max-w-full break-words"
+                        class="prose text-inherit prose-a:dark:text-zinc-500 prose-pre:dark:bg-zinc-950 rounded border border-zinc-300 dark:border-zinc-700 p-2 max-w-full break-words"
                     >
                         {@html comment.content}
                     </div>
 
-                    <div class="text-zinc-500 text-sm flex items-center gap-2 mt-1" transition:slide>
+                    <div class="text-zinc-600 dark:text-zinc-500 text-sm flex items-center gap-2 mt-1" transition:slide>
                         <iconify-icon icon="cib:y-combinator" class="text-lg"></iconify-icon>
                         <a href="https://news.ycombinator.com/reply?id={comment.id}&goto=item?id={item.id}#{comment.id}">Reply</a>
                         <a href="https://news.ycombinator.com/item?id={item.id}#{comment.id}">View</a>

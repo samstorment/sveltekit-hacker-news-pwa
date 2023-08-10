@@ -7,9 +7,9 @@
         {data.id}
     </h1>
 
-    <div class="px-4 py-2 border-y border-zinc-300 dark:border-zinc-800">
-        <p class="text-zinc-500 mb-1">Joined {data.created}</p>
-        <p class="text-zinc-500">{data.karma} Karma</p>
+    <div class="px-4 py-2 border-y border-zinc-300 dark:border-zinc-700">
+        <p class="text-zinc-600 dark:text-zinc-500 mb-1">Joined {data.created}</p>
+        <p class="text-zinc-600 dark:text-zinc-500">{data.karma} Karma</p>
     </div>
 
     <div class="p-4 flex gap-4 flex-wrap">

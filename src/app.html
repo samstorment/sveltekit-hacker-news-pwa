@@ -11,8 +11,8 @@
 	<body data-sveltekit-preload-data="hover">
 		<script>
 			function getTheme() {
-				if (localStorage.theme === 'dark') return 'dark';
-				else if (localStorage.theme === 'light') return 'light';
+				if (localStorage.getItem("theme") === 'dark') return 'dark';
+				else if (localStorage.getItem("theme") === 'light') return 'light';
 				else return 'system';
 			}
 
@@ -32,20 +32,23 @@
 				}
 			}
 
+			function applyHandMode() {
+				let mode = localStorage.getItem("hand") ?? 'righty';
+				if (!(mode === 'lefty' || mode === 'righty')) mode = 'righty';
+
+				if (mode === 'lefty') {
+					document.documentElement.classList.add('lefty');
+				} else {
+					document.documentElement.classList.remove('lefty');
+				}
+			}
+
 			applyColorMode(getColorMode(getTheme()));
+			applyHandMode();
 
 			window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
 				applyColorMode(getColorMode(getTheme()));
 			});
-
-			// // Whenever the user explicitly chooses light mode
-			// localStorage.theme = 'light'
-
-			// // Whenever the user explicitly chooses dark mode
-			// localStorage.theme = 'dark'
-
-			// // Whenever the user explicitly chooses to respect the OS preference
-			// localStorage.removeItem('theme')
 		</script>
 
 
