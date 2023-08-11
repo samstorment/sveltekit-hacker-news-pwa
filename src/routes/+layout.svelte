@@ -15,8 +15,8 @@
 
 <header>
     <nav class="p-2 flex items-center gap-4 max-w-screen-md mx-auto">
-        <div class="flex items-center gap-4 min-w-0 overflow-hidden">
-            <a href="/" class="hover:no-underline ml-2">HN</a>
+        <div class="flex items-center gap-4 flex-wrap p-2">
+            <a href="/" class="hover:no-underline">HN</a>
             <a href="/top" class="relative nav-item" class:selected={selected === "top"}>Top</a>
             <a href="/new" class="relative nav-item" class:selected={selected === "new"}>New</a>
             <a href="/show" class="relative nav-item" class:selected={selected === "show"}>Show</a>
