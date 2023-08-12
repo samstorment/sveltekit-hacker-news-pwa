@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from "$app/stores";
+	import { navState } from "$lib/stores";
 	import { slide } from "svelte/transition";
 
 
@@ -65,13 +66,11 @@
     function scrollTo(comment: Comment | undefined, direction: 'up' | 'down') {
         if (!comment) return;
 
+        $navState = 'visible';
+
         let ele = document.getElementById(comment.id)!;
 
-        let navOffset = direction === 'up' ? 56 + 16 : 16;
-        let { top } = ele.getBoundingClientRect();
-
-        window.scrollTo({
-            top: top + window.scrollY - navOffset,
+        ele.scrollIntoView({
             behavior: 'smooth'
         });
     }
@@ -90,8 +89,9 @@
 {#if !comment.deleted}
     <article id="{comment.id}">
         <div 
-            class="mb-6 {highlighted ? "outline outline-offset-8 outline-black dark:outline-white rounded-sm" : ""}"
-            style={comment.level > 0 ? `margin-left: ${comment.level*1}rem;` : ""}
+            class="mb-6"
+            class:highlighted
+            style={comment.level > 0 ? `margin-left: ${comment.level}rem;` : ""}
         >
             <div class="text-zinc-600 dark:text-zinc-500 flex justify-between max-sm:flex-col">
                 <div class="mb-1 flex items-center gap-2 mr-2 min-w-0">
@@ -182,15 +182,16 @@
             </div>
 
             {#if visible}
-                <div id="content-{comment.id}">
+                <div id="content-{comment.id}" transition:slide>
                     <div 
-                        transition:slide
                         class="prose text-inherit prose-a:dark:text-zinc-500 prose-pre:dark:bg-zinc-950 rounded border border-zinc-300 dark:border-zinc-700 p-2 max-w-full break-words"
                     >
                         {@html comment.content}
                     </div>
 
-                    <div class="text-zinc-600 dark:text-zinc-500 text-sm flex items-center gap-2 mt-1" transition:slide>
+                    <div 
+                        class="text-zinc-600 dark:text-zinc-500 text-sm flex items-center gap-2 mt-1" 
+                    >
                         <iconify-icon icon="cib:y-combinator" class="text-lg"></iconify-icon>
                         <a href="https://news.ycombinator.com/reply?id={comment.id}&goto=item?id={item.id}#{comment.id}">Reply</a>
                         <a href="https://news.ycombinator.com/item?id={item.id}#{comment.id}">View</a>
@@ -199,27 +200,30 @@
             {/if}
         </div>
 
-        {#if visible}
-            {#if comment.comments.length > 0}
-                <ul>
-                    {#each comment.comments as child, index}
-                        <li>
-                            <svelte:self 
-                                comment={{ ...child, parent: comment}} 
-                                {index} 
-                                group={comment.comments}
-                                {item}
-                            />
-                        </li>
-                    {/each}
-                </ul>
-            {/if}
+        {#if comment.comments.length > 0}
+            <ul class:hidden={!visible}>
+                {#each comment.comments as child, index}
+                    <li>
+                        <svelte:self 
+                            comment={{ ...child, parent: comment}} 
+                            {index} 
+                            group={comment.comments}
+                            {item}
+                        />
+                    </li>
+                {/each}
+            </ul>
         {/if}
     </article>
 {/if}
 
 
 <style lang="postcss">
+    .highlighted {
+        transition: outline ease 100ms, outline-offset ease 100ms;
+        @apply outline outline-offset-8 outline-black dark:outline-white rounded-sm;
+    }
+
     .copy-tooltip::before {
         display: block;
         position: absolute;

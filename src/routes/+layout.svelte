@@ -5,14 +5,21 @@
 	import Settings from "./Settings.svelte";
 	import { fly } from "svelte/transition";
 	import { hand } from "$lib/settings";
+	import { navState } from "$lib/stores";
+	import { afterNavigate } from "$app/navigation";
 
     let dialog: HTMLDialogElement;
     let header: HTMLElement;
     let uppies = true;
     let scrollY = 0;
+    let scrollTimeout = 0;
 
     $: selected = $page.url.pathname.split('/')[1] || "top";
 
+    $: if ($page.url.hash) {
+        $navState = 'visible';
+        setTimeout(() => $navState = 'auto', 100);
+    }
 
     function handleScroll() {
         scrollY = window.scrollY;  
@@ -29,6 +36,13 @@
             const atBottom = scrollHeight - 64 <= scrollY + innerHeight;
 
             if (window.scrollY <= 16 || atBottom) return uppies = true;
+
+            // return nav state to auto 100ms after last scroll
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(() => $navState = 'auto', 100);
+
+            if ($navState === 'visible') return uppies = true;
+            if ($navState === 'hidden') return uppies = false;
 
             uppies = change <= 0;
         });
