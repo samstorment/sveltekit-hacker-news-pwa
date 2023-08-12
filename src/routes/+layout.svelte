@@ -15,20 +15,22 @@
 
     $: selected = $page.url.pathname.split('/')[1] || "top";
 
-    // beforeNavigate(() => navigating = true);
-    // afterNavigate(() => navigating = false);
 
     function handleScroll() {
         scrollY = window.scrollY;  
         
         window.addEventListener('scroll', (_) => {
 
-            // if (navigating) return;
-
             let change = window.scrollY - scrollY;
             scrollY = window.scrollY;
 
-            if (window.scrollY <= 16) return uppies = true;
+            const scrollHeight = document.documentElement.scrollHeight;
+            const innerHeight = window.innerHeight;
+
+            // if we are 64 pixels or closer to the bottom, show the nav
+            const atBottom = scrollHeight - 64 <= scrollY + innerHeight;
+
+            if (window.scrollY <= 16 || atBottom) return uppies = true;
 
             uppies = change <= 0;
         });
@@ -45,9 +47,8 @@
 </svelte:head>
 
 <header 
-    class="sticky top-0 bg-white dark:bg-black slide z-10"
-    class:-translate-y-full={!uppies && !navigating}
-    class:slide={!navigating}
+    class="sticky top-0 bg-white dark:bg-black slide z-10 slide"
+    class:-translate-y-full={!uppies}
     bind:this={header}
 >
     <nav class="p-2 flex items-center gap-4 max-w-screen-md mx-auto">
@@ -70,7 +71,7 @@
 {#if scrollY > 200}
     <button 
         type="button"
-        class="fixed p-2 right-6 bottom-5 backdrop-blur border border-zinc-300 dark:border-zinc-700 rounded-full flex items-center"
+        class="fixed p-2 right-6 bottom-5 backdrop-blur border border-zinc-300 dark:border-zinc-700 rounded-full flex items-center z-10"
         class:right-6={$hand === "righty"}
         class:left-6={$hand === "lefty"}
         transition:fly={{ y: 100 }}

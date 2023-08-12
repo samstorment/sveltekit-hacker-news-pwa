@@ -9,7 +9,7 @@
 
 <div class="max-w-screen-md mx-auto">
     
-    <h1 class="px-2 mx-4 border border-zinc-300 dark:border-zinc-700 text-zinc-600 dark:text-zinc-500 rounded w-fit text-sm">Page {data.page} of {data.pageLimit}</h1>
+    <h1 class="text-3xl p-4 sr-only">Page {data.page} of {data.categoryLabel}</h1>
 
     <ul>
         {#each data.items as item, i}
