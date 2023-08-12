@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { page } from "$app/stores";
-	import { navState } from "$lib/stores";
 	import { slide } from "svelte/transition";
 
 
@@ -63,18 +62,18 @@
         return next;
     }
 
-    function scrollTo(comment: Comment | undefined) {
+    function scrollTo(comment: Comment | undefined, direction: 'up' | 'down') {
         if (!comment) return;
-
-        $navState = 'visible';
 
         let ele = document.getElementById(comment.id)!;
 
-        ele.scrollIntoView({
+        let navOffset = direction === 'up' ? 56 + 16 : 16;
+        let { top } = ele.getBoundingClientRect();
+
+        window.scrollTo({
+            top: top + window.scrollY - navOffset,
             behavior: 'smooth'
         });
-
-
     }
 
 
@@ -134,7 +133,7 @@
                         <button 
                             type="button" 
                             class="flex items-center px-2 border border-zinc-300 dark:border-zinc-700 rounded" 
-                            on:click={() => scrollTo(root)}
+                            on:click={() => scrollTo(root, 'up')}
                         >
                             Root
                         </button>
@@ -143,7 +142,7 @@
                         <button 
                             type="button" 
                             class="flex items-center px-2 border border-zinc-300 dark:border-zinc-700 rounded" 
-                            on:click={() => scrollTo(comment.parent)}
+                            on:click={() => scrollTo(comment.parent, 'up')}
                         >
                             Parent
                         </button>
@@ -152,7 +151,7 @@
                         <button 
                             type="button" 
                             class="flex items-center px-2 border border-zinc-300 dark:border-zinc-700 rounded" 
-                            on:click={() => scrollTo(prev)}
+                            on:click={() => scrollTo(prev, 'up')}
                         >
                             Prev
                         </button>
@@ -161,7 +160,7 @@
                         <button 
                             type="button" 
                             class="flex items-center px-2 border border-zinc-300 dark:border-zinc-700 rounded" 
-                            on:click={() => scrollTo(next)}
+                            on:click={() => scrollTo(next, 'down')}
                         >
                             Next
                         </button>
@@ -174,6 +173,9 @@
                         aria-controls="content-{comment.id}"
                         on:click={() => visible = !visible}
                     >
+                        <span class="sr-only">
+                            {visible ? "Collapse Comment" : "Expand Comment"}
+                        </span>
                         {visible ? "-" : "+"}
                     </button>
                 </div>

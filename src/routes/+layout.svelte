@@ -4,18 +4,13 @@
     import "../app.css";
 	import Settings from "./Settings.svelte";
 	import { afterNavigate, beforeNavigate } from "$app/navigation";
-	import { navState } from "$lib/stores";
+	import { fly } from "svelte/transition";
 
     let dialog: HTMLDialogElement;
     let header: HTMLElement;
     let navigating = false;
     let uppies = true;
-    let scrollTimeout = 0;
-
-    $: {
-        if ($navState === 'visible') uppies = true;
-        else if ($navState === 'hidden') uppies = false;
-    }
+    let scrollY = 0;
 
     $: selected = $page.url.pathname.split('/')[1] || "top";
 
@@ -23,23 +18,17 @@
     afterNavigate(async () => navigating = false);
 
     function handleScroll() {
-        let scrollY = window.scrollY;
+        scrollY = window.scrollY;
         
         window.addEventListener('scroll', (_) => {
-
-            clearTimeout(scrollTimeout);
-            
-            scrollTimeout = setTimeout(() => {
-                $navState = 'auto';
-                console.log('returned to auto');
-            }, 100);
 
             let change = window.scrollY - scrollY;
             scrollY = window.scrollY;
 
-            if ($navState !== 'auto') return;
+            console.log("CHANGE", change);
+
             if (window.scrollY <= 16) return uppies = true;
-            
+
             uppies = change <= 0;
         });
     }
@@ -73,12 +62,25 @@
             <iconify-icon icon="carbon:settings"></iconify-icon>
             <span class="sr-only">Open Settings</span>
         </button>
+        <Settings bind:dialog />
     </nav>
 </header>
 
-<Settings bind:dialog />
+{#if scrollY > 200}
+<button 
+    class="fixed right-6 bottom-5 bg-white dark:bg-black shadow-md dark:shadow-zinc-950 w-10 h-10 rounded-full"
+    transition:fly={{ y: 100 }}
+    on:click={() => window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    })}
+>
+    <span class="sr-only">Scroll to top of page</span>
+    <iconify-icon icon="ion:chevron-up"></iconify-icon>
+</button>
+{/if}
 
-<div>
+<div class="pb-[60px]">
     <slot />
 </div>
 
