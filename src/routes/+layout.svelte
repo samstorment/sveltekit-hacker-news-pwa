@@ -68,7 +68,7 @@
 
 {#if scrollY > 200}
     <button 
-        class="fixed right-6 bottom-5 backdrop-blur border border-zinc-300 dark:border-zinc-700 w-10 h-10 rounded-full"
+        class="fixed p-2 right-6 bottom-5 backdrop-blur border border-zinc-300 dark:border-zinc-700 rounded-full aspect-square"
         transition:fly={{ y: 100 }}
         on:click={() => window.scrollTo({
             top: 0,
@@ -76,11 +76,11 @@
         })}
     >
         <span class="sr-only">Scroll to top of page</span>
-        <iconify-icon icon="ion:chevron-up"></iconify-icon>
+        <iconify-icon icon="ion:chevron-up" class="text-2xl"></iconify-icon>
     </button>
 {/if}
 
-<div class="pb-[60px]">
+<div class="pb-16">
     <slot />
 </div>
 
