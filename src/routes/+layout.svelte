@@ -19,13 +19,12 @@
 
     function handleScroll() {
         scrollY = window.scrollY;
+        uppies = true;        
         
         window.addEventListener('scroll', (_) => {
 
             let change = window.scrollY - scrollY;
             scrollY = window.scrollY;
-
-            console.log("CHANGE", change);
 
             if (window.scrollY <= 16) return uppies = true;
 

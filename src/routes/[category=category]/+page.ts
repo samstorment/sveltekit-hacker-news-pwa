@@ -1,16 +1,17 @@
 import { redirect } from '@sveltejs/kit';
 
 
-async function pageLimit(category: string) {
-	const res = await fetch(`https://api.hnpwa.com/v0`);
-	const { endpoints } = await res.json();
-
-	const topic = endpoints.find((e: any) => e.topic === category);
-
-	return topic.maxPages;
-}
 
 export async function load({ params, fetch, url }) {
+	
+	async function pageLimit(category: string) {
+		const res = await fetch(`https://api.hnpwa.com/v0`);
+		const { endpoints } = await res.json();
+	
+		const topic = endpoints.find((e: any) => e.topic === category);
+	
+		return topic.maxPages;
+	}
 
     let category = params.category;
 
@@ -33,6 +34,7 @@ export async function load({ params, fetch, url }) {
 
 	return {
 		category,
+		categoryLabel: params.category,
 		page: pageNum,
 		items: fetch(`https://api.hnpwa.com/v0/${category}/${pageNum}.json`).then((r) => r.json()),
 		pageLimit: limit
