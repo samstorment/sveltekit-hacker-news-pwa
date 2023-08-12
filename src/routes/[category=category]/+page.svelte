@@ -54,9 +54,7 @@
                
                     </div>
 
-                    <div class="ml-auto flex flex-col md:hidden shrink-0"
-                        style="view-transition-name: icons-{item.id}"
-                    >
+                    <div class="ml-auto flex flex-col md:hidden shrink-0">
                         <a 
                             href="{item.url}" 
                             class="flex-1 flex items-center justify-center text-2xl px-4 hover:bg-zinc-200 dark:hover:bg-zinc-900"

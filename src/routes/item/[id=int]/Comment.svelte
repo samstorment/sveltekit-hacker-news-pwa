@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from "$app/stores";
+	import { navState } from "$lib/stores";
 	import { slide } from "svelte/transition";
 
 
@@ -65,9 +66,15 @@
     function scrollTo(comment: Comment | undefined) {
         if (!comment) return;
 
-        document.getElementById(comment.id)?.scrollIntoView({
+        $navState = 'visible';
+
+        let ele = document.getElementById(comment.id)!;
+
+        ele.scrollIntoView({
             behavior: 'smooth'
         });
+
+
     }
 
 

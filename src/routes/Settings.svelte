@@ -92,26 +92,14 @@
         <button 
             class="px-3 py-1 border border-zinc-300 dark:border-zinc-700 rounded w-fit"
             class:selected={$hand === "lefty"}
-            on:click={() => {
-                if (document.startViewTransition) {   
-                    document.startViewTransition(hand.setLefty);
-                } else {
-                    hand.setLefty();
-                }
-            }}
+            on:click={hand.setLefty}
         >
             Lefty
         </button>
         <button 
             class="px-3 py-1 border border-zinc-300 dark:border-zinc-700 rounded w-fit"
             class:selected={$hand === "righty"}
-            on:click={() => {
-                if (document.startViewTransition) {   
-                    document.startViewTransition(hand.setRighty);
-                } else {
-                    hand.setRighty();
-                }
-            }}
+            on:click={hand.setRighty}
         >
             Righty
         </button>

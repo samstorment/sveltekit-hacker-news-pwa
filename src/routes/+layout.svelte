@@ -3,17 +3,63 @@
 	import { onMount } from "svelte";
     import "../app.css";
 	import Settings from "./Settings.svelte";
+	import { afterNavigate, beforeNavigate } from "$app/navigation";
+	import { navState } from "$lib/stores";
 
     let dialog: HTMLDialogElement;
+    let header: HTMLElement;
+    let navigating = false;
+    let uppies = true;
+    let scrollTimeout = 0;
+
+    $: {
+        if ($navState === 'visible') uppies = true;
+        else if ($navState === 'hidden') uppies = false;
+    }
 
     $: selected = $page.url.pathname.split('/')[1] || "top";
+
+    beforeNavigate(() => navigating = true);
+    afterNavigate(async () => navigating = false);
+
+    function handleScroll() {
+        let scrollY = window.scrollY;
+        
+        window.addEventListener('scroll', (_) => {
+
+            clearTimeout(scrollTimeout);
+            
+            scrollTimeout = setTimeout(() => {
+                $navState = 'auto';
+                console.log('returned to auto');
+            }, 100);
+
+            let change = window.scrollY - scrollY;
+            scrollY = window.scrollY;
+
+            if ($navState !== 'auto') return;
+            if (window.scrollY <= 16) return uppies = true;
+            
+            uppies = change <= 0;
+        });
+    }
+
+    onMount(() => {
+        handleScroll();
+
+    });
 </script>
 
 <svelte:head>
     <title>Hacker News</title>
 </svelte:head>
 
-<header>
+<header 
+    class="sticky top-0 bg-white dark:bg-black slide z-10"
+    class:-translate-y-full={!uppies && !navigating}
+    class:slide={!navigating}
+    bind:this={header}
+>
     <nav class="p-2 flex items-center gap-4 max-w-screen-md mx-auto">
         <div class="flex items-center gap-4 flex-wrap p-2">
             <a href="/" class="hover:no-underline">HN</a>
@@ -32,14 +78,24 @@
 
 <Settings bind:dialog />
 
-<slot />
+<div>
+    <slot />
+</div>
 
 
 <style lang="postcss">
+
+    .slide {
+        transition: transform 300ms ease;
+    }
+
     .nav-item {
         @apply no-underline;
     }
 
+    .nav-item.selected::after {
+        view-transition-name: nav-select-indicator;
+    }
 
     .nav-item:hover::after,
     .nav-item.selected::after {

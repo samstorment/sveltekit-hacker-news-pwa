@@ -2,8 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+    view-transition-name: none;
+}
+
 html {
-    @apply scroll-pt-4;
+    @apply scroll-pt-[72px];
 }
 
 body {
