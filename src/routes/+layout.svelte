@@ -5,6 +5,7 @@
 	import Settings from "./Settings.svelte";
 	import { afterNavigate, beforeNavigate } from "$app/navigation";
 	import { fly } from "svelte/transition";
+	import { hand } from "$lib/settings";
 
     let dialog: HTMLDialogElement;
     let header: HTMLElement;
@@ -19,7 +20,8 @@
 
     function handleScroll() {
         scrollY = window.scrollY;
-        uppies = true;        
+        uppies = true;
+        navigating = false;  
         
         window.addEventListener('scroll', (_) => {
 
@@ -67,7 +69,10 @@
 
 {#if scrollY > 200}
     <button 
+        type="button"
         class="fixed p-2 right-6 bottom-5 backdrop-blur border border-zinc-300 dark:border-zinc-700 rounded-full flex items-center"
+        class:right-6={$hand === "righty"}
+        class:left-6={$hand === "lefty"}
         transition:fly={{ y: 100 }}
         on:click={() => window.scrollTo({
             top: 0,
@@ -85,7 +90,6 @@
 
 
 <style lang="postcss">
-
     .slide {
         transition: transform 300ms ease;
     }
