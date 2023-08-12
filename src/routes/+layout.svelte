@@ -68,7 +68,7 @@
 
 {#if scrollY > 200}
     <button 
-        class="fixed p-2 right-6 bottom-5 backdrop-blur border border-zinc-300 dark:border-zinc-700 rounded-full aspect-square"
+        class="fixed p-2 right-6 bottom-5 backdrop-blur border border-zinc-300 dark:border-zinc-700 rounded-full flex items-center"
         transition:fly={{ y: 100 }}
         on:click={() => window.scrollTo({
             top: 0,
