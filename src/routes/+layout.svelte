@@ -15,15 +15,15 @@
 
     $: selected = $page.url.pathname.split('/')[1] || "top";
 
-    beforeNavigate(() => navigating = true);
-    afterNavigate(async () => navigating = false);
+    // beforeNavigate(() => navigating = true);
+    // afterNavigate(() => navigating = false);
 
     function handleScroll() {
-        scrollY = window.scrollY;
-        uppies = true;
-        navigating = false;  
+        scrollY = window.scrollY;  
         
         window.addEventListener('scroll', (_) => {
+
+            // if (navigating) return;
 
             let change = window.scrollY - scrollY;
             scrollY = window.scrollY;
