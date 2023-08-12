@@ -3,13 +3,11 @@
 	import { onMount } from "svelte";
     import "../app.css";
 	import Settings from "./Settings.svelte";
-	import { afterNavigate, beforeNavigate } from "$app/navigation";
 	import { fly } from "svelte/transition";
 	import { hand } from "$lib/settings";
 
     let dialog: HTMLDialogElement;
     let header: HTMLElement;
-    let navigating = false;
     let uppies = true;
     let scrollY = 0;
 
@@ -68,6 +66,11 @@
     </nav>
 </header>
 
+
+<div class="pb-16">
+    <slot />
+</div>
+
 {#if scrollY > 200}
     <button 
         type="button"
@@ -84,10 +87,6 @@
         <iconify-icon icon="ion:chevron-up" class="text-2xl"></iconify-icon>
     </button>
 {/if}
-
-<div class="pb-16">
-    <slot />
-</div>
 
 
 <style lang="postcss">
