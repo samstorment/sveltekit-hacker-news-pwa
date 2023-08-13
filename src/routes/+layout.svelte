@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from "$app/stores";
-	import { onMount } from "svelte";
+	import { onDestroy, onMount } from "svelte";
     import "../app.css";
 	import Settings from "./Settings.svelte";
 	import { fly } from "svelte/transition";
@@ -49,8 +49,12 @@
     }
 
     onMount(() => {
+        $navState = 'auto';
         handleScroll();
+    });
 
+    onDestroy(() => {
+        $navState = 'auto';
     });
 </script>
 
