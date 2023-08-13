@@ -6,7 +6,7 @@
 	import { fly } from "svelte/transition";
 	import { hand } from "$lib/settings";
 	import { navState } from "$lib/stores";
-	import { afterNavigate } from "$app/navigation";
+	import { browser } from "$app/environment";
 
     let dialog: HTMLDialogElement;
     let header: HTMLElement;
@@ -14,12 +14,29 @@
     let scrollY = 0;
     let scrollTimeout = 0;
 
-    $: selected = $page.url.pathname.split('/')[1] || "top";
+    let selected = $page.url.pathname.split('/')[1] || "top";
 
+    const valid = new Set([
+        'top', 'new', 'show', 'ask', 'jobs'
+    ]);
+
+
+    $: if (browser && valid.has($page.url.pathname.split('/')[1])) {
+        if (document.startViewTransition) {
+            document.startViewTransition(async () => {
+                selected = $page.url.pathname.split('/')[1];
+            });
+        } else {
+            selected = $page.url.pathname.split('/')[1];
+        }
+    }
+
+    
     $: if ($page.url.hash) {
         $navState = 'visible';
         setTimeout(() => $navState = 'auto', 100);
     }
+    
 
     function handleScroll() {
         scrollY = window.scrollY;  
@@ -92,7 +109,7 @@
 {#if scrollY > 200}
     <button 
         type="button"
-        class="fixed p-2 right-6 bottom-5 backdrop-blur border border-zinc-300 dark:border-zinc-700 rounded-full flex items-center z-10"
+        class="fixed p-2 right-6 bottom-5 backdrop-blur border border-zinc-300 dark:border-zinc-700 hover:shadow dark:hover:border-white rounded-full flex items-center z-10"
         class:right-6={$hand === "righty"}
         class:left-6={$hand === "lefty"}
         transition:fly={{ y: 100 }}
@@ -116,13 +133,15 @@
         @apply no-underline;
     }
 
-    .nav-item.selected::after {
-        view-transition-name: nav-select-indicator;
-    }
-
+    
     .nav-item:hover::after,
     .nav-item.selected::after {
         content: '';
         @apply absolute h-[2px] w-full bg-blue-500 dark:bg-white left-0 -bottom-1;
     }
+
+    .nav-item.selected::after {
+        view-transition-name: bar;
+    }
+
 </style>

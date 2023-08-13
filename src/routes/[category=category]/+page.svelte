@@ -1,11 +1,8 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
-	import { hand, settings } from '$lib/settings.js';
+	import { hand } from '$lib/settings.js';
 
     export let data;
-
 </script>
-
 
 <div class="max-w-screen-md mx-auto">
     
@@ -108,7 +105,6 @@
         {/if}
     </div>
 </div>
-
 
 <style lang="postcss">
     .solo-link {

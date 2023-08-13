@@ -56,7 +56,11 @@
 >
     <header class="flex justify-between items-center pb-4 mb-4 border-b border-zinc-300 dark:border-zinc-700">
         <h2 class="text-3xl">Settings</h2>
-        <button type="button" on:click={closeDialog} class="text-2xl">
+        <button 
+            type="button" 
+            on:click={closeDialog} 
+            class="text-2xl hover:bg-zinc-200 dark:hover:bg-zinc-900 aspect-square p-2 rounded"
+        >
             <iconify-icon icon="ic:round-close"></iconify-icon>
         </button>
     </header>
