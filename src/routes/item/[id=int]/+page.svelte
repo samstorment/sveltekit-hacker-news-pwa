@@ -1,10 +1,40 @@
 
 <script lang="ts">
+	import { onMount } from "svelte";
 	import Comment from "./Comment.svelte";
 
     export let data;
 
-    $: url = data.item.url.startsWith("item") ? "" : data.item.url; 
+    let comments: HTMLDivElement;
+
+    onMount(() => {
+        if (!comments) return;
+        if (document.documentElement.style.contentVisibility === undefined) return;
+
+        let topLevelComments = Array.from(comments.querySelectorAll(":scope > article")) as HTMLDivElement[];
+
+        let observer = new IntersectionObserver((entries) => {
+            // console.log("triggered");
+            entries.forEach((entry) => {
+                const { height } = entry.boundingClientRect;
+                const ele = entry.target as HTMLDivElement;
+
+                ele.style.containIntrinsicSize = `auto ${height}px`;
+                
+                if (entry.isIntersecting) {
+                    // ele.style.outline = "5px solid green";
+                    ele.style.contentVisibility = "visible";
+                } else {
+                    // ele.style.outline = "100px solid red";
+                    ele.style.contentVisibility = "hidden";
+                }
+            });
+        });
+
+        topLevelComments.forEach(c => observer.observe(c));
+    })
+
+    $: url = data.item.url.startsWith("item") ? "" : data.item.url;
 </script>
 
 <div class="max-w-screen-md mx-auto">
@@ -47,7 +77,7 @@
     </article>
 
     {#if data.item.comments.length > 0}
-        <div class="px-4">
+        <div class="px-4" bind:this={comments}>
             {#each data.item.comments as comment, index}
                 <Comment {comment} {index} group={data.item.comments} item={data} />
             {/each}

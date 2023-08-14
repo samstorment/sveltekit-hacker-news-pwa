@@ -89,7 +89,7 @@
 {#if !comment.deleted}
     <article id="{comment.id}">
         <div 
-            class="mb-6"
+            class="pb-6"
             class:highlighted
             style={comment.level > 0 ? `margin-left: ${comment.level}rem;` : ""}
         >

@@ -59,7 +59,7 @@
         <button 
             type="button" 
             on:click={closeDialog} 
-            class="text-2xl hover:bg-zinc-200 dark:hover:bg-zinc-900 aspect-square p-2 rounded"
+            class="text-2xl hover:bg-zinc-200 dark:hover:bg-zinc-900 p-2 rounded flex items-center"
         >
             <iconify-icon icon="ic:round-close"></iconify-icon>
         </button>

@@ -20,6 +20,9 @@
         setTimeout(() => $navState = 'auto', 100);
     }
     
+    function openSettings() {
+        dialog.showModal();
+    }
 
     function handleScroll() {
         scrollY = window.scrollY;  
@@ -76,7 +79,7 @@
             <a href="/ask" class="relative nav-item" class:selected={selected === "ask"}>Ask</a>
             <a href="/jobs" class="relative nav-item" class:selected={selected === "jobs"}>Jobs</a>
         </div>
-        <button on:click={() => dialog.showModal()} title="Settings" class="ml-auto text-2xl p-2 hover:bg-zinc-200 dark:hover:bg-zinc-900 rounded aspect-square flex items-center">
+        <button on:click={openSettings} title="Settings" class="ml-auto text-2xl p-2 hover:bg-zinc-200 dark:hover:bg-zinc-900 rounded aspect-square flex items-center">
             <iconify-icon icon="carbon:settings"></iconify-icon>
             <span class="sr-only">Open Settings</span>
         </button>
