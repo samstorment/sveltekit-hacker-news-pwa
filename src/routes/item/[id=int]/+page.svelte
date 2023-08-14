@@ -79,7 +79,7 @@
     {#if data.item.comments.length > 0}
         <div class="px-4" bind:this={comments}>
             {#each data.item.comments as comment, index}
-                <Comment {comment} {index} group={data.item.comments} item={data} />
+                <Comment {comment} {index} group={data.item.comments} item={data.item} />
             {/each}
         </div>
     {/if}
