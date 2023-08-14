@@ -6,7 +6,6 @@
 	import { fly } from "svelte/transition";
 	import { hand } from "$lib/settings";
 	import { navState } from "$lib/stores";
-	import { browser } from "$app/environment";
 
     let dialog: HTMLDialogElement;
     let header: HTMLElement;
@@ -14,23 +13,7 @@
     let scrollY = 0;
     let scrollTimeout = 0;
 
-    let selected = $page.url.pathname.split('/')[1] || "top";
-
-    const valid = new Set([
-        'top', 'new', 'show', 'ask', 'jobs'
-    ]);
-
-
-    $: if (browser && valid.has($page.url.pathname.split('/')[1])) {
-        if (document.startViewTransition) {
-            document.startViewTransition(async () => {
-                selected = $page.url.pathname.split('/')[1];
-            });
-        } else {
-            selected = $page.url.pathname.split('/')[1];
-        }
-    }
-
+    $: selected = $page.url.pathname.split('/')[1] || "top";
     
     $: if ($page.url.hash) {
         $navState = 'visible';

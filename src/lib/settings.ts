@@ -53,25 +53,25 @@ function createThemeStore() {
 
 	return {
 		subscribe,
-		setDark: () => update(() => {
+		setDark: () => {
             localStorage.setItem("theme", "dark");
             document.documentElement.classList.add("dark");
-            return "dark";
-        }),
-		setLight: () => update(() => {
+            set("dark");
+        },
+		setLight: () => {
             localStorage.setItem("theme", "light");
             document.documentElement.classList.remove("dark");
-            return "light";
-        }),
-		setSystem: () => update(() => {
+            set("light");
+        },
+		setSystem: () => {
             localStorage.removeItem("theme");
             if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
                 document.documentElement.classList.add("dark");
             } else {
                 document.documentElement.classList.remove("dark");
             }
-            return "system";
-        })
+            set("system");
+        }
 	};
 }
 
@@ -90,16 +90,15 @@ function createHandStore() {
 
 	return {
 		subscribe,
-		setLefty: () => update(() => {
-            localStorage.setItem("hand", "lefty");
-            document.documentElement.classList.add("lefty");
-            return "lefty";
-        }),
-		setRighty: () => update(() => {
-            localStorage.setItem("hand", "righty");
-            document.documentElement.classList.remove("lefty");
-            return "righty";
-        })
+        set: (hand: Hand) => {
+            localStorage.setItem("hand", hand);
+
+            hand === "lefty" 
+                ? document.documentElement.classList.add("lefty")
+                : document.documentElement.classList.remove("lefty");
+
+            set(hand);
+        }
 	};
 }
 

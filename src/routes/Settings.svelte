@@ -96,14 +96,14 @@
         <button 
             class="px-3 py-1 border border-zinc-300 dark:border-zinc-700 rounded w-fit"
             class:selected={$hand === "lefty"}
-            on:click={hand.setLefty}
+            on:click={() => $hand = "lefty"}
         >
             Lefty
         </button>
         <button 
             class="px-3 py-1 border border-zinc-300 dark:border-zinc-700 rounded w-fit"
             class:selected={$hand === "righty"}
-            on:click={hand.setRighty}
+            on:click={() => $hand = "righty"}
         >
             Righty
         </button>
