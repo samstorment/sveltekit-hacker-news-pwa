@@ -146,7 +146,7 @@
 
 {#if next && $scrollY > 200 && data.item.comments.length > 1}
     <button 
-        in:fly={{ y: 200, delay: 1000 }} out:fly={{ y: 200 }}
+        in:fly={{ y: 200 }} out:fly={{ y: 200 }}
         class="fixed bottom-5 right-20 p-2 rounded bg-white/50 dark:bg-black/50 backdrop-blur border border-zinc-300 dark:border-zinc-700 hover:shadow dark:hover:border-white z-10" 
         class:right-20={$hand === "righty"}
         class:left-20={$hand === "lefty"}
