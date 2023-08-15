@@ -28,7 +28,6 @@
     let next = getNext();
     let root = getRoot();
 
-    
     function getRoot() {
         let root = comment.parent;
 
@@ -40,7 +39,7 @@
     }
 
     function getPrevious() {
-        let prev: Comment | undefined;
+        let prev: Comment;
         let prevIndex = index;
 
         do {
@@ -52,7 +51,7 @@
     }
 
     function getNext() {
-        let next: Comment | undefined;
+        let next: Comment;
         let nextIndex = index;
 
         do { 
@@ -63,14 +62,9 @@
         return next;
     }
 
-    function scrollTo(comment: Comment | undefined, direction: 'up' | 'down') {
-        if (!comment) return;
-
+    function scrollTo(id: string) {
         $navState = 'visible';
-
-        let ele = document.getElementById(comment.id)!;
-
-        ele.scrollIntoView({
+        document.getElementById(id)?.scrollIntoView({
             behavior: 'smooth'
         });
     }
@@ -78,9 +72,7 @@
 
     async function copyLink() {
         const commentUrl = `${$page.url.origin}${$page.url.pathname}#${comment.id}`;
-        
         await navigator.clipboard.writeText(commentUrl);
-        
         copied = true;
     }
 </script>
@@ -92,7 +84,7 @@
             class="pb-6"
             style={comment.level > 0 ? `margin-left: ${comment.level}rem;` : ""}
         >
-            <div class:highlighted>
+            <div class:highlighted class="comment-outline">
                 <div class="text-zinc-600 dark:text-zinc-500 flex justify-between max-sm:flex-col">
                     <div class="mb-1 flex items-center gap-2 mr-2 min-w-0">
                         <button 
@@ -129,38 +121,42 @@
                     <div class="flex flex-wrap justify-end lefty:justify-start items-center gap-1 mb-1 text-sm">
                         <span class="sm:hidden flex-1 h-[22px] border border-zinc-300 dark:border-zinc-700 rounded min-w-0 nothing lefty:hidden"></span>
                         <!-- <span class="flex-1 h-[1px] bg-zinc-800 min-w-0"></span> -->
-                        {#if root && comment.level > 1}
+                        {#if root?.id && comment.level > 1}
+                            {@const id = root.id}
                             <button 
                                 type="button" 
                                 class="flex items-center px-2 border border-zinc-300 dark:border-zinc-700 rounded" 
-                                on:click={() => scrollTo(root, 'up')}
+                                on:click={() => scrollTo(id)}
                             >
                                 Root
                             </button>
                         {/if}
                         {#if comment.parent}
+                            {@const id = comment.parent.id}
                             <button 
                                 type="button" 
                                 class="flex items-center px-2 border border-zinc-300 dark:border-zinc-700 rounded" 
-                                on:click={() => scrollTo(comment.parent, 'up')}
+                                on:click={() => scrollTo(id)}
                             >
                                 Parent
                             </button>
                         {/if}
                         {#if prev}
+                            {@const id = prev.id}
                             <button 
                                 type="button" 
                                 class="flex items-center px-2 border border-zinc-300 dark:border-zinc-700 rounded" 
-                                on:click={() => scrollTo(prev, 'up')}
+                                on:click={() => scrollTo(id)}
                             >
                                 Prev
                             </button>
                         {/if}
                         {#if next}
+                            {@const id = next.id}
                             <button 
                                 type="button" 
                                 class="flex items-center px-2 border border-zinc-300 dark:border-zinc-700 rounded" 
-                                on:click={() => scrollTo(next, 'down')}
+                                on:click={() => scrollTo(id)}
                             >
                                 Next
                             </button>
@@ -224,8 +220,16 @@
 
 
 <style lang="postcss">
+    .comment-outline {
+        @apply rounded-sm outline outline-transparent outline-offset-1;
+        transition: 
+            outline ease 200ms, 
+            outline-offset ease 200ms, 
+            border-radius ease 200ms, 
+            outline-color ease 200ms;
+    }
+
     .highlighted {
-        transition: outline ease 100ms, outline-offset ease 100ms;
         @apply outline outline-offset-8 outline-black dark:outline-white rounded-sm;
     }
 
