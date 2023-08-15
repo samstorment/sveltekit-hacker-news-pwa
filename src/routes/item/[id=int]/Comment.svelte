@@ -184,7 +184,11 @@
                 {#if visible}
                     <div id="content-{comment.id}" transition:slide>
                         <div 
-                            class="prose text-inherit prose-a:dark:text-zinc-500 prose-pre:dark:bg-zinc-950 rounded border border-zinc-300 dark:border-zinc-700 p-2 max-w-full break-words"
+                            class="prose text-inherit prose-a:dark:text-zinc-500 
+                            rounded border border-zinc-300 dark:border-zinc-700 
+                            prose-pre:dark:bg-zinc-900 prose-pre:bg-zinc-800 prose-pre:first:mt-0 
+                            prose-pre:border prose-pre:border-zinc-700 prose-pre:text-sm
+                            p-2 max-w-full break-words"
                         >
                             {@html comment.content}
                         </div>

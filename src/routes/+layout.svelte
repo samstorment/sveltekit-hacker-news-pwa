@@ -5,12 +5,11 @@
 	import Settings from "./Settings.svelte";
 	import { fly } from "svelte/transition";
 	import { hand } from "$lib/settings";
-	import { navState } from "$lib/stores";
+	import { navState, scrollY } from "$lib/stores";
 
     let dialog: HTMLDialogElement;
     let header: HTMLElement;
     let uppies = true;
-    let scrollY = 0;
     let scrollTimeout = 0;
 
     $: selected = $page.url.pathname.split('/')[1] || "top";
@@ -25,18 +24,18 @@
     }
 
     function handleScroll() {
-        scrollY = window.scrollY;  
+        $scrollY = window.scrollY;
         
         window.addEventListener('scroll', (_) => {
 
-            let change = window.scrollY - scrollY;
-            scrollY = window.scrollY;
+            let change = window.scrollY - $scrollY;
+            $scrollY = window.scrollY;
 
             const scrollHeight = document.documentElement.scrollHeight;
             const innerHeight = window.innerHeight;
 
             // if we are 64 pixels or closer to the bottom, show the nav
-            const atBottom = scrollHeight - 64 <= scrollY + innerHeight;
+            const atBottom = scrollHeight - 64 <= $scrollY + innerHeight;
 
             if (window.scrollY <= 16 || atBottom) return uppies = true;
 
@@ -92,10 +91,10 @@
     <slot />
 </div>
 
-{#if scrollY > 200}
+{#if $scrollY > 200}
     <button 
         type="button"
-        class="fixed p-2 right-6 bottom-5 backdrop-blur border border-zinc-300 dark:border-zinc-700 hover:shadow dark:hover:border-white rounded-full flex items-center z-10"
+        class="fixed p-2 right-6 bottom-5 bg-white/50 dark:bg-black/50 backdrop-blur border border-zinc-300 dark:border-zinc-700 hover:shadow dark:hover:border-white rounded-full flex items-center z-10"
         class:right-6={$hand === "righty"}
         class:left-6={$hand === "lefty"}
         transition:fly={{ y: 100 }}

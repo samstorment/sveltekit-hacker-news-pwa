@@ -51,7 +51,7 @@
 
 <dialog 
     bind:this={dialog} 
-    class="dialog z-50 p-4 bg-white text-black dark:bg-black dark:text-zinc-200 border border-zinc-300 dark:border-zinc-700 rounded"
+    class="dialog z-50 p-4 bg-white text-zinc-900 dark:bg-black dark:text-zinc-200 border border-zinc-300 dark:border-zinc-700 rounded"
     class:closing
 >
     <header class="flex justify-between items-center pb-4 mb-4 border-b border-zinc-300 dark:border-zinc-700">

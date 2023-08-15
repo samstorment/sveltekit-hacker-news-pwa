@@ -1,20 +1,35 @@
 
 <script lang="ts">
-	import { onMount } from "svelte";
+	import { onDestroy, onMount } from "svelte";
 	import Comment from "./Comment.svelte";
+	import Error from "../../+error.svelte";
+	import { navState, scrollY } from "$lib/stores";
+	import { fly } from "svelte/transition";
+    import '../.././../prose.css';
+	import { match } from "../../../params/category";
+	import { hand } from "$lib/settings";
 
     export let data;
 
     let comments: HTMLDivElement;
+    let observer: IntersectionObserver;
+    let intersecting = new Set<HTMLDivElement>();
+    let curr: Element | undefined = undefined;
+    $: next = curr?.nextElementSibling;
+
+    $: if (intersecting.size === 1) {
+        curr = intersecting.values().next().value;
+    } else {
+        curr = undefined;
+    }
 
     onMount(() => {
         if (!comments) return;
-        if (document.documentElement.style.contentVisibility === undefined) return;
+        // if (document.documentElement.style.contentVisibility === undefined) return;
 
         let topLevelComments = Array.from(comments.querySelectorAll(":scope > article")) as HTMLDivElement[];
 
-        let observer = new IntersectionObserver((entries) => {
-            // console.log("triggered");
+        observer = new IntersectionObserver((entries) => {
             entries.forEach((entry) => {
                 const { height } = entry.boundingClientRect;
                 const ele = entry.target as HTMLDivElement;
@@ -24,18 +39,59 @@
                 if (entry.isIntersecting) {
                     // ele.style.outline = "5px solid green";
                     ele.style.contentVisibility = "visible";
+                    intersecting.add(ele);
+                    intersecting = intersecting;
                 } else {
                     // ele.style.outline = "100px solid red";
                     ele.style.contentVisibility = "hidden";
+                    intersecting.delete(ele);
+                    intersecting = intersecting;
+
                 }
             });
         });
 
         topLevelComments.forEach(c => observer.observe(c));
+
+        cleanupCodeBlocks();
     })
+
+    onDestroy(() => {
+        observer && observer.disconnect();
+    })
+
+    function cleanupCodeBlocks() {
+        let codes = Array.from(document.querySelectorAll("pre > code")) as HTMLDivElement[];
+        
+        let whiteSpaces: number[] = [];
+        
+        for (let code of codes) {
+            
+            let minWhite = Infinity;
+            let lines = code.innerHTML.split('\n');
+                        
+            for (let line of lines) {
+                if (line.trim() === "") continue;
+                const numWhite = line.search(/\S|$/);
+                minWhite = Math.min(numWhite, minWhite);
+            }
+
+            if (minWhite === Infinity) whiteSpaces.push(0);
+            else whiteSpaces.push(minWhite);
+        }
+
+        codes.forEach((c, i) => {
+            let minWhite = whiteSpaces[i];
+            if (minWhite === 0) return;
+            let lines = c.innerHTML.split('\n').map(l => [...l].splice(minWhite).join('')).join('\n');
+            c.innerHTML = lines;
+        });
+    }
 
     $: url = data.item.url.startsWith("item") ? "" : data.item.url;
 </script>
+
+
 
 <div class="max-w-screen-md mx-auto">
     <article>
@@ -67,7 +123,10 @@
 
         {#if data.item.content}
             <div 
-                class="prose text-inherit prose-a:dark:text-zinc-500 prose-a:break-words prose-pre:dark:bg-zinc-950 max-w-full px-4 pb-8 border-zinc-300 dark:border-zinc-700"
+                class="prose prose-a:dark:text-zinc-500 prose-a:break-words
+                prose-pre:bg-zinc-800 prose-pre:dark:bg-zinc-900 
+                prose-pre:first:mt-0 text-inherit max-w-full px-4 pb-8
+                border-zinc-300 dark:border-zinc-700"
                 class:border-b-8={data.item.comments.length > 0}
                 class:mb-8={data.item.comments.length > 0}
             >
@@ -84,3 +143,22 @@
         </div>
     {/if}
 </div>
+
+{#if next && $scrollY > 200 && data.item.comments.length > 1}
+    <button 
+        in:fly={{ y: 200, delay: 1000 }} out:fly={{ y: 200 }}
+        class="fixed bottom-5 right-20 p-2 rounded bg-white/50 dark:bg-black/50 backdrop-blur border border-zinc-300 dark:border-zinc-700 hover:shadow dark:hover:border-white z-10" 
+        class:right-20={$hand === "righty"}
+        class:left-20={$hand === "lefty"}
+        on:click={() => {
+            intersecting.forEach(() => {
+                $navState = 'visible';
+                next?.scrollIntoView({
+                    behavior: "smooth"
+                })
+            })
+        }}
+    >
+        Next
+    </button>
+{/if}
