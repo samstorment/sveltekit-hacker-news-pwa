@@ -2,13 +2,11 @@
 	import { page } from "$app/stores";
 	import { onDestroy, onMount } from "svelte";
     import "../app.css";
-	import Settings from "./Settings.svelte";
+	import Settings, { openSettings } from "./Settings.svelte";
 	import { fly } from "svelte/transition";
 	import { hand } from "$lib/settings";
 	import { navState, scrollY } from "$lib/stores";
 
-    let dialog: HTMLDialogElement;
-    let header: HTMLElement;
     let uppies = true;
     let scrollTimeout = 0;
 
@@ -17,10 +15,6 @@
     $: if ($page.url.hash) {
         $navState = 'visible';
         setTimeout(() => $navState = 'auto', 100);
-    }
-    
-    function openSettings() {
-        dialog.showModal();
     }
 
     function handleScroll() {
@@ -67,7 +61,6 @@
 <header 
     class="sticky top-0 bg-white dark:bg-black slide z-10 slide"
     class:-translate-y-full={!uppies}
-    bind:this={header}
 >
     <nav class="p-2 flex items-center gap-4 max-w-screen-md mx-auto">
         <div class="flex items-center gap-4 flex-wrap p-2">
@@ -80,9 +73,9 @@
         </div>
         <button on:click={openSettings} title="Settings" class="ml-auto text-2xl p-2 hover:bg-zinc-200 dark:hover:bg-zinc-900 rounded aspect-square flex items-center">
             <iconify-icon icon="carbon:settings"></iconify-icon>
-            <span class="sr-only">Open Settings</span>
+            <span class="sr-only">Open Settings Modal</span>
         </button>
-        <Settings bind:dialog />
+        <Settings />
     </nav>
 </header>
 

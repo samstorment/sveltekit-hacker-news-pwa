@@ -25,29 +25,14 @@
 
     onMount(() => {
         if (!comments) return;
-        // if (document.documentElement.style.contentVisibility === undefined) return;
-
         let topLevelComments = Array.from(comments.querySelectorAll(":scope > article")) as HTMLDivElement[];
 
         observer = new IntersectionObserver((entries) => {
             entries.forEach((entry) => {
-                const { height } = entry.boundingClientRect;
                 const ele = entry.target as HTMLDivElement;
-
-                ele.style.containIntrinsicSize = `auto ${height}px`;
-                
-                if (entry.isIntersecting) {
-                    // ele.style.outline = "5px solid green";
-                    ele.style.contentVisibility = "visible";
-                    intersecting.add(ele);
-                    intersecting = intersecting;
-                } else {
-                    // ele.style.outline = "100px solid red";
-                    ele.style.contentVisibility = "hidden";
-                    intersecting.delete(ele);
-                    intersecting = intersecting;
-
-                }
+                if (entry.isIntersecting) intersecting.add(ele);
+                else intersecting.delete(ele);
+                intersecting = intersecting;
             });
         });
 
@@ -151,12 +136,8 @@
         class:right-20={$hand === "righty"}
         class:left-20={$hand === "lefty"}
         on:click={() => {
-            intersecting.forEach(() => {
-                $navState = 'visible';
-                next?.scrollIntoView({
-                    behavior: "smooth"
-                })
-            })
+            $navState = "visible";
+            next?.scrollIntoView({behavior: "smooth" })
         }}
     >
         Next
