@@ -3,21 +3,32 @@
 	import { navState } from "$lib/stores";
 	import { fly, scale, slide } from "svelte/transition";
     import type { Comment } from "./+page";
+	import { afterNavigate, beforeNavigate } from "$app/navigation";
 
     export let index: number;
     export let comment: Comment;
     export let group: Comment[];
     export let item: any;
+    
+    let navigating = false;
 
-    let visible = true;
+    beforeNavigate(() => {
+        navigating = true;
+        visible = true;
+    })
+
+    afterNavigate(() => navigating = false);
+
     let copied = false;
+    
+    $: visible = !!comment;
     $: highlighted = $page.url.hash === `#${comment.id}`;
 
-    let prev = getPrevious();
-    let next = getNext();
-    let root = getRoot();
+    $: prev = getPrevious(group);
+    $: next = getNext(group);
+    $: root = getRoot(comment);
 
-    function getRoot() {
+    function getRoot(comment: Comment) {
         let root = comment.parent;
 
         while (root?.parent) {
@@ -27,7 +38,7 @@
         return root;
     }
 
-    function getPrevious() {
+    function getPrevious(group: Comment[]) {
         let prev: Comment;
         let prevIndex = index;
 
@@ -39,7 +50,7 @@
         return prev;
     }
 
-    function getNext() {
+    function getNext(group: Comment[]) {
         let next: Comment;
         let nextIndex = index;
 
@@ -72,7 +83,11 @@
             class="pb-6"
             style={comment.level > 0 ? `margin-left: ${comment.level}rem;` : ""}
         >
-            <div class:highlighted class:minimized={!highlighted && !visible} class="comment-outline">
+            <div 
+                class:highlighted 
+                class:minimized={!highlighted && !visible}
+                class="comment-outline"
+            >
                 <div class="text-zinc-600 dark:text-zinc-500 flex justify-between max-sm:flex-col">
                     <div class="mb-1 flex items-center gap-2 mr-2 min-w-0">
                         <button 
@@ -167,8 +182,8 @@
 
                 {#if visible}
                     <div 
-                        id="content-{comment.id}" 
-                        transition:slide 
+                        id="content-{comment.id}"
+                        transition:slide={{ duration: navigating ? 0 : 300 }}
                         class="rounded border border-zinc-300 dark:border-zinc-700"
                     >
                         <div 

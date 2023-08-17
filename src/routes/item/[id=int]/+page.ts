@@ -10,8 +10,9 @@ export type Comment = {
 	level: number;
 	parent?: Comment;
 	id: string;
-	visibile_comment_count: number;
+	visible_comment_count: number;
 	comments_count: number;
+	visible: boolean;
 }
 
 export async function load({ params, fetch, url }) {
@@ -29,8 +30,8 @@ export async function load({ params, fetch, url }) {
 	const res = await fetch(`https://api.hnpwa.com/v0/item/${params.id}.json`)
 	const item: Comment = await res.json();
 
-	const MIN_PER_PAGE = 100;
-	const MAX_PER_PAGE = 300;
+	const MIN_PER_PAGE = 10;
+	const MAX_PER_PAGE = 30;
 
 	const pageBreaks = getPageBreaks(item, MIN_PER_PAGE, MAX_PER_PAGE);
 	const numPages = pageBreaks.length + 1;
@@ -70,12 +71,11 @@ function getPageBreaks(item: Comment, hardLowerLimit: number, roughUpperLimit: n
 		if (comment.deleted === true) continue;
 
 		const prevTotal = total;
-
 		total += comment.comments_count;
 
 		if (total >= roughUpperLimit && prevTotal >= hardLowerLimit) {
 			pages.push(i);
-			total = 0;
+			total = comment.comments_count;
 		}
 	}
 
