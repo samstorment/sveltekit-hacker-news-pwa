@@ -1,19 +1,8 @@
 <script lang="ts">
 	import { page } from "$app/stores";
 	import { navState } from "$lib/stores";
-	import { slide } from "svelte/transition";
-
-
-    type Comment = {
-        deleted?: boolean;
-        user: string;
-        time_ago: string;
-        content: string;
-        comments: Comment[];
-        level: number;
-        parent?: Comment;
-        id: string;
-    }
+	import { fly, scale, slide } from "svelte/transition";
+    import type { Comment } from "./+page";
 
     export let index: number;
     export let comment: Comment;
@@ -69,7 +58,6 @@
         });
     }
 
-
     async function copyLink() {
         const commentUrl = `${$page.url.origin}${$page.url.pathname}#${comment.id}`;
         await navigator.clipboard.writeText(commentUrl);
@@ -84,7 +72,7 @@
             class="pb-6"
             style={comment.level > 0 ? `margin-left: ${comment.level}rem;` : ""}
         >
-            <div class:highlighted class="comment-outline">
+            <div class:highlighted class:minimized={!highlighted && !visible} class="comment-outline">
                 <div class="text-zinc-600 dark:text-zinc-500 flex justify-between max-sm:flex-col">
                     <div class="mb-1 flex items-center gap-2 mr-2 min-w-0">
                         <button 
@@ -118,8 +106,8 @@
                         <span class="whitespace-nowrap overflow-hidden text-ellipsis"><a href="/user/{comment.user}" class:text-blue-500={comment.user === item.user}>{comment.user}</a> <span>{comment.time_ago}</span></span>
                     </div>
                         
-                    <div class="flex flex-wrap justify-end lefty:justify-start items-center gap-1 mb-1 text-sm">
-                        <span class="sm:hidden flex-1 h-[22px] border border-zinc-300 dark:border-zinc-700 rounded min-w-0 nothing lefty:hidden"></span>
+                    <div class="flex flex-wrap justify-end lefty:flex-row-reverse items-center gap-1 mb-1 text-sm">
+                        <div class="flex items-center sm:hidden flex-1 h-[22px] border border-zinc-300 dark:border-zinc-700 rounded nothing lefty:hidden"></div>
                         <!-- <span class="flex-1 h-[1px] bg-zinc-800 min-w-0"></span> -->
                         {#if root?.id && comment.level > 1}
                             {@const id = root.id}
@@ -178,26 +166,40 @@
                 </div>
 
                 {#if visible}
-                    <div id="content-{comment.id}" transition:slide>
+                    <div 
+                        id="content-{comment.id}" 
+                        transition:slide 
+                        class="rounded border border-zinc-300 dark:border-zinc-700"
+                    >
                         <div 
-                            class="prose text-inherit prose-a:dark:text-zinc-500 
-                            rounded border border-zinc-300 dark:border-zinc-700 
+                            class="prose text-inherit prose-a:dark:text-zinc-500  
                             prose-pre:dark:bg-zinc-900 prose-pre:bg-zinc-800 prose-pre:first:mt-0 
                             prose-pre:border prose-pre:border-zinc-700 prose-pre:text-sm
                             p-2 max-w-full break-words"
                         >
                             {@html comment.content}
                         </div>
-
-                        <div 
-                            class="text-zinc-600 dark:text-zinc-500 text-sm flex items-center gap-2 mt-1" 
-                        >
-                            <iconify-icon icon="cib:y-combinator" class="text-lg"></iconify-icon>
-                            <a href="https://news.ycombinator.com/reply?id={comment.id}&goto=item?id={item.id}#{comment.id}">Reply</a>
-                            <a href="https://news.ycombinator.com/item?id={item.id}#{comment.id}">View</a>
-                        </div>
                     </div>
                 {/if}
+                
+                <div 
+                    class="text-zinc-600 dark:text-zinc-500 text-sm flex items-center gap-2 mt-1" 
+                >
+                    <iconify-icon icon="cib:y-combinator" class="text-lg"></iconify-icon>
+                    <a href="https://news.ycombinator.com/reply?id={comment.id}&goto=item?id={item.id}#{comment.id}">Reply</a>
+                    <a href="https://news.ycombinator.com/item?id={item.id}#{comment.id}">View</a>
+                    <span class="hidden" class:lefty:max-sm:block={!visible}>|</span>
+                    <span
+                        class="ml-auto whitespace-nowrap overflow-hidden text-ellipsis"
+                        class:lefty:ml-0={!visible}
+                    >
+                        {#if comment.visibile_comment_count > 0}
+                            {comment.visibile_comment_count} {comment.visibile_comment_count === 1 ? "reply" : "replies"}
+                        {:else}
+                            No replies
+                        {/if}
+                    </span>
+                </div>
             </div>
         </div>
 
@@ -221,7 +223,7 @@
 
 <style lang="postcss">
     .comment-outline {
-        @apply rounded-sm outline outline-transparent outline-offset-1;
+        @apply rounded-sm outline outline-transparent outline-offset-[12px];
         transition: 
             outline ease 200ms, 
             outline-offset ease 200ms, 
@@ -231,6 +233,10 @@
 
     .highlighted {
         @apply outline outline-offset-8 outline-black dark:outline-white rounded-sm;
+    }
+
+    .minimized {
+        @apply outline-1 outline-offset-8 outline-zinc-300 dark:outline-zinc-700 rounded-sm;
     }
 
     .copy-tooltip::before {

@@ -6,7 +6,6 @@
 	import { navState, scrollY } from "$lib/stores";
 	import { fly } from "svelte/transition";
     import '../.././../prose.css';
-	import { match } from "../../../params/category";
 	import { hand } from "$lib/settings";
 
     export let data;
@@ -77,7 +76,6 @@
 </script>
 
 
-
 <div class="max-w-screen-md mx-auto">
     <article>
         <hgroup class="p-4 mb-4">
@@ -95,7 +93,7 @@
             {#if data.item.type !== "job"}
                 <div class="flex flex-wrap gap-1 justify-between mb-1">
                     <p>{data.item.points} points by <a href="/user/{data.item.user}">{data.item.user}</a> {data.item.time_ago}</p>
-                    <p><a href="/item/{data.item.id}">{data.item.comments_count} {data.item.comments_count === 1 ? "comment" : "comments"}</a></p>
+                    <p><a href="/item/{data.item.id}">{data.item.visibile_comment_count} {data.item.visibile_comment_count === 1 ? "comment" : "comments"}</a></p>
                 </div>
             {/if}
             <p>
