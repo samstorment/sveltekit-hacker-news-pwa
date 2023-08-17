@@ -93,7 +93,7 @@
                 <span>Previous</span>
             </a>
         {/if}
-            {#if data.page < data.pageLimit}
+        {#if data.page < data.pageLimit}
             <a 
                 href="?p={data.page + 1}" 
                 class="px-4 py-4 border border-zinc-300 dark:border-zinc-700 flex-1 rounded text-right hover:no-underline hover:shadow dark:hover:border-white flex justify-between items-center"

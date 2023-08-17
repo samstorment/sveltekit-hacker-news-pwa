@@ -19,7 +19,6 @@ export async function load({ params, fetch, url }) {
 	else if (category === "new") category = "newest";
 
 	let page = url.searchParams.get('p') ?? "1";
-
 	let pageNum = parseInt(page);
 
 	if (isNaN(pageNum) || pageNum <= 0) {

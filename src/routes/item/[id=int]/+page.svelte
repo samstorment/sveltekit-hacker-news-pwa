@@ -7,6 +7,7 @@
 	import { fly } from "svelte/transition";
     import '../.././../prose.css';
 	import { hand } from "$lib/settings";
+	import { page } from "$app/stores";
 
     export let data;
 
@@ -14,6 +15,7 @@
     let observer: IntersectionObserver;
     let intersecting = new Set<HTMLDivElement>();
     let curr: Element | undefined = undefined;
+
     $: next = curr?.nextElementSibling;
 
     $: if (intersecting.size === 1) {
@@ -93,7 +95,7 @@
             {#if data.item.type !== "job"}
                 <div class="flex flex-wrap gap-1 justify-between mb-1">
                     <p>{data.item.points} points by <a href="/user/{data.item.user}">{data.item.user}</a> {data.item.time_ago}</p>
-                    <p><a href="/item/{data.item.id}">{data.item.visibile_comment_count} {data.item.visibile_comment_count === 1 ? "comment" : "comments"}</a></p>
+                    <p><a href="/item/{data.item.id}">{data.item.comments_count} {data.item.comments_count === 1 ? "comment" : "comments"} ({data.pageLimit} {data.pageLimit === 1 ? "page" : "pages"})</a></p>
                 </div>
             {/if}
             <p>
@@ -119,13 +121,38 @@
     </article>
 
     {#if data.item.comments.length > 0}
-        <div class="px-4" bind:this={comments}>
+        <div class="px-4" id="comments" bind:this={comments}>
             {#each data.item.comments as comment, index}
                 <Comment {comment} {index} group={data.item.comments} item={data.item} />
             {/each}
         </div>
     {/if}
+
+    {#if data.pageLimit > 1}
+        <div class="flex gap-4 p-4">
+            {#if data.page > 1}
+                <a 
+                    href="?p={data.page - 1}#comments" 
+                    class="px-4 py-4 border border-zinc-300 dark:border-zinc-700 flex-1 rounded hover:no-underline hover:shadow dark:hover:border-white flex justify-between items-center"
+                >
+                    <iconify-icon icon="ph:arrow-left-bold" class="text-2xl"></iconify-icon>
+                    <span>Previous</span>
+                </a>
+            {/if}
+            {#if data.page < data.pageLimit}
+                <a 
+                    href="?p={data.page + 1}#comments" 
+                    class="px-4 py-4 border border-zinc-300 dark:border-zinc-700 flex-1 rounded text-right hover:no-underline hover:shadow dark:hover:border-white flex justify-between items-center"
+                    class:solo-link={data.page <= 1}
+                >
+                    <span>Next</span>
+                    <iconify-icon icon="ph:arrow-right-bold" class="text-2xl"></iconify-icon>
+                </a>
+            {/if}
+        </div>
+    {/if}
 </div>
+
 
 {#if next && $scrollY > 200 && data.item.comments.length > 1}
     <button 

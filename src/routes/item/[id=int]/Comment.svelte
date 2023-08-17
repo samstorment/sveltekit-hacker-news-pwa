@@ -193,8 +193,8 @@
                         class="ml-auto whitespace-nowrap overflow-hidden text-ellipsis"
                         class:lefty:ml-0={!visible}
                     >
-                        {#if comment.visibile_comment_count > 0}
-                            {comment.visibile_comment_count} {comment.visibile_comment_count === 1 ? "reply" : "replies"}
+                        {#if comment.comments_count > 0}
+                            {comment.comments_count} {comment.comments_count === 1 ? "reply" : "replies"}
                         {:else}
                             No replies
                         {/if}
@@ -218,12 +218,24 @@
             </ul>
         {/if}
     </article>
+{:else}
+    <div 
+        class="text-zinc-500 dark:text-zinc-600 pb-6"
+        style={comment.level > 0 ? `margin-left: ${comment.level}rem;` : ""}
+    >
+        <div class="mb-1">{comment.time_ago}</div>
+        <div class="border border-zinc-300 dark:border-zinc-700 rounded p-2">
+            Deleted
+        </div>
+    </div>
 {/if}
+
+
 
 
 <style lang="postcss">
     .comment-outline {
-        @apply rounded-sm outline outline-transparent outline-offset-[12px];
+        @apply outline outline-transparent outline-offset-[10px];
         transition: 
             outline ease 200ms, 
             outline-offset ease 200ms, 
@@ -236,7 +248,7 @@
     }
 
     .minimized {
-        @apply outline-1 outline-offset-8 outline-zinc-300 dark:outline-zinc-700 rounded-sm;
+        @apply outline-1 outline-offset-8 outline-zinc-300 dark:outline-zinc-700 rounded-[1px];
     }
 
     .copy-tooltip::before {
