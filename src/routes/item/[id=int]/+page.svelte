@@ -1,13 +1,11 @@
-
 <script lang="ts">
-	import { onDestroy, onMount } from "svelte";
+	import { onDestroy } from "svelte";
 	import Comment from "./Comment.svelte";
-	import Error from "../../+error.svelte";
 	import { navState, scrollY } from "$lib/stores";
 	import { fly } from "svelte/transition";
     import '../.././../prose.css';
 	import { hand } from "$lib/settings";
-	import { page } from "$app/stores";
+	import { afterNavigate, beforeNavigate } from "$app/navigation";
 
     export let data;
 
@@ -24,11 +22,16 @@
         curr = undefined;
     }
 
-    onMount(() => {
+    beforeNavigate(() => {
+        intersecting.clear();
+        observer && observer.disconnect();
+    });
+
+    afterNavigate(() => {
         if (!comments) return;
         let topLevelComments = Array.from(comments.querySelectorAll(":scope > article")) as HTMLDivElement[];
-
-        observer = new IntersectionObserver((entries) => {
+    
+        observer = observer || new IntersectionObserver((entries) => {    
             entries.forEach((entry) => {
                 const ele = entry.target as HTMLDivElement;
                 if (entry.isIntersecting) intersecting.add(ele);
@@ -36,15 +39,15 @@
                 intersecting = intersecting;
             });
         });
-
+    
         topLevelComments.forEach(c => observer.observe(c));
-
+    
         cleanupCodeBlocks();
-    })
+    });
 
     onDestroy(() => {
         observer && observer.disconnect();
-    })
+    });
 
     function cleanupCodeBlocks() {
         let codes = Array.from(document.querySelectorAll("pre > code")) as HTMLDivElement[];
@@ -77,7 +80,6 @@
     $: url = data.item.url.startsWith("item") ? "" : data.item.url;
 </script>
 
-
 <div class="max-w-screen-md mx-auto">
     <article>
         <hgroup class="p-4 mb-4">
@@ -95,7 +97,14 @@
             {#if data.item.type !== "job"}
                 <div class="flex flex-wrap gap-1 justify-between mb-1">
                     <p>{data.item.points} points by <a href="/user/{data.item.user}">{data.item.user}</a> {data.item.time_ago}</p>
-                    <p><a href="/item/{data.item.id}">{data.item.comments_count} {data.item.comments_count === 1 ? "comment" : "comments"} ({data.pageLimit} {data.pageLimit === 1 ? "page" : "pages"})</a></p>
+                    <p>
+                        <a href="/item/{data.item.id}">
+                            {data.item.comments_count} {data.item.comments_count === 1 ? "comment" : "comments"}
+                            {#if data.pageLimit > 1}
+                                | {data.pageLimit} pages
+                            {/if}
+                        </a>
+                    </p>
                 </div>
             {/if}
             <p>
@@ -121,7 +130,7 @@
     </article>
 
     {#if data.item.comments.length > 0}
-        <div class="px-4" id="comments" bind:this={comments}>
+        <div class="px-4" id="comments" bind:this={comments} in:fly={{x:500}}>
             {#each data.item.comments as comment, index}
                 <Comment {comment} {index} group={data.item.comments} item={data.item} />
             {/each}

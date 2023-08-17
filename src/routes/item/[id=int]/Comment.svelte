@@ -1,23 +1,13 @@
 <script lang="ts">
-	import { page } from "$app/stores";
+	import { navigating, page } from "$app/stores";
 	import { navState } from "$lib/stores";
-	import { fly, scale, slide } from "svelte/transition";
+	import { slide } from "svelte/transition";
     import type { Comment } from "./+page";
-	import { afterNavigate, beforeNavigate } from "$app/navigation";
 
     export let index: number;
     export let comment: Comment;
     export let group: Comment[];
     export let item: any;
-    
-    let navigating = false;
-
-    beforeNavigate(() => {
-        navigating = true;
-        visible = true;
-    })
-
-    afterNavigate(() => navigating = false);
 
     let copied = false;
     
@@ -183,7 +173,8 @@
                 {#if visible}
                     <div 
                         id="content-{comment.id}"
-                        transition:slide={{ duration: navigating ? 0 : 300 }}
+                        in:slide={{ duration: $navigating ? 0 : 300 }}
+                        out:slide
                         class="rounded border border-zinc-300 dark:border-zinc-700"
                     >
                         <div 

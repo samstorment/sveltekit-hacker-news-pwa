@@ -12,7 +12,6 @@ export type Comment = {
 	id: string;
 	visible_comment_count: number;
 	comments_count: number;
-	visible: boolean;
 }
 
 export async function load({ params, fetch, url }) {
@@ -30,8 +29,8 @@ export async function load({ params, fetch, url }) {
 	const res = await fetch(`https://api.hnpwa.com/v0/item/${params.id}.json`)
 	const item: Comment = await res.json();
 
-	const MIN_PER_PAGE = 10;
-	const MAX_PER_PAGE = 30;
+	const MIN_PER_PAGE = 100;
+	const MAX_PER_PAGE = 300;
 
 	const pageBreaks = getPageBreaks(item, MIN_PER_PAGE, MAX_PER_PAGE);
 	const numPages = pageBreaks.length + 1;
