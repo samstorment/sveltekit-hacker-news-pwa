@@ -47,9 +47,9 @@
         }
     }
 
-    onMount(() => {
-        openSettings();
-    })
+    // onMount(() => {
+    //     openSettings();
+    // })
 
     onDestroy(() => {
         if (browser) {
