@@ -72,8 +72,9 @@
             <a href="/jobs" class="relative nav-item" class:selected={selected === "jobs"}>Jobs</a>
         </div>
         <button on:click={openSettings} title="Settings" class="ml-auto text-2xl p-2 hover:bg-zinc-200 dark:hover:bg-zinc-900 rounded aspect-square flex items-center">
-            <iconify-icon icon="carbon:settings"></iconify-icon>
-            <span class="sr-only">Open Settings Modal</span>
+            <!-- <iconify-icon icon="carbon:settings"></iconify-icon> -->
+            <iconify-icon icon="lucide:menu"></iconify-icon>
+            <span class="sr-only">Open Site Menu</span>
         </button>
         <Settings />
     </nav>
@@ -117,9 +118,4 @@
         content: '';
         @apply absolute h-[2px] w-full bg-blue-500 dark:bg-white left-0 -bottom-1;
     }
-
-    .nav-item.selected::after {
-        view-transition-name: bar;
-    }
-
 </style>
