@@ -136,24 +136,30 @@
                         <h3 class="text-xl mb-2">Theme</h3>
                         <div class="flex flex-wrap gap-2 mb-4 text-zinc-600 dark:text-zinc-400">
                             <button 
-                                class="px-3 py-1 border border-zinc-300 dark:border-zinc-700 rounded w-fit"
+                                class="px-3 py-2 border border-zinc-300 dark:border-zinc-700 rounded w-fit flex items-center gap-2"
                                 class:selected={$theme === "light"}
                                 on:click={theme.setLight}
                             >
+                            <!-- <iconify-icon icon="line-md:sun-rising-loop" class="text-2xl"></iconify-icon> -->
+                                <iconify-icon icon="ph:sun" class="text-2xl"></iconify-icon>
                                 Light
                             </button>
                             <button 
-                                class="px-3 py-1 border border-zinc-300 dark:border-zinc-700 rounded w-fit"
+                                class="px-3 py-2 border border-zinc-300 dark:border-zinc-700 rounded w-fit flex items-center gap-2"
                                 class:selected={$theme === "dark"}
                                 on:click={theme.setDark}
                             >
+                                <!-- <iconify-icon icon="line-md:moon-alt-loop" class="text-2xl"></iconify-icon> -->
+                                <iconify-icon icon="tabler:moon-stars" class="text-2xl"></iconify-icon>
                                 Dark
                             </button>
                             <button 
-                                class="px-3 py-1 border border-zinc-300 dark:border-zinc-700 rounded w-fit"
+                                class="px-3 py-2 border border-zinc-300 dark:border-zinc-700 rounded w-fit flex items-center gap-2"
                                 class:selected={$theme === "system"}
                                 on:click={theme.setSystem}
                             >
+                                <iconify-icon icon="ph:monitor" class="text-2xl"></iconify-icon>
+
                                 System
                             </button>
                         </div>
@@ -162,18 +168,20 @@
                 
                         <div class="flex flex-wrap gap-2 text-zinc-600 dark:text-zinc-400">
                             <button 
-                                class="px-3 py-1 border border-zinc-300 dark:border-zinc-700 rounded w-fit"
+                                class="px-3 py-2 border border-zinc-300 dark:border-zinc-700 rounded w-fit flex items-center gap-2"
                                 class:selected={$hand === "lefty"}
                                 on:click={() => $hand = "lefty"}
                             >
+                                <iconify-icon icon="ion:hand-left-outline" class="text-2xl"></iconify-icon>
                                 Lefty
                             </button>
                             <button 
-                                class="px-3 py-1 border border-zinc-300 dark:border-zinc-700 rounded w-fit"
+                                class="px-3 py-2 border border-zinc-300 dark:border-zinc-700 rounded w-fit flex items-center gap-2"
                                 class:selected={$hand === "righty"}
                                 on:click={() => $hand = "righty"}
                             >
                                 Righty
+                                <iconify-icon icon="ion:hand-right-outline" class="text-2xl"></iconify-icon>
                             </button>
                         </div>
                     {/if}

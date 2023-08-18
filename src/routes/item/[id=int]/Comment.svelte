@@ -3,7 +3,6 @@
 	import { navState } from "$lib/stores";
 	import { slide } from "svelte/transition";
     import type { Comment } from "./+page";
-	import { cubicIn } from "svelte/easing";
 
     export let index: number;
     export let comment: Comment;
@@ -51,15 +50,25 @@
         await navigator.clipboard.writeText(commentUrl);
         copied = true;
     }
+
+    function depthColor(depth: number) {
+        if (depth % 8 === 0) return "text-black dark:text-white";
+        if (depth % 8 === 1) return "text-red-700";
+        if (depth % 8 === 2) return "text-orange-600";
+        if (depth % 8 === 3) return "text-yellow-400";
+        if (depth % 8 === 4) return "text-green-500";
+        if (depth % 8 === 5) return "text-blue-500";
+        if (depth % 8 === 6) return "text-indigo-700";
+        if (depth % 8 === 7) return "text-violet-600";
+    }
 </script>
 
-
-
-<article id="{comment.id}">
-    <div 
-        class="pb-6"
-        style={comment.level > 0 ? `margin-left: ${comment.level}rem;` : ""}
-    >
+<!-- Add border-l here for thread lines - can make this a setting -->
+<article 
+    id="{comment.id}" 
+    class:pl-4={comment.level > 0 && comment.level < 10}
+>
+    <div class="pb-6">
         <div 
             class:highlighted
             class:minimized={!visible && !highlighted}
@@ -68,16 +77,7 @@
             <div class="text-zinc-600 dark:text-zinc-400 flex justify-between max-sm:flex-col">
                 <div class="mb-1 flex items-center gap-2 mr-2 min-w-0">
                     <button 
-                        class="flex items-center justify-center font-mono rounded-full shrink-0 group relative"
-                        class:text-black={comment.level % 8 === 0}
-                        class:dark:text-white={comment.level % 8 === 0}
-                        class:text-red-700={comment.level % 8 === 1}
-                        class:text-orange-600={comment.level % 8 === 2}
-                        class:text-yellow-400={comment.level % 8 === 3}
-                        class:text-green-500={comment.level % 8 === 4}
-                        class:text-blue-500={comment.level % 8 === 5}
-                        class:text-indigo-700={comment.level % 8 === 6}
-                        class:text-violet-600={comment.level % 8 === 7}
+                        class="flex items-center justify-center font-mono rounded-full shrink-0 group relative {depthColor(comment.level)}"
                         aria-describedby="copy-{comment.id}"
                         on:click={copyLink}
                         on:focusout={() => copied = false}
@@ -95,7 +95,13 @@
                             {copied ? "Link Copied!" : "Copy Link"}
                         </div>
                     </button>
-                    <span class="whitespace-nowrap overflow-hidden text-ellipsis"><a href="/user/{comment.user}" class:text-blue-500={comment.user === item.user}>{comment.user}</a> <span>{comment.time_ago}</span></span>
+                    <span class="whitespace-nowrap overflow-hidden text-ellipsis">
+                        {#if comment.user}
+                            <a href="/user/{comment.user}" class:text-blue-500={comment.user === item.user}>{comment.user}</a>
+                        {:else}
+                            [removed]
+                        {/if}
+                        <span>{comment.time_ago}</span></span>
                 </div>
                     
                 <div class="flex flex-wrap justify-end lefty:max-sm:flex-row-reverse items-center gap-1 mb-1 text-sm">
@@ -159,7 +165,7 @@
             {#if visible}
                 <div 
                     id="content-{comment.id}"
-                    in:slide={{ duration: $navigating ? 0 : 300, easing: cubicIn }}
+                    in:slide={{ duration: $navigating ? 0 : 300 }}
                     out:slide
                     class="rounded border border-zinc-300 dark:border-zinc-700"
                 >
@@ -212,10 +218,10 @@
 </article>
 
 
-
-
-
 <style lang="postcss">
+    :global()
+
+
     .highlighted {
         @apply outline outline-offset-8 outline-black dark:outline-white rounded-sm;
     }
