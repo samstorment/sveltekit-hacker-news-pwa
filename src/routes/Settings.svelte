@@ -47,9 +47,7 @@
         }
     }
 
-    // onMount(() => {
-    //     openSettings();
-    // })
+    onMount(openSettings);
 
     onDestroy(() => {
         if (browser) {
@@ -76,66 +74,67 @@
 <dialog 
     bind:this={dialog}
     on:click={dialogClick}
-    class="dialog bg-white text-zinc-900 dark:bg-black dark:text-zinc-200 border border-zinc-300 dark:border-zinc-700 rounded 
+    class="dialog bg-white text-zinc-900 dark:bg-zinc-950 dark:text-zinc-200 border border-zinc-300 dark:border-zinc-700 rounded-lg
             max-w-[min(768px,calc(100%-2rem))] w-full h-full max-h-[min(500px,calc(100%-2rem))] overflow-hidden"
     class:closing
 >
-    <div bind:this={container} class="h-full flex flex-col">
-        <header class="flex justify-between items-center px-4 py-2 border-b border-zinc-300 dark:border-zinc-700">
-            <h2 class="text-2xl">Menu</h2>
-            <button 
-                type="button" 
-                on:click={closeSettings}
-                class="text-2xl hover:bg-zinc-200 dark:hover:bg-zinc-900 p-2 rounded flex items-center"
-            >
-                <iconify-icon icon="ic:round-close"></iconify-icon>
-                <span class="sr-only">Close Site Menu</span>
-            </button>
-        </header>
+    <div bind:this={container} class="h-full flex">
+        
+        <aside class="py-2 bg-zinc-100 dark:bg-zinc-900 min-h-0 overflow-y-auto shrink-0 min-w-fit">
+            <ul class="flex flex-col gap-2">
+                <li>
+                    <button 
+                        class="px-4 p-2 relative w-full flex items-center gap-2"
+                        class:active={tab === "settings"}
+                        on:click={() => activate("settings")}
+                    >
+                        <iconify-icon icon="carbon:settings" class="text-2xl"></iconify-icon>
+                        <span class="max-sm:sr-only sm:min-w-[100px] text-left">Settings</span>
+                    </button>
+                </li>
+                <li>
+                    <button 
+                        class="px-4 p-2 relative w-full flex items-center gap-2"
+                        class:active={tab === "about"}
+                        on:click={() => activate("about")}
+                    >
+                        <iconify-icon icon="fluent:info-24-regular" class="text-2xl"></iconify-icon>
+                        <span class="max-sm:sr-only sm:min-w-[100px] text-left">About</span>
+                    </button>
+                </li>
+            </ul>
+        </aside>
 
-        <div class="flex flex-1 min-h-0">
-            <aside class="border-r border-zinc-300 dark:border-zinc-700 ">
-                <ul>
-                    <li>
-                        <button 
-                            class="p-3 relative w-full flex items-center gap-2 "
-                            class:active={tab === "settings"}
-                            on:click={() => activate("settings")}
-                        >
-                            <iconify-icon icon="carbon:settings" class="text-2xl"></iconify-icon>
-                            <span class="max-sm:sr-only">Settings</span>
-                        </button>
-                    </li>
-                    <li>
-                        <button 
-                            class="p-3 relative w-full flex items-center gap-2"
-                            class:active={tab === "about"}
-                            on:click={() => activate("about")}
-                        >
-                            <iconify-icon icon="fluent:info-24-regular" class="text-2xl"></iconify-icon>
-                            <span class="max-sm:sr-only">About</span>
-                        </button>
-                    </li>
-                </ul>
-            </aside>
+        <div class="flex flex-1 min-h-0 min-w-0 flex-col w-full">
+            <header class="flex justify-between items-center p-2">
+                <h2 class="text-2xl capitalize pl-2">{tab}</h2>
+                <button 
+                    type="button" 
+                    on:click={closeSettings}
+                    class="text-2xl hover:bg-zinc-200 dark:hover:bg-zinc-900 p-2 rounded flex items-center"
+                >
+                    <iconify-icon icon="ic:round-close"></iconify-icon>
+                    <span class="sr-only">Close Site Menu</span>
+                </button>
+            </header>
+            
             {#key tab}
-                <div class="p-4 overflow-auto flex-1 h-full" in:fly={{x: 500}}>
+                <div class="px-4 pt-2 pb-8 overflow-auto flex-1 h-full w-full min-w-0" in:fly={{x: 500}}>
                     {#if tab === "about"}
-                        <h3 class="text-xl mb-2">About</h3>
-                        <p class="mb-4 text-zinc-600 dark:text-zinc-500">
+                        <p class="mb-4 text-zinc-600 dark:text-zinc-400">
                             Hacker News Progressive Web App powered by <a href="https://github.com/davideast/hnpwa-api" class="underline">David East's Hacker News PWA API</a>.
                         </p>
-
+                        
                         <h3 class="text-xl mb-2">GitHub Repo</h3>
-                        <div class="text-zinc-600 dark:text-zinc-500">
-                            <a href="https://github.com/samstorment/sveltekit-hacker-news-pwa" class="flex items-center gap-2 overflow-hidden whitespace-nowrap text-ellipsis">
+                        <div class="text-zinc-600 dark:text-zinc-400">
+                            <a href="https://github.com/samstorment/sveltekit-hacker-news-pwa" class="flex items-center gap-2 min-w-0 overflow-hidden whitespace-nowrap text-ellipsis">
                                 <iconify-icon icon="mdi:github"></iconify-icon>
                                 https://github.com/samstorment/sveltekit-hacker-news-pwa
                             </a>
                         </div>
                     {:else if tab === "settings"}
                         <h3 class="text-xl mb-2">Theme</h3>
-                        <div class="flex flex-wrap gap-2 mb-4 text-zinc-600 dark:text-zinc-500">
+                        <div class="flex flex-wrap gap-2 mb-4 text-zinc-600 dark:text-zinc-400">
                             <button 
                                 class="px-3 py-1 border border-zinc-300 dark:border-zinc-700 rounded w-fit"
                                 class:selected={$theme === "light"}
@@ -161,7 +160,7 @@
                 
                         <h3 class="text-xl mb-2">Hand Mode</h3>
                 
-                        <div class="flex flex-wrap gap-2 text-zinc-600 dark:text-zinc-500">
+                        <div class="flex flex-wrap gap-2 text-zinc-600 dark:text-zinc-400">
                             <button 
                                 class="px-3 py-1 border border-zinc-300 dark:border-zinc-700 rounded w-fit"
                                 class:selected={$hand === "lefty"}
@@ -191,12 +190,13 @@
         @apply overflow-hidden;
     }
 
-    .active::after {
-        view-transition-name: thingy;
+    aside li:hover {
+        @apply bg-zinc-200 dark:bg-zinc-800;
     }
-
+    
     .active::after {
-        @apply absolute block h-full w-[2px] -right-[1px] top-0 bg-blue-500 dark:bg-white;
+        @apply absolute block h-full w-[3px] right-0 top-0 bg-blue-500 dark:bg-white;
+        view-transition-name: active-after;
         content: '';
     }
 

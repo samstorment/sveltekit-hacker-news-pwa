@@ -5,7 +5,7 @@
 <div class="p-4 max-w-screen-md mx-auto">
     <hgroup>
         <h1 class="text-3xl">{$page.error?.message}</h1>
-        <p class="text-zinc-600 dark:text-zinc-500 text-xl">
+        <p class="text-zinc-600 dark:text-zinc-400 text-xl">
             <span class="sr-only">HTTP Status Code: </span>
             {$page.status}
         </p>

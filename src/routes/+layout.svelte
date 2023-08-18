@@ -59,7 +59,7 @@
 </svelte:head>
 
 <header 
-    class="sticky top-0 bg-white dark:bg-black slide z-10 slide"
+    class="sticky top-0 bg-white dark:bg-zinc-950 slide z-10 slide"
     class:-translate-y-full={!uppies}
 >
     <nav class="p-2 flex items-center gap-4 max-w-screen-md mx-auto">
@@ -88,7 +88,7 @@
 {#if $scrollY > 200}
     <button 
         type="button"
-        class="fixed p-2 right-6 bottom-5 bg-white/50 dark:bg-black/50 backdrop-blur border border-zinc-300 dark:border-zinc-700 hover:shadow dark:hover:border-white rounded-full flex items-center z-10"
+        class="fixed p-3 right-6 bottom-5 backdrop-blur shadow bg-white/50 dark:bg-black/50 border border-zinc-300 dark:border-zinc-700 rounded-full flex items-center z-10"
         class:right-6={$hand === "righty"}
         class:left-6={$hand === "lefty"}
         transition:fly={{ y: 100 }}

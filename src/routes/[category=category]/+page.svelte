@@ -24,12 +24,12 @@
                                 <a href="{item.url}">{item.title}</a>
                             </h2>
                             {#if item.domain}
-                                <a href="https://news.ycombinator.com/from?site={item.domain}" class="text-zinc-600 dark:text-zinc-500 text-sm break-words">({item.domain})</a>
+                                <a href="https://news.ycombinator.com/from?site={item.domain}" class="text-zinc-600 dark:text-zinc-400 text-sm break-words">({item.domain})</a>
                             {/if}
                         </hgroup>
 
                  
-                        <p class="text-zinc-600 dark:text-zinc-500">
+                        <p class="text-zinc-600 dark:text-zinc-400">
                             <span>
                                 {#if item.points}
                                     {item.points} points 

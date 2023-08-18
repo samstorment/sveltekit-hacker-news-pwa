@@ -88,12 +88,12 @@
             </h1>
             
             {#if data.item.domain}
-                <a href="https://news.ycombinator.com/from?site={data.item.domain}" class="text-zinc-600 dark:text-zinc-500">({data.item.domain})</a>
+                <a href="https://news.ycombinator.com/from?site={data.item.domain}" class="text-zinc-600 dark:text-zinc-400">({data.item.domain})</a>
             {/if}
 
         </hgroup>
 
-        <div class="px-4 py-2 mb-8 text-zinc-600 dark:text-zinc-500 border-y border-zinc-300 dark:border-zinc-700">
+        <div class="px-4 py-2 mb-8 text-zinc-600 dark:text-zinc-400 border-y border-zinc-300 dark:border-zinc-700">
             {#if data.item.type !== "job"}
                 <div class="flex flex-wrap gap-1 justify-between mb-1">
                     <p>{data.item.points} points by <a href="/user/{data.item.user}">{data.item.user}</a> {data.item.time_ago}</p>
@@ -117,7 +117,7 @@
 
         {#if data.item.content}
             <div 
-                class="prose prose-a:dark:text-zinc-500 prose-a:break-words
+                class="prose prose-a:dark:text-zinc-400 prose-a:break-words
                 prose-pre:bg-zinc-800 prose-pre:dark:bg-zinc-900 
                 prose-pre:first:mt-0 text-inherit max-w-full px-4 pb-8
                 border-zinc-300 dark:border-zinc-700"
@@ -166,7 +166,7 @@
 {#if next && $scrollY > 200 && data.item.comments.length > 1}
     <button 
         in:fly={{ y: 200 }} out:fly={{ y: 200 }}
-        class="fixed bottom-5 right-20 p-2 rounded bg-white/50 dark:bg-black/50 backdrop-blur border border-zinc-300 dark:border-zinc-700 hover:shadow dark:hover:border-white z-10" 
+        class="fixed bottom-5 right-20 p-3 rounded bg-white/50 dark:bg-black/50 backdrop-blur shadow border border-zinc-300 dark:border-zinc-700 z-10" 
         class:right-20={$hand === "righty"}
         class:left-20={$hand === "lefty"}
         on:click={() => {

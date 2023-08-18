@@ -3,6 +3,7 @@
 	import { navState } from "$lib/stores";
 	import { slide } from "svelte/transition";
     import type { Comment } from "./+page";
+	import { cubicIn } from "svelte/easing";
 
     export let index: number;
     export let comment: Comment;
@@ -64,7 +65,7 @@
             class:minimized={!visible && !highlighted}
             class="comment-outline"
         >
-            <div class="text-zinc-600 dark:text-zinc-500 flex justify-between max-sm:flex-col">
+            <div class="text-zinc-600 dark:text-zinc-400 flex justify-between max-sm:flex-col">
                 <div class="mb-1 flex items-center gap-2 mr-2 min-w-0">
                     <button 
                         class="flex items-center justify-center font-mono rounded-full shrink-0 group relative"
@@ -88,7 +89,7 @@
                             id="copy-{comment.id}" 
                             class="absolute hidden group-focus-visible:block group-hover:block 
                             left-full translate-x-1 bg-white dark:bg-black border border-zinc-300 dark:border-zinc-700 
-                            px-2 shadow dark:shadow-zinc-950 rounded text-zinc-600 dark:text-zinc-500 whitespace-nowrap text-sm"
+                            px-2 shadow dark:shadow-zinc-950 rounded text-zinc-600 dark:text-zinc-400 whitespace-nowrap text-sm"
                             class:copy-tooltip={true}
                         >
                             {copied ? "Link Copied!" : "Copy Link"}
@@ -158,15 +159,15 @@
             {#if visible}
                 <div 
                     id="content-{comment.id}"
-                    in:slide={{ duration: $navigating ? 0 : 300 }}
+                    in:slide={{ duration: $navigating ? 0 : 300, easing: cubicIn }}
                     out:slide
                     class="rounded border border-zinc-300 dark:border-zinc-700"
                 >
                     <div 
-                        class="prose text-inherit prose-a:dark:text-zinc-500  
+                        class="prose text-inherit prose-a:dark:text-zinc-400  
                         prose-pre:dark:bg-zinc-900 prose-pre:bg-zinc-800 prose-pre:first:mt-0 
                         prose-pre:border prose-pre:border-zinc-700 prose-pre:text-sm
-                        p-2 max-w-full break-words"
+                        max-w-full break-words p-2"
                     >
                         {@html comment.content}
                     </div>
@@ -174,7 +175,7 @@
             {/if}
             
             <div 
-                class="text-zinc-600 dark:text-zinc-500 text-sm flex items-center gap-2 mt-1" 
+                class="text-zinc-600 dark:text-zinc-400 text-sm flex items-center gap-2 mt-1" 
             >
                 <iconify-icon icon="cib:y-combinator" class="text-lg"></iconify-icon>
                 <a href="https://news.ycombinator.com/reply?id={comment.id}&goto=item?id={item.id}#{comment.id}">Reply</a>
@@ -248,10 +249,10 @@
     :global(.dark .nothing) {
         background: repeating-linear-gradient(
             -45deg,
-            rgb(24 24 27),
-            rgb(24 24 27) 3px,
-            black 3px,
-            black 7px
+            #27272a,
+            #27272a 3px,
+            #09090b 3px,
+            #09090b 7px
         );
     }
 
