@@ -1,8 +1,8 @@
 import { browser } from "$app/environment";
 import { writable } from "svelte/store";
 
-type Hand = 'lefty' | 'righty';
-type Theme = 'light' | 'dark' | 'system';
+export type Hand = 'lefty' | 'righty';
+export type Theme = 'light' | 'dark' | 'system';
 
 type Settings = {
     posts: {
@@ -51,27 +51,38 @@ function getTheme(): Theme {
 function createThemeStore() {
     const { subscribe, set, update } = writable<Theme>(getTheme());
 
+    function setDark() {
+        localStorage.setItem("theme", "dark");
+        document.documentElement.classList.add("dark");
+        set("dark");
+    }
+
+    function setLight() {
+        localStorage.setItem("theme", "light");
+        document.documentElement.classList.remove("dark");
+        set("light");
+    }
+
+    function setSystem() {
+        localStorage.removeItem("theme");
+        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add("dark");
+        } else {
+            document.documentElement.classList.remove("dark");
+        }
+        set("system");
+    }
+
 	return {
 		subscribe,
-		setDark: () => {
-            localStorage.setItem("theme", "dark");
-            document.documentElement.classList.add("dark");
-            set("dark");
+        set: (theme: Theme) => {
+            if (theme === "dark") setDark();
+            else if (theme === "light") setLight();
+            else if (theme === "system") setSystem();
         },
-		setLight: () => {
-            localStorage.setItem("theme", "light");
-            document.documentElement.classList.remove("dark");
-            set("light");
-        },
-		setSystem: () => {
-            localStorage.removeItem("theme");
-            if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                document.documentElement.classList.add("dark");
-            } else {
-                document.documentElement.classList.remove("dark");
-            }
-            set("system");
-        }
+		setDark,
+		setLight,
+		setSystem
 	};
 }
 
@@ -103,3 +114,7 @@ function createHandStore() {
 }
 
 export const hand = createHandStore();
+
+
+export type Tab = 'settings' | 'about';
+export const activeTab = writable<Tab>("settings");

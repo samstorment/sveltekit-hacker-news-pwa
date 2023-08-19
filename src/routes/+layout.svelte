@@ -2,11 +2,10 @@
 	import { page } from "$app/stores";
 	import { onDestroy, onMount } from "svelte";
     import "../app.css";
-	import Settings, { openSettings } from "./Settings.svelte";
 	import { fly } from "svelte/transition";
 	import { hand } from "$lib/settings";
 	import { navState, scrollY } from "$lib/stores";
-	import Menu, { openMenu } from "$lib/components/Menu/Menu.svelte";
+	import Menu, { openMenu } from "$lib/components/menu/menu.svelte";
 
     let uppies = true;
     let scrollTimeout = 0;
@@ -72,13 +71,11 @@
             <a href="/ask" class="relative nav-item" class:selected={selected === "ask"}>Ask</a>
             <a href="/jobs" class="relative nav-item" class:selected={selected === "jobs"}>Jobs</a>
         </div>
-        <button on:click={openSettings} title="Site Menu" class="ml-auto text-2xl p-2 hover:bg-zinc-200 dark:hover:bg-zinc-900 rounded aspect-square flex items-center">
-            <!-- <iconify-icon icon="carbon:settings"></iconify-icon> -->
+        <button on:click={openMenu} title="Site Menu" class="ml-auto text-2xl p-2 hover:bg-zinc-200 dark:hover:bg-zinc-900 rounded aspect-square flex items-center">
             <iconify-icon icon="lucide:menu"></iconify-icon>
             <span class="sr-only">Open Site Menu</span>
         </button>
-        <Settings />
-        <!-- <Menu /> -->
+        <Menu />
     </nav>
 </header>
 
