@@ -55,15 +55,11 @@
         }
     }
 
-    // onMount(openMenu);
-
     onDestroy(() => {
         if (browser) {
             window.removeEventListener("keydown", keyDown);
         }
     });
-
-    // onMount(theme.setDark)
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
