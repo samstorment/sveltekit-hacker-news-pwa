@@ -1,6 +1,5 @@
 <script>
-
-	import { activeTab, settings } from "$lib/settings";
+	import { activeTab } from "$lib/settings";
 	import { fly } from "svelte/transition";
 	import { closeMenu } from "./menu.svelte";
 	import SettingsPane from "./panes/settings/settings-pane.svelte";
