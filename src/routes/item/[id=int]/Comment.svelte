@@ -202,19 +202,29 @@
         </div>
     </div>
 
-    {#if comment.comments.length > 0}
-        <ul class:hidden={!visible}>
-            {#each comment.comments as child, index}
-                <li>
-                    <svelte:self 
-                        comment={{ ...child, parent: comment}} 
-                        {index} 
-                        group={comment.comments}
-                        {item}
-                    />
-                </li>
-            {/each}
-        </ul>
+    {#if comment.level < 2 || (comment.level === 2 && comment.comments_count === 1) || item.type === "comment"}
+        {#if comment.comments.length > 0}
+            <ul class:hidden={!visible}>
+                {#each comment.comments as child, index}
+                    <li>
+                        <svelte:self 
+                            comment={{ ...child, parent: comment}} 
+                            {index} 
+                            group={comment.comments}
+                            {item}
+                        />
+                    </li>
+                {/each}
+            </ul>
+        {/if}
+    {:else if comment.comments_count > 0}
+        <a
+            href="/item/{comment.id}"
+            class="border-2 border-blue-500 text-blue-500 dark:text-inherit dark:border-white p-2 ml-4 mb-6 rounded flex items-center gap-2 hover:no-underline"
+        >
+            <iconify-icon icon="octicon:comment-24" class="text-2xl"></iconify-icon>
+            {comment.comments_count} more {comment.comments_count === 1 ? "reply" : "replies"}
+        </a>
     {/if}
 </article>
 
