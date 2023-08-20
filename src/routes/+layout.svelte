@@ -6,6 +6,7 @@
 	import { hand } from "$lib/settings";
 	import { navState, scrollY } from "$lib/stores";
 	import Menu, { openMenu } from "$lib/components/menu/menu.svelte";
+	import { afterNavigate, beforeNavigate } from "$app/navigation";
 
     let uppies = true;
     let scrollTimeout = 0;
@@ -16,6 +17,15 @@
         $navState = 'visible';
         setTimeout(() => $navState = 'auto', 100);
     }
+
+    // always hide the nav on navigate
+    // handleScroll below will cause the nav to be shown anyway if we're at the top of the page
+    // this is great for back/forward without jarring nav animations
+    beforeNavigate(() => {
+        $navState = "hidden";
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => $navState = 'auto', 100);
+    })
 
     function handleScroll() {
         $scrollY = window.scrollY;

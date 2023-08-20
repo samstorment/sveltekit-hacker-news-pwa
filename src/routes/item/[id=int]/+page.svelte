@@ -131,8 +131,8 @@
                 </div>
             {/if}
             <p>
-                <a href="https://news.ycombinator.com/item?id={data.item.id}" class="flex items-center gap-1 w-fit">
-                    <iconify-icon icon="cib:y-combinator" class="text-lg"></iconify-icon>
+                <a href="https://news.ycombinator.com/item?id={data.item.id}">
+                    <iconify-icon icon="cib:y-combinator" class="w-4" inline></iconify-icon>
                     <span>View on Hacker News</span>
                 </a>
             </p>

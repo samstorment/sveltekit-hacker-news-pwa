@@ -75,20 +75,20 @@
             class="comment-outline"
         >
             <div class="text-zinc-600 dark:text-zinc-400 flex justify-between max-sm:flex-col">
-                <div class="mb-1 flex items-center gap-2 mr-2 min-w-0">
+                <div class="mb-1 flex items-center gap-1 mr-2 min-w-0">
                     <button 
-                        class="flex items-center justify-center font-mono rounded-full shrink-0 group relative {depthColor(comment.level)}"
+                        class="group relative {depthColor(comment.level)}"
                         aria-describedby="copy-{comment.id}"
                         on:click={copyLink}
                         on:focusout={() => copied = false}
                     >
                         <!-- <iconify-icon icon="fa-solid:link"></iconify-icon> -->
-                        <iconify-icon icon="ph:link-bold"></iconify-icon>
+                        <iconify-icon icon="ph:link-bold" class="w-4" inline></iconify-icon>
                         <div 
                             role="tooltip" 
                             id="copy-{comment.id}" 
                             class="absolute hidden group-focus-visible:block group-hover:block 
-                            left-full translate-x-1 bg-white dark:bg-black border border-zinc-300 dark:border-zinc-700 
+                            left-full bg-white dark:bg-black border border-zinc-300 dark:border-zinc-700 
                             px-2 shadow dark:shadow-zinc-950 rounded text-zinc-600 dark:text-zinc-400 whitespace-nowrap text-sm"
                             class:copy-tooltip={true}
                         >
@@ -101,7 +101,8 @@
                         {:else}
                             [removed]
                         {/if}
-                        <span>{comment.time_ago}</span></span>
+                        <span>{comment.time_ago}</span>
+                    </span>
                 </div>
                     
                 <div class="flex flex-wrap justify-end lefty:max-sm:flex-row-reverse items-center gap-1 mb-1 text-sm">
@@ -181,9 +182,9 @@
             {/if}
             
             <div 
-                class="text-zinc-600 dark:text-zinc-400 text-sm flex items-center gap-2 mt-1" 
+                class="text-zinc-600 dark:text-zinc-400 text-sm flex items-center gap-1 mt-1" 
             >
-                <iconify-icon icon="cib:y-combinator" class="text-lg"></iconify-icon>
+                <iconify-icon icon="cib:y-combinator" class="text-base w-4"></iconify-icon>
                 <a href="https://news.ycombinator.com/reply?id={comment.id}&goto=item?id={item.id}#{comment.id}">Reply</a>
                 <a href="https://news.ycombinator.com/item?id={item.id}#{comment.id}">View</a>
                 <span class="hidden" class:lefty:max-sm:block={!visible}>|</span>
@@ -237,6 +238,11 @@
 
     .minimized {
         @apply outline outline-1 outline-offset-8 outline-zinc-300 dark:outline-zinc-700 rounded-[1px];
+    }
+
+    .copy-tooltip {
+        top: 50%;
+        transform: translate(.25rem, -50%);
     }
 
     .copy-tooltip::before {
