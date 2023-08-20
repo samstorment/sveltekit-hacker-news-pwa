@@ -155,7 +155,7 @@
         dialog {
             @apply rounded-t-xl rounded-b-none dark:shadow-md dark:shadow-zinc-200;
             max-width: 100%;
-            max-height: min(700px, calc(100% - 4rem));
+            max-height: min(600px, calc(100% - 4rem));
             margin-top: auto;
             margin-bottom: 0;
         }
