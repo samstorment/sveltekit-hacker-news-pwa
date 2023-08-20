@@ -6,6 +6,7 @@
     import '../.././../prose.css';
 	import { hand } from "$lib/settings";
 	import { afterNavigate, beforeNavigate } from "$app/navigation";
+	import type { NavigationTarget } from "@sveltejs/kit";
 
     export let data;
 
@@ -14,6 +15,13 @@
     let intersecting = new Set<HTMLDivElement>();
     let curr: Element | undefined = undefined;
 
+    let commentsName: string;
+    $: if (data.item.type === "comment") {
+        commentsName = data.item.comments_count === 1 ? "reply" : "replies";
+    }  else {
+        commentsName = data.item.comments_count === 1 ? "comment" : "comments";
+    }
+    
     $: next = curr?.nextElementSibling;
 
     $: if (intersecting.size === 1) {
@@ -27,7 +35,11 @@
         observer && observer.disconnect();
     });
 
-    afterNavigate(() => {
+    let fromPage: NavigationTarget | null = null;
+
+    afterNavigate(({ from }) => {
+        fromPage = from;
+
         if (!comments) return;
         let topLevelComments = Array.from(comments.querySelectorAll(":scope > article")) as HTMLDivElement[];
     
@@ -83,23 +95,34 @@
 <div class="max-w-screen-md mx-auto">
     <article>
         <hgroup class="p-4 mb-4">
+            
             <h1 class="text-3xl inline">
-                <a href="{url}">{data.item.title}</a>
+                {#if data.item.title}
+                    <a href="{url}">{data.item.title}</a>
+                {:else if data.item.type === "comment"}
+                    Comment by <a href="/user/{data.item.user}">{data.item.user}</a>
+                {/if}
             </h1>
             
             {#if data.item.domain}
                 <a href="https://news.ycombinator.com/from?site={data.item.domain}" class="text-zinc-600 dark:text-zinc-400">({data.item.domain})</a>
             {/if}
-
         </hgroup>
 
         <div class="px-4 py-2 mb-8 text-zinc-600 dark:text-zinc-400 border-y border-zinc-300 dark:border-zinc-700">
             {#if data.item.type !== "job"}
                 <div class="flex flex-wrap gap-1 justify-between mb-1">
-                    <p>{data.item.points} points by <a href="/user/{data.item.user}">{data.item.user}</a> {data.item.time_ago}</p>
+                    <p>
+                        {#if data.item.points}
+                            {data.item.points} points
+                        {:else if data.item.type === "comment"}
+                            Comment
+                        {/if}
+                        by <a href="/user/{data.item.user}">{data.item.user}</a> {data.item.time_ago}
+                    </p>
                     <p>
                         <a href="/item/{data.item.id}">
-                            {data.item.comments_count} {data.item.comments_count === 1 ? "comment" : "comments"}
+                            {data.item.comments_count} {commentsName}
                             {#if data.pageLimit > 1}
                                 | {data.pageLimit} pages
                             {/if}
@@ -130,7 +153,7 @@
     </article>
 
     {#if data.item.comments.length > 0}
-        <div class="px-4" id="comments" bind:this={comments} in:fly={{x:500}}>
+        <div class="px-4" id="comments" bind:this={comments}>
             {#each data.item.comments as comment, index}
                 <Comment {comment} {index} group={data.item.comments} item={data.item} />
             {/each}

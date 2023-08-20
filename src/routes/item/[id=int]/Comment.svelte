@@ -2,7 +2,7 @@
 	import { navigating, page } from "$app/stores";
 	import { navState } from "$lib/stores";
 	import { slide } from "svelte/transition";
-    import type { Comment } from "./+page";
+    import type { Comment } from "$lib/util";
 
     export let index: number;
     export let comment: Comment;
@@ -46,7 +46,7 @@
     }
 
     async function copyLink() {
-        const commentUrl = `${$page.url.origin}${$page.url.pathname}#${comment.id}`;
+        const commentUrl = `${$page.url.origin}/item/${item.id}/find/${comment.id}`;
         await navigator.clipboard.writeText(commentUrl);
         copied = true;
     }
@@ -165,8 +165,8 @@
             {#if visible}
                 <div 
                     id="content-{comment.id}"
-                    in:slide={{ duration: $navigating ? 0 : 300 }}
-                    out:slide
+                    in:slide={{ duration: $navigating || comment.comments_count > 200 ? 0 : 300 }}
+                    out:slide={{ duration: comment.comments_count > 200 ? 0 : 300 }}
                     class="rounded border border-zinc-300 dark:border-zinc-700"
                 >
                     <div 
@@ -187,7 +187,8 @@
                 <a href="https://news.ycombinator.com/reply?id={comment.id}&goto=item?id={item.id}#{comment.id}">Reply</a>
                 <a href="https://news.ycombinator.com/item?id={item.id}#{comment.id}">View</a>
                 <span class="hidden" class:lefty:max-sm:block={!visible}>|</span>
-                <span
+                <a
+                    href="/item/{comment.id}"
                     class="ml-auto whitespace-nowrap overflow-hidden text-ellipsis"
                     class:lefty:max-sm:ml-0={!visible}
                 >
@@ -196,7 +197,7 @@
                     {:else}
                         No replies
                     {/if}
-                </span>
+                </a>
             </div>
         </div>
     </div>
@@ -219,8 +220,6 @@
 
 
 <style lang="postcss">
-    :global()
-
 
     .highlighted {
         @apply outline outline-offset-8 outline-black dark:outline-white rounded-sm;
