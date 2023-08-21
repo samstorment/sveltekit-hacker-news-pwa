@@ -166,8 +166,7 @@
             {#if visible}
                 <div 
                     id="content-{comment.id}"
-                    in:slide={{ duration: $navigating || comment.comments_count > 200 ? 0 : 300 }}
-                    out:slide={{ duration: comment.comments_count > 200 ? 0 : 300 }}
+                    transition:slide
                     class="rounded border border-zinc-300 dark:border-zinc-700"
                 >
                     <div 
@@ -203,7 +202,7 @@
         </div>
     </div>
 
-    {#if comment.level < 2 || (comment.level === 2 && comment.comments_count === 1) || item.type === "comment"}
+    {#if comment.level < 3 || (comment.level === 3 && comment.comments_count === 1)}
         {#if comment.comments.length > 0}
             <ul class:hidden={!visible}>
                 {#each comment.comments as child, index}
@@ -223,7 +222,7 @@
             href="/item/{comment.id}"
             class="border-2 border-blue-500 text-blue-500 dark:text-inherit dark:border-white p-2 ml-4 mb-6 rounded flex items-center gap-2 hover:no-underline"
         >
-            <iconify-icon icon="octicon:comment-24" class="text-2xl"></iconify-icon>
+            <iconify-icon icon="octicon:comment-24" class="text-2xl w-6"></iconify-icon>
             {comment.comments_count} more {comment.comments_count === 1 ? "reply" : "replies"}
         </a>
     {/if}
