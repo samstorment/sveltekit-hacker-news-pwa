@@ -6,7 +6,7 @@
 	import { hand } from "$lib/settings";
 	import { navState, scrollY } from "$lib/stores";
 	import Menu, { openMenu } from "$lib/components/menu/menu.svelte";
-	import { beforeNavigate } from "$app/navigation";
+	import { afterNavigate, beforeNavigate } from "$app/navigation";
 
     let uppies = true;
     let scrollTimeout = 0;
@@ -23,8 +23,6 @@
 
         if (willUnload) {
             loader.classList.remove("hidden");
-            clearTimeout(scrollTimeout);
-            $navState = 'auto';
             return;
         }
 
@@ -34,8 +32,11 @@
         $navState = "hidden";
         clearTimeout(scrollTimeout);
         scrollTimeout = setTimeout(() => $navState = 'auto', 100);
-    })
+    });
 
+    afterNavigate(() => {
+        loader.classList.add("hidden");
+    });
 
     function handleScroll() {
         $scrollY = window.scrollY;
@@ -65,6 +66,7 @@
     }
 
     onMount(() => {
+        console.log("MOUNT");
         $navState = 'auto';
         handleScroll();
     });
