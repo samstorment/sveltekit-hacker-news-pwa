@@ -66,7 +66,6 @@
     }
 
     onMount(() => {
-        console.log("MOUNT");
         $navState = 'auto';
         handleScroll();
     });
