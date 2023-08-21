@@ -35,11 +35,7 @@
         observer && observer.disconnect();
     });
 
-    let fromPage: NavigationTarget | null = null;
-
     afterNavigate(({ from }) => {
-        fromPage = from;
-
         if (!comments) return;
         let topLevelComments = Array.from(comments.querySelectorAll(":scope > article")) as HTMLDivElement[];
     
@@ -92,6 +88,16 @@
     $: url = data.item.url.startsWith("item") ? "" : data.item.url;
 </script>
 
+<svelte:head>
+    {#if data.item.title}
+        <title>{data.item.title}</title>
+    {:else if data.item.type === "comment" && !data.item.deleted}
+        <title>Comment by {data.item.user}</title>
+    {:else if data.item.type === "comment"}
+        <title>Deleted Comment</title>
+    {/if}
+</svelte:head>
+
 <div class="max-w-screen-md mx-auto">
     <article>
         <hgroup class="p-4 mb-4">
@@ -99,8 +105,10 @@
             <h1 class="text-3xl inline">
                 {#if data.item.title}
                     <a href="{url}">{data.item.title}</a>
-                {:else if data.item.type === "comment"}
+                {:else if data.item.type === "comment" && !data.item.deleted}
                     Comment by <a href="/user/{data.item.user}">{data.item.user}</a>
+                {:else if data.item.type === "comment"}
+                    Deleted Comment
                 {/if}
             </h1>
             
@@ -113,12 +121,18 @@
             {#if data.item.type !== "job"}
                 <div class="flex flex-wrap gap-1 justify-between mb-1">
                     <p>
-                        {#if data.item.points}
-                            {data.item.points} points
-                        {:else if data.item.type === "comment"}
-                            Comment
+                        {#if data.item.type === "comment" && data.item.deleted}
+                            Deleted Comment
+                        {:else}
+                            {#if data.item.points}
+                                {data.item.points} points
+                            {:else if data.item.type === "comment"}
+                                Comment
+                            {/if}
+                            {#if data.item.user}
+                                by <a href="/user/{data.item.user}">{data.item.user}</a> {data.item.time_ago}
+                            {/if}
                         {/if}
-                        by <a href="/user/{data.item.user}">{data.item.user}</a> {data.item.time_ago}
                     </p>
                     <p>
                         <a href="/item/{data.item.id}">

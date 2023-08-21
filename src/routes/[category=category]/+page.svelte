@@ -4,6 +4,10 @@
     export let data;
 </script>
 
+<svelte:head>
+    <title>{data.categoryLabel.charAt(0).toUpperCase() + data.categoryLabel.slice(1)} | Hacker News</title>
+</svelte:head>
+
 <div class="max-w-screen-md mx-auto">
     
     <h1 class="text-3xl p-4 sr-only">Page {data.page} of {data.categoryLabel}</h1>

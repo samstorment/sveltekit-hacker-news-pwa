@@ -2,6 +2,10 @@
     export let data;
 </script>
 
+<svelte:head>
+    <title>{data.id} | Hacker News</title>
+</svelte:head>
+
 <div class="max-w-screen-md mx-auto">
     <h1 class="text-3xl p-4">
         {data.id}

@@ -64,10 +64,6 @@
     });
 </script>
 
-<svelte:head>
-    <title>Hacker News</title>
-</svelte:head>
-
 <header 
     class="sticky top-0 bg-white dark:bg-zinc-950 slide z-10 slide"
     class:-translate-y-full={!uppies}

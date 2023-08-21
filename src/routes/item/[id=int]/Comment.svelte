@@ -10,6 +10,7 @@
     export let item: any;
 
     let copied = false;
+    let CUTOFF_DEPTH = 2;
     
     $: visible = !!comment;
     $: highlighted = $page.url.hash === `#${comment.id}`;
@@ -202,7 +203,7 @@
         </div>
     </div>
 
-    {#if comment.level < 3 || (comment.level === 3 && comment.comments_count === 1)}
+    {#if comment.level < CUTOFF_DEPTH || (comment.level === CUTOFF_DEPTH && comment.comments_count === 1)}
         {#if comment.comments.length > 0}
             <ul class:hidden={!visible}>
                 {#each comment.comments as child, index}
