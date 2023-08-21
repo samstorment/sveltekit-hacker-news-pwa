@@ -16,7 +16,7 @@
     }
 
     export function closeMenu() {
-        if (dialog.classList.contains("closing")) return;
+        if (!dialog.open || dialog.classList.contains("closing")) return;
 
         document.documentElement.classList.remove("overflow-hidden");
         dialog.classList.add("closing");

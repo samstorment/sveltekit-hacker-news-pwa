@@ -3,7 +3,7 @@ import { error } from '@sveltejs/kit';
 
 export async function load({ params, fetch, url }) {
 	const p = url.searchParams.get("p") ?? "1";	
-	let pageNum = parseInt(p);    
+	let pageNum = parseInt(p);
 	
 	if (isNaN(pageNum) || pageNum <= 0) {
 		pageNum = 1;
