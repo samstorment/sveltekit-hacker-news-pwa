@@ -1,15 +1,16 @@
 <script lang="ts">
-	import { page } from "$app/stores";
+	import { navigating, page } from "$app/stores";
 	import { onDestroy, onMount } from "svelte";
     import "../app.css";
 	import { fly } from "svelte/transition";
 	import { hand } from "$lib/settings";
 	import { navState, scrollY } from "$lib/stores";
 	import Menu, { openMenu } from "$lib/components/menu/menu.svelte";
-	import { afterNavigate, beforeNavigate } from "$app/navigation";
+	import { beforeNavigate } from "$app/navigation";
 
     let uppies = true;
     let scrollTimeout = 0;
+    let loader: HTMLDivElement;
 
     $: selected = $page.url.pathname.split('/')[1] || "top";
     
@@ -17,15 +18,24 @@
         $navState = 'visible';
         setTimeout(() => $navState = 'auto', 100);
     }
+    
+    beforeNavigate(({ willUnload }) => {
 
-    // always hide the nav on navigate
-    // handleScroll below will cause the nav to be shown anyway if we're at the top of the page
-    // this is great for back/forward without jarring nav animations
-    beforeNavigate(() => {
+        if (willUnload) {
+            loader.classList.remove("hidden");
+            clearTimeout(scrollTimeout);
+            $navState = 'auto';
+            return;
+        }
+
+        // always hide the nav on navigate
+        // handleScroll below will cause the nav to be shown anyway if we're at the top of the page
+        // this is great for back/forward without jarring nav animations
         $navState = "hidden";
         clearTimeout(scrollTimeout);
         scrollTimeout = setTimeout(() => $navState = 'auto', 100);
     })
+
 
     function handleScroll() {
         $scrollY = window.scrollY;
@@ -63,6 +73,14 @@
         $navState = 'auto';
     });
 </script>
+
+<div 
+    bind:this={loader}
+    class="loader fixed top-0 left-0 h-[2px] bg-blue-500 z-50"
+    class:block={$navigating}
+    class:hidden={!$navigating}
+>
+</div>
 
 <header 
     class="sticky top-0 bg-white dark:bg-zinc-950 slide z-10 slide"
@@ -122,5 +140,23 @@
     .nav-item.selected::after {
         content: '';
         @apply absolute h-[2px] w-full bg-blue-500 dark:bg-white left-0 -bottom-1;
+    }
+
+    .loader {
+        animation-name: loader;
+        animation-duration: 1500ms;
+        animation-delay: 120ms;
+        animation-iteration-count: infinite;
+    }
+
+    @keyframes loader {
+        0% {
+            width: 5%;
+        }
+
+        100% {
+            left: 30%;
+            width: 70%;
+        }
     }
 </style>
