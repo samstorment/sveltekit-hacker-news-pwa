@@ -20,6 +20,7 @@
     }
     
     beforeNavigate(({ willUnload }) => {
+        console.log("BEFORE NAV");
 
         if (willUnload) {
             loader.classList.remove("hidden");
@@ -35,10 +36,13 @@
     });
 
     afterNavigate(() => {
+        console.log("AFTER NAV");
         loader.classList.add("hidden");
     });
 
     function handleScroll() {
+        console.log("SCROLL");
+
         $scrollY = window.scrollY;
         
         window.addEventListener('scroll', (_) => {
@@ -66,11 +70,13 @@
     }
 
     onMount(() => {
+        console.log("MOUNT!");
         $navState = 'auto';
         handleScroll();
     });
 
     onDestroy(() => {
+        console.log("DESTROY");
         $navState = 'auto';
     });
 </script>
