@@ -19,20 +19,10 @@
         setTimeout(() => $navState = 'auto', 100);
     }
     
-    beforeNavigate((navigation) => {
-        console.log("BEFORE NAV", navigation);
+    beforeNavigate(({ willUnload }) => {
 
-        if (navigation.willUnload) {
-            loader.classList.remove("hidden");
-
-            setTimeout(() => {
-                console.log("BF CACHE TIMEOUT???");
-                loader.classList.add("hidden");
-            }, 100);
-
-            return;
-        }
-
+        if (willUnload) return;
+        
         // always hide the nav on navigate
         // handleScroll below will cause the nav to be shown anyway if we're at the top of the page
         // this is great for back/forward without jarring nav animations
@@ -41,20 +31,11 @@
         scrollTimeout = setTimeout(() => $navState = 'auto', 100);
     });
 
-    afterNavigate((navigation) => {
-        console.log("AFTER NAV", navigation);
-        loader.classList.add("hidden");
-    });
 
     function handleScroll() {
-        console.log("SCROLL");
-
         $scrollY = window.scrollY;
         
         window.addEventListener('scroll', (_) => {
-
-            console.log("SCROLLING");
-
             let change = window.scrollY - $scrollY;
             $scrollY = window.scrollY;
 
@@ -78,14 +59,8 @@
     }
 
     onMount(() => {
-        console.log("MOUNT!");
         $navState = 'auto';
         handleScroll();
-    });
-
-    onDestroy(() => {
-        console.log("DESTROY");
-        $navState = 'auto';
     });
 </script>
 
