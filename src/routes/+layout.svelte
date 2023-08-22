@@ -26,6 +26,7 @@
             loader.classList.remove("hidden");
 
             setTimeout(() => {
+                console.log("BF CACHE TIMEOUT???");
                 loader.classList.add("hidden");
             }, 100);
 
