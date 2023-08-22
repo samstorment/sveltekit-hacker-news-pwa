@@ -24,6 +24,11 @@
 
         if (navigation.willUnload) {
             loader.classList.remove("hidden");
+
+            setTimeout(() => {
+                loader.classList.add("hidden");
+            }, 100);
+
             return;
         }
 
