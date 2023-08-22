@@ -19,10 +19,10 @@
         setTimeout(() => $navState = 'auto', 100);
     }
     
-    beforeNavigate(({ willUnload }) => {
-        console.log("BEFORE NAV");
+    beforeNavigate((navigation) => {
+        console.log("BEFORE NAV", navigation);
 
-        if (willUnload) {
+        if (navigation.willUnload) {
             loader.classList.remove("hidden");
             return;
         }
@@ -35,8 +35,8 @@
         scrollTimeout = setTimeout(() => $navState = 'auto', 100);
     });
 
-    afterNavigate(() => {
-        console.log("AFTER NAV");
+    afterNavigate((navigation) => {
+        console.log("AFTER NAV", navigation);
         loader.classList.add("hidden");
     });
 
@@ -46,6 +46,8 @@
         $scrollY = window.scrollY;
         
         window.addEventListener('scroll', (_) => {
+
+            console.log("SCROLLING");
 
             let change = window.scrollY - $scrollY;
             $scrollY = window.scrollY;
