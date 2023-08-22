@@ -25,7 +25,7 @@
                     >
                         <hgroup>
                             <h2 class="text-lg inline"> 
-                                <a href="{item.url}" target="_blank">{item.title}</a>
+                                <a href="{item.url}">{item.title}</a>
                             </h2>
                             {#if item.domain}
                                 <a href="https://news.ycombinator.com/from?site={item.domain}" class="text-zinc-600 dark:text-zinc-400 text-sm break-words">({item.domain})</a>
@@ -58,7 +58,6 @@
                     <div class="ml-auto flex flex-col md:hidden w-[56px] shrink-0">
                         <a 
                             href="{item.url}" 
-                            target="_blank"
                             class="flex-1 flex items-center justify-center text-2xl px-4 hover:bg-zinc-200 dark:hover:bg-zinc-900"
                             class:rounded-bl-lg={$hand === "righty" && ((data.category !== "ask" && data.category !== "jobs") || i === data.items.length - 1)}
                             class:rounded-tl-lg={$hand === "righty" && i === 0}

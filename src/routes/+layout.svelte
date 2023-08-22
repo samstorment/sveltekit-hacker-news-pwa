@@ -19,10 +19,11 @@
         setTimeout(() => $navState = 'auto', 100);
     }
     
-    beforeNavigate(({ willUnload }) => {
+    beforeNavigate(({ willUnload, to }) => {
 
         if (willUnload) return;
-        
+        if (!to?.route.id) return;
+
         // always hide the nav on navigate
         // handleScroll below will cause the nav to be shown anyway if we're at the top of the page
         // this is great for back/forward without jarring nav animations
