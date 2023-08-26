@@ -7,10 +7,10 @@
 	import { navState, scrollY } from "$lib/stores";
 	import Menu, { openMenu } from "$lib/components/menu/menu.svelte";
 	import { afterNavigate, beforeNavigate } from "$app/navigation";
+	import Loader from "$lib/components/loader/loader.svelte";
 
     let uppies = true;
     let scrollTimeout = 0;
-    let loader: HTMLDivElement;
 
     $: selected = $page.url.pathname.split('/')[1] || "top";
     
@@ -65,14 +65,8 @@
     });
 </script>
 
-<div 
-    bind:this={loader}
-    class="loader fixed top-0 left-0 h-[2px] bg-blue-500 z-50"
-    class:block={$navigating}
-    class:hidden={!$navigating}
->
-</div>
 
+<Loader />
 <header 
     class="sticky top-0 bg-white dark:bg-zinc-950 slide z-10 slide"
     class:-translate-y-full={!uppies}
@@ -131,23 +125,5 @@
     .nav-item.selected::after {
         content: '';
         @apply absolute h-[2px] w-full bg-blue-500 dark:bg-white left-0 -bottom-1;
-    }
-
-    .loader {
-        animation-name: loader;
-        animation-duration: 1500ms;
-        animation-delay: 120ms;
-        animation-iteration-count: infinite;
-    }
-
-    @keyframes loader {
-        0% {
-            width: 5%;
-        }
-
-        100% {
-            left: 30%;
-            width: 70%;
-        }
     }
 </style>

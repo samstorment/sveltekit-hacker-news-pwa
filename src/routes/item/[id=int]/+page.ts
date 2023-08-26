@@ -5,6 +5,8 @@ export async function load({ params, fetch, url }) {
 	const p = url.searchParams.get("p") ?? "1";	
 	let pageNum = parseInt(p);
 	
+	// await new Promise(res => setTimeout(() => res("Hi"), 300))
+
 	if (isNaN(pageNum) || pageNum <= 0) {
 		pageNum = 1;
 	}
