@@ -1,7 +1,5 @@
 <script lang="ts">
 	import { afterNavigate, beforeNavigate } from "$app/navigation";
-	import { navigating } from "$app/stores";
-	import { onDestroy, onMount, tick } from "svelte";
 	import { fade } from "svelte/transition";
 
     let loader: HTMLDivElement;
@@ -14,11 +12,15 @@
     let leaving = false;
     let hidden = true;
 
-    beforeNavigate(() => {
+    beforeNavigate(({ willUnload }) => {
+
+        if (willUnload) return;
+
         hidden = false;
+
         timeout = setTimeout(() => {
             loading = true;
-            progress = 50;
+            progress = 65;
         }, 100);
     });
 
@@ -28,7 +30,7 @@
 
         console.log(type);
 
-        if (!loading) {
+        if (!loading || type === "enter") {
             hidden = true;
             return;
         };
@@ -69,19 +71,20 @@
 
 <style>
     div {
-        transition: width linear, opacity ease-in-out;
+        transition: width linear, opacity ease-in-out, left linear;
     }
     
     .loading {
-        transition-duration: 5000ms;
+        transition-duration: 2000ms;
     }
 
     .finishing {
-        transition-duration: 250ms;
+        transition-duration: 200ms;
     }
 
     .leaving {
         opacity: 0;
-        transition-duration: 200ms;
+        left: 70%;
+        transition-duration: 150ms;
     }
 </style>
