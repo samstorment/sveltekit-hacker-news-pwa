@@ -69,9 +69,10 @@
 </div>
 
 
-<style>
+<style lang="postcss">
     div {
         transition: width linear, opacity ease-in-out, left linear;
+        view-transition-name: loader;
     }
     
     .loading {
