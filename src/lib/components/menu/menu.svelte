@@ -33,19 +33,16 @@
 <script lang="ts">
 	import { browser } from "$app/environment";
 
-	import { hand, theme, type Tab } from "$lib/settings";
-	import { SvelteComponent, onDestroy, onMount } from "svelte";
-	import { fly } from "svelte/transition";
+	import { onDestroy, onMount, setContext } from "svelte";
 	import MenuAside from "./aside/aside.svelte";
 	import MenuMain from "./menu-main.svelte";
-	import PaneSettings from "./panes/settings/settings-pane.svelte";
+	import { writable } from "svelte/store";
     
     let container: HTMLDivElement;
     let closing = false;
 
-    type Tab = 'settings' | 'about';
-
-    let tab: Tab = "settings";
+    let dialogReference = writable(dialog);
+    setContext('dialog', dialogReference);
 
     function dialogClick(e: MouseEvent) {
         const isInContainer = container.contains(e.target as Element);
@@ -54,6 +51,10 @@
             closeMenu();
         }
     }
+
+    onMount(() => {
+        $dialogReference = dialog;
+    });
 
     onDestroy(() => {
         if (browser) {
@@ -83,6 +84,8 @@
     }
 
     dialog {
+        z-index: 9999999;
+        view-transition-name: site-menu;
         max-width: min(768px, calc(100% - 2rem)); 
         max-height: min(500px, calc(100% - 2rem));
     }
@@ -158,6 +161,7 @@
             max-height: min(600px, calc(100% - 4rem));
             margin-top: auto;
             margin-bottom: 0;
+            border: none;
         }
     }
 </style>

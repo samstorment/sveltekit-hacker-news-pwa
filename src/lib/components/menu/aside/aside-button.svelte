@@ -1,22 +1,26 @@
 <script lang="ts">
 	import { activeTab, type Tab } from "$lib/settings";
+	import { getContext } from "svelte";
+	import type { Writable } from "svelte/store";
 
     export let tab: Tab;
     export let icon: string;
     export let text: string = tab;
 
-    function activate(tabName: Tab) {
-        function run() {
-            $activeTab = tabName;
-        }
+    let dialog = getContext<Writable<HTMLDialogElement>>('dialog');
 
-        // @ts-ignore
-        if (document.startViewTransition) {
-            // @ts-ignore
-            document.startViewTransition(() => run());
-        } else {
-            run();
-        }
+    function activate(tabName: Tab) {
+        $activeTab = tabName;
+        // function run() {
+        //     $activeTab = tabName;
+        // }
+        // // @ts-ignore
+        // if ($dialog.startViewTransition) {
+        //     // @ts-ignore
+        //     $dialog.startViewTransition(() => run());
+        // } else {
+        //     run();
+        // }
     }
 </script>
 
