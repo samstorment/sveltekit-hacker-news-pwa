@@ -19,6 +19,7 @@
             >
                 <article 
                     class="flex lefty:flex-row-reverse"
+                    style="view-transition-name: article-title-{item.id};"
                 >
                     <div 
                         class="px-4 my-4 flex-1 self-center min-w-0" 

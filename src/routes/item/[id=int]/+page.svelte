@@ -100,7 +100,7 @@
 
 <div class="max-w-screen-md mx-auto">
     <article>
-        <hgroup class="p-4 mb-4">
+        <hgroup class="p-4 mb-4" style="view-transition-name: article-title-{data.item.id};">
             
             <h1 class="text-3xl inline">
                 {#if data.item.title}

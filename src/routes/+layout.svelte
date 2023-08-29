@@ -6,7 +6,7 @@
 	import { hand } from "$lib/settings";
 	import { navState, scrollY } from "$lib/stores";
 	import Menu, { openMenu } from "$lib/components/menu/menu.svelte";
-	import { afterNavigate, beforeNavigate } from "$app/navigation";
+	import { beforeNavigate, onNavigate } from "$app/navigation";
 	import Loader from "$lib/components/loader/loader.svelte";
 
     let uppies = true;
@@ -18,6 +18,16 @@
         $navState = 'visible';
         setTimeout(() => $navState = 'auto', 100);
     }
+
+    onNavigate(() => {
+        // @ts-ignore
+        if (document.startViewTransition) {
+            return new Promise(res => {
+                // @ts-ignore
+                document.startViewTransition(() => new Promise(res));
+            });
+        }
+    });
     
     beforeNavigate(({ willUnload, to }) => {
 
@@ -112,6 +122,10 @@
 
 
 <style lang="postcss">
+    header {
+        view-transition-name: main-header;
+    }
+
     .slide {
         transition: transform 300ms ease;
     }
@@ -120,6 +134,13 @@
         @apply no-underline;
     }
 
+    .nav-item {
+        animation-duration: 10ms;
+    }
+
+    .nav-item.selected::after {
+        view-transition-name: nav-selected;
+    }
     
     .nav-item:hover::after,
     .nav-item.selected::after {
