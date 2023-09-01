@@ -5,8 +5,7 @@
 	import { fly } from "svelte/transition";
     import '../.././../prose.css';
 	import { hand } from "$lib/settings";
-	import { afterNavigate, beforeNavigate } from "$app/navigation";
-	import type { NavigationTarget } from "@sveltejs/kit";
+	import { afterNavigate, beforeNavigate, onNavigate } from "$app/navigation";
 
     export let data;
 
@@ -99,9 +98,11 @@
 </svelte:head>
 
 <div class="max-w-screen-md mx-auto">
-    <article>
-        <hgroup class="p-4 mb-4" style="view-transition-name: article-title-{data.item.id};">
-            
+    <article class="sticky -top-full">
+        <hgroup 
+            class="p-4 mb-4" 
+            style="view-transition-name: article-title;"
+        >
             <h1 class="text-3xl inline">
                 {#if data.item.title}
                     <a href="{url}">{data.item.title}</a>
@@ -167,7 +168,7 @@
     </article>
 
     {#if data.item.comments.length > 0}
-        <div class="px-4" id="comments" bind:this={comments}>
+        <div class="px-4 z-10 relative bg-zinc-950" id="comments" bind:this={comments}>
             {#each data.item.comments as comment, index}
                 <Comment {comment} {index} group={data.item.comments} item={data.item} />
             {/each}
