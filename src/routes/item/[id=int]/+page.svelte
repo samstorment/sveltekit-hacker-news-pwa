@@ -6,6 +6,7 @@
     import '../.././../prose.css';
 	import { hand } from "$lib/settings";
 	import { afterNavigate, beforeNavigate, onNavigate } from "$app/navigation";
+	import { navigating } from "$app/stores";
 
     export let data;
 
@@ -34,23 +35,23 @@
         observer && observer.disconnect();
     });
 
-    afterNavigate(({ from }) => {
-        if (!comments) return;
-        let topLevelComments = Array.from(comments.querySelectorAll(":scope > article")) as HTMLDivElement[];
+    // afterNavigate(({ from }) => {
+    //     if (!comments) return;
+    //     let topLevelComments = Array.from(comments.querySelectorAll(":scope > article")) as HTMLDivElement[];
     
-        observer = observer || new IntersectionObserver((entries) => {    
-            entries.forEach((entry) => {
-                const ele = entry.target as HTMLDivElement;
-                if (entry.isIntersecting) intersecting.add(ele);
-                else intersecting.delete(ele);
-                intersecting = intersecting;
-            });
-        });
+    //     observer = observer || new IntersectionObserver((entries) => {    
+    //         entries.forEach((entry) => {
+    //             const ele = entry.target as HTMLDivElement;
+    //             if (entry.isIntersecting) intersecting.add(ele);
+    //             else intersecting.delete(ele);
+    //             intersecting = intersecting;
+    //         });
+    //     });
     
-        topLevelComments.forEach(c => observer.observe(c));
+    //     topLevelComments.forEach(c => observer.observe(c));
     
-        cleanupCodeBlocks();
-    });
+    //     cleanupCodeBlocks();
+    // });
 
     onDestroy(() => {
         observer && observer.disconnect();
@@ -98,9 +99,9 @@
 </svelte:head>
 
 <div class="max-w-screen-md mx-auto">
-    <article class="sticky -top-full">
+    <article>
         <hgroup 
-            class="p-4 mb-4" 
+            class="p-4 mb-4"
             style="view-transition-name: article-title;"
         >
             <h1 class="text-3xl inline">
@@ -155,7 +156,7 @@
 
         {#if data.item.content}
             <div 
-                class="prose prose-a:dark:text-zinc-400 prose-a:break-words
+                class="prose prose-a:dark:text-zinc-400 break-words
                 prose-pre:bg-zinc-800 prose-pre:dark:bg-zinc-900 
                 prose-pre:first:mt-0 text-inherit max-w-full px-4 pb-8
                 border-zinc-300 dark:border-zinc-700"
@@ -201,7 +202,7 @@
 </div>
 
 
-{#if next && $scrollY > 200 && data.item.comments.length > 1}
+<!-- {#if next && $scrollY > 200 && data.item.comments.length > 1}
     <button 
         in:fly={{ y: 200 }} out:fly={{ y: 200 }}
         class="fixed bottom-5 right-20 p-3 rounded bg-white/50 dark:bg-black/50 backdrop-blur shadow border border-zinc-300 dark:border-zinc-700 z-10" 
@@ -214,4 +215,4 @@
     >
         Next
     </button>
-{/if}
+{/if} -->

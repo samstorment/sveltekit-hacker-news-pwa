@@ -1,12 +1,13 @@
 <script lang="ts">
 	import { navigating, page } from "$app/stores";
-	import { onDestroy, onMount } from "svelte";
+	import { onDestroy, onMount, setContext } from "svelte";
     import "../app.css";
 	import { fly } from "svelte/transition";
 	import { hand } from "$lib/settings";
-	import { navState, scrollY } from "$lib/stores";
+	import { navState, scrollY, transition } from "$lib/stores";
 	import Menu, { openMenu } from "$lib/components/menu/menu.svelte";
 	import { beforeNavigate, onNavigate } from "$app/navigation";
+	import { writable } from "svelte/store";
 
     let uppies = true;
     let scrollTimeout = 0;
@@ -23,7 +24,7 @@
         if (document.startViewTransition) {
             return new Promise(res => {
                 // @ts-ignore
-                document.startViewTransition(() => new Promise(res));
+                $transition = document.startViewTransition(() => new Promise(res));
             });
         }
     });

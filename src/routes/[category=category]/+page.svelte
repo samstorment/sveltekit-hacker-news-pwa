@@ -1,21 +1,26 @@
 <script lang="ts">
 	import { afterNavigate, beforeNavigate, onNavigate } from '$app/navigation';
 	import { hand } from '$lib/settings.js';
+	import { transition } from '$lib/stores.js';
 
     export let data;
 
     let viewTransitionTarget: string | undefined;
 
-    beforeNavigate(({ from, to }) => {
-        if (to?.route.id === "/item/[id=int]") {
-            viewTransitionTarget = to.params?.id;
-        } 
-    });
+    // beforeNavigate(({ from, to }) => {
+    //     if (to?.route.id === "/item/[id=int]") {
+    //         viewTransitionTarget = to.params?.id;
+    //     } 
+    // });
 
-    afterNavigate(({ from, to }) => {
+    afterNavigate(async ({ from, to }) => {
         if (from?.route.id === "/item/[id=int]") {
             viewTransitionTarget = from.params?.id;
-        } 
+
+            if ($transition) {
+                $transition.finished.finally(() => viewTransitionTarget = undefined);
+            }
+        }
     });
 </script>
 
@@ -35,10 +40,7 @@
                 <article class="flex lefty:flex-row-reverse">
                     <div 
                         class="px-4 my-4 flex-1 self-center min-w-0"
-                        style={item.id.toString() === viewTransitionTarget 
-                            ? "view-transition-name: article-title;" 
-                            : ""
-                        }
+                        class:article-title={item.id.toString() === viewTransitionTarget}
                     >
                         <hgroup>
                             <h2 class="text-lg inline"> 
@@ -129,6 +131,10 @@
 <style lang="postcss">
     .solo-link {
         margin-left: auto;
+    }
+
+    .article-title {
+        view-transition-name: article-title;
     }
 </style>
 
