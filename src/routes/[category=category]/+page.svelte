@@ -7,19 +7,17 @@
 
     let viewTransitionTarget: string | undefined;
 
-    // beforeNavigate(({ from, to }) => {
-    //     if (to?.route.id === "/item/[id=int]") {
-    //         viewTransitionTarget = to.params?.id;
-    //     } 
-    // });
+    beforeNavigate(({ from, to }) => {
+        if (to?.route.id === "/item/[id=int]") {
+            viewTransitionTarget = to.params?.id;
+        } 
+    });
 
     afterNavigate(async ({ from, to }) => {
         if (from?.route.id === "/item/[id=int]") {
             viewTransitionTarget = from.params?.id;
 
-            if ($transition) {
-                $transition.finished.finally(() => viewTransitionTarget = undefined);
-            }
+            $transition?.finished.finally(() => viewTransitionTarget = undefined);
         }
     });
 </script>

@@ -1,10 +1,7 @@
 <script lang="ts">
 	import { onDestroy } from "svelte";
 	import Comment from "./Comment.svelte";
-	import { navState, scrollY } from "$lib/stores";
-	import { fly } from "svelte/transition";
     import '../.././../prose.css';
-	import { hand } from "$lib/settings";
 	import { afterNavigate, beforeNavigate, onNavigate } from "$app/navigation";
 	import { navigating } from "$app/stores";
 
@@ -14,6 +11,7 @@
     let observer: IntersectionObserver;
     let intersecting = new Set<HTMLDivElement>();
     let curr: Element | undefined = undefined;
+    let article: HTMLElement;
 
     let commentsName: string;
     $: if (data.item.type === "comment") {
@@ -30,7 +28,19 @@
         curr = undefined;
     }
 
+    // keep article stuck just off the top of the screen so view transitions don't travel ridiculously far/fast
+    function pinArticle() {
+        const { height } = article.getBoundingClientRect();
+        article.style.top = `${-height}px`;
+    }
+
+    afterNavigate(() => {
+       pinArticle();
+    });
+
     beforeNavigate(() => {
+        pinArticle();
+
         intersecting.clear();
         observer && observer.disconnect();
     });
@@ -57,33 +67,33 @@
         observer && observer.disconnect();
     });
 
-    function cleanupCodeBlocks() {
-        let codes = Array.from(document.querySelectorAll("pre > code")) as HTMLDivElement[];
+    // function cleanupCodeBlocks() {
+    //     let codes = Array.from(document.querySelectorAll("pre > code")) as HTMLDivElement[];
         
-        let whiteSpaces: number[] = [];
+    //     let whiteSpaces: number[] = [];
         
-        for (let code of codes) {
+    //     for (let code of codes) {
             
-            let minWhite = Infinity;
-            let lines = code.innerHTML.split('\n');
+    //         let minWhite = Infinity;
+    //         let lines = code.innerHTML.split('\n');
                         
-            for (let line of lines) {
-                if (line.trim() === "") continue;
-                const numWhite = line.search(/\S|$/);
-                minWhite = Math.min(numWhite, minWhite);
-            }
+    //         for (let line of lines) {
+    //             if (line.trim() === "") continue;
+    //             const numWhite = line.search(/\S|$/);
+    //             minWhite = Math.min(numWhite, minWhite);
+    //         }
 
-            if (minWhite === Infinity) whiteSpaces.push(0);
-            else whiteSpaces.push(minWhite);
-        }
+    //         if (minWhite === Infinity) whiteSpaces.push(0);
+    //         else whiteSpaces.push(minWhite);
+    //     }
 
-        codes.forEach((c, i) => {
-            let minWhite = whiteSpaces[i];
-            if (minWhite === 0) return;
-            let lines = c.innerHTML.split('\n').map(l => [...l].splice(minWhite).join('')).join('\n');
-            c.innerHTML = lines;
-        });
-    }
+    //     codes.forEach((c, i) => {
+    //         let minWhite = whiteSpaces[i];
+    //         if (minWhite === 0) return;
+    //         let lines = c.innerHTML.split('\n').map(l => [...l].splice(minWhite).join('')).join('\n');
+    //         c.innerHTML = lines;
+    //     });
+    // }
 
     $: url = data.item.url.startsWith("item") ? "" : data.item.url;
 </script>
@@ -99,7 +109,10 @@
 </svelte:head>
 
 <div class="max-w-screen-md mx-auto">
-    <article>
+    <article 
+        bind:this={article}
+        class="sticky"
+    >
         <hgroup 
             class="p-4 mb-4"
             style="view-transition-name: article-title;"
