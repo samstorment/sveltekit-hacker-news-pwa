@@ -1,6 +1,7 @@
 export type Comment = {
 	deleted?: boolean;
 	user: string;
+	time: number;
 	time_ago: string;
 	content: string;
 	comments: Comment[];
@@ -9,6 +10,20 @@ export type Comment = {
 	id: string;
 	visible_comment_count: number;
 	comments_count: number;
+}
+
+export type Category = 'top' | 'new' | 'ask' | 'show' | 'jobs';
+
+export function pageLimit(category: Category) {
+	return {
+		'top': 10, 'new': 10, 'ask': 2, 'show': 2, 'jobs': 1
+	}[category];
+}
+
+export function categoryName(category: Category) {
+	if (category === 'top') return 'news'; 
+	if (category === 'new') return 'newest';
+	return category; 
 }
 
 export function getPageBreaks(item: Comment, hardLowerLimit: number, roughUpperLimit: number) {

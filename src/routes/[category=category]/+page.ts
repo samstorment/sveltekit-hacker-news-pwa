@@ -1,41 +1,35 @@
-import { redirect } from '@sveltejs/kit';
+// import { pageLimit, type Category, categoryName } from '$lib/util.js';
+// import { redirect } from '@sveltejs/kit';
 
 
 
-export async function load({ params, fetch, url }) {
+// export async function load({ params, fetch, url }) {
 	
-	async function pageLimit(category: string) {
-		const res = await fetch(`https://api.hnpwa.com/v0`);
-		const { endpoints } = await res.json();
+// 	// async function fetchPageLimit(category: string) {
+// 	// 	const res = await fetch(`https://api.hnpwa.com/v0`);
+// 	// 	const { endpoints } = await res.json();
+// 	// 	const topic = endpoints.find((e: any) => e.topic === category);
+// 	// 	return topic.maxPages;
+// 	// }
+
+// 	let page = url.searchParams.get('p') ?? "1";
+// 	let pageNum = parseInt(page);
+
+// 	if (isNaN(pageNum) || pageNum <= 0) {
+// 		throw redirect(301, `/${params.category}?p=1`)
+// 	}
+
+// 	var limit = pageLimit(params.category as Category);
 	
-		const topic = endpoints.find((e: any) => e.topic === category);
-	
-		return topic.maxPages;
-	}
+// 	if (pageNum > limit) {
+// 		throw redirect(301, `/${params.category}?p=${limit}`);
+// 	}
 
-    let category = params.category;
-
-	if (category === "top") category = "news";
-	else if (category === "new") category = "newest";
-
-	let page = url.searchParams.get('p') ?? "1";
-	let pageNum = parseInt(page);
-
-	if (isNaN(pageNum) || pageNum <= 0) {
-		throw redirect(301, `/${params.category}?p=1`)
-	}
-
-	var limit = await pageLimit(category);
-	
-	if (pageNum > limit) {
-		throw redirect(301, `/${params.category}?p=${limit}`);
-	}
-
-	return {
-		category,
-		categoryLabel: params.category,
-		page: pageNum,
-		items: fetch(`https://api.hnpwa.com/v0/${category}/${pageNum}.json`).then((r) => r.json()),
-		pageLimit: limit
-	};
-}
+// 	return {
+// 		category: categoryName(params.category as Category),
+// 		categoryLabel: params.category,
+// 		page: pageNum,
+// 		items: fetch(`/api/${params.category}?p=${pageNum}`).then((r) => r.json()),
+// 		pageLimit: limit
+// 	};
+// }
