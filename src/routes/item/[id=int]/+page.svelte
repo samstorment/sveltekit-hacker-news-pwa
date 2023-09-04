@@ -185,7 +185,7 @@
     </article>
 
     {#if data.item.comments.length > 0}
-        <div class="px-4 z-10 relative bg-zinc-950" id="comments" bind:this={comments}>
+        <div class="px-4 z-10 relative" id="comments" bind:this={comments}>
             {#each data.item.comments as comment, index}
                 <Comment {comment} {index} group={data.item.comments} item={data.item} />
             {/each}

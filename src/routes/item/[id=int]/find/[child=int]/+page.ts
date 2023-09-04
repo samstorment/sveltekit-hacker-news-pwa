@@ -1,4 +1,4 @@
-import { getPages, type Comment, findItemInPage } from '$lib/util.js';
+import { getPages, type Comment, findItemInPage, type Item } from '$lib/util.js';
 import { error, redirect } from '@sveltejs/kit';
 
 export async function load({ params, fetch, url }) {
@@ -10,7 +10,7 @@ export async function load({ params, fetch, url }) {
 	}
 
 	const res = await fetch(`https://api.hnpwa.com/v0/item/${params.id}.json`)
-	const item: Comment = await res.json();
+	const item: Item = await res.json();
 
 	if (!item) {
 		throw error(404, "Not Found");

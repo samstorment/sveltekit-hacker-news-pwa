@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { navigating, page } from "$app/stores";
+	import { page } from "$app/stores";
 	import { navState } from "$lib/stores";
 	import { slide } from "svelte/transition";
     import type { Comment } from "$lib/util";
@@ -39,9 +39,9 @@
         return group[index + 1]; 
     }
 
-    function scrollTo(id: string) {
+    function scrollTo(id: number) {
         $navState = 'visible';
-        document.getElementById(id)?.scrollIntoView({
+        document.getElementById(id.toString())?.scrollIntoView({
             behavior: 'smooth'
         });
     }
@@ -66,7 +66,7 @@
 
 <!-- Add border-l here for thread lines - can make this a setting -->
 <article 
-    id="{comment.id}" 
+    id="{comment.id.toString()}"
     class:pl-4={comment.level > 0 && comment.level < 10}
 >
     <div class="pb-6">

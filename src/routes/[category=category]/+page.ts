@@ -1,28 +1,29 @@
-import { pageLimit, type Category, categoryName } from '$lib/util.js';
+import { pageLimit, type Category, categoryName, type Item, type ItemBasic } from '$lib/util.js';
 import { redirect } from '@sveltejs/kit';
 
 export async function load({ params, fetch, url }) {
 
     const page = url.searchParams.get('p') ?? "1";
 	const pageNum = parseInt(page);
+    const category = params.category as Category;
     
     if (isNaN(pageNum) || pageNum <= 0) {
         throw redirect(301, `/${params.category}?p=1`)
     }
     
-    const limit = pageLimit(params.category as Category);
+    const limit = pageLimit(category);
     
     if (pageNum > limit) {
         throw redirect(301, `/${params.category}?p=${limit}`);
     }
 
-    const category = categoryName(params.category as Category);
+    const hnCategory = categoryName(category);
 
-    const res = await fetch(`https://api.hnpwa.com/v0/${category}/${page}.json`);
-    const items = await res.json();
+    const res = await fetch(`https://api.hnpwa.com/v0/${hnCategory}/${page}.json`);
+    const items: ItemBasic[] = await res.json();
 
 	return {
-		category: categoryName(params.category as Category),
+		category: hnCategory,
 		categoryLabel: params.category,
 		page: pageNum,
 		items,

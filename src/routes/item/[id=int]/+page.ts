@@ -1,4 +1,4 @@
-import { getPages, type Comment } from '$lib/util.js';
+import { getPages, type Comment, type Item } from '$lib/util.js';
 import { error } from '@sveltejs/kit';
 
 export async function load({ params, fetch, url }) {
@@ -12,7 +12,7 @@ export async function load({ params, fetch, url }) {
 	}
 
 	const res = await fetch(`https://api.hnpwa.com/v0/item/${params.id}.json`)
-	const item = await res.json();
+	const item: Item = await res.json();
 
 	if (!item) {
 		throw error(404, "Not Found");
@@ -23,7 +23,7 @@ export async function load({ params, fetch, url }) {
 	item.comments = pages[pageNum - 1] ?? [];
 
 	return {
-		item: item as any,
+		item: item,
 		pageLimit: pages.length,
 		page: pageNum
 	};

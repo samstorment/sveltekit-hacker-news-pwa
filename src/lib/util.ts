@@ -1,18 +1,50 @@
-export type Comment = {
-	deleted?: boolean;
-	user: string;
-	time: number;
-	time_ago: string;
-	content: string;
-	comments: Comment[];
-	level: number;
-	parent?: Comment;
-	id: string;
-	visible_comment_count: number;
-	comments_count: number;
+export interface ItemBasic {
+	id: number,
+	title: string,
+	points: number,
+	user: string,
+	time: number,
+	time_ago: string,
+	comments_count: number,
+	type: ItemType,
+	url: string,
+	domain: string
 }
 
+export interface Item extends ItemBasic {
+	content: string,
+	comments: Comment[],
+	dead?: boolean,
+	deleted?: boolean,
+	poll?: PollChoice[]
+}
+
+export interface Comment extends Omit<ItemBasic, 'title' | 'points' | 'domain'> {
+	content: string,
+	comments: Comment[],
+	level: number,
+	dead?: boolean,
+	deleted?: boolean,
+	parent?: Comment
+}
+
+type ItemType = 'link' | 'job' | 'comment' | 'poll';
+
+export type Page = Comment[];
+
 export type Category = 'top' | 'new' | 'ask' | 'show' | 'jobs';
+
+export interface User {
+	created_time: number,
+	created: string,
+	id: string,
+	karma: number
+}
+
+type PollChoice = {
+	item: string;
+	points: number;
+}
 
 export function pageLimit(category: Category) {
 	return {
@@ -26,7 +58,7 @@ export function categoryName(category: Category) {
 	return category; 
 }
 
-export function getPageBreaks(item: Comment, hardLowerLimit: number, roughUpperLimit: number) {
+export function getPageBreaks(item: Item, hardLowerLimit: number, roughUpperLimit: number) {
 	let total = 0;
 
 	let pages: number[] = [0];
@@ -49,7 +81,7 @@ export function getPageBreaks(item: Comment, hardLowerLimit: number, roughUpperL
 	return pages;
 }
 
-export function getPage(item: Comment, pageNumber: number) {
+export function getPage(item: Item, pageNumber: number) {
 	const MIN_PER_PAGE = 100;
 	const MAX_PER_PAGE = 300;
 
@@ -66,8 +98,8 @@ export function getPage(item: Comment, pageNumber: number) {
 	return item.comments.slice(startIndex, endIndex);
 }
 
-export function getPages(item: Comment, start = 1, end = Infinity) {
-	let pages: Comment[][] = [];
+export function getPages(item: Item, start = 1, end = Infinity) {
+	let pages: Page[] = [];
 
 	let pageNumber = start;
 	
@@ -87,7 +119,7 @@ export function findItemInPage(page: Comment[], id: string) {
 	function search(item: Comment, id: string) {	
 		let result: Comment | null = null;
 		
-		if (parseInt(item.id) === idNum) {
+		if (item.id === idNum) {
 			result = item;
 		} else if (item.comments) {
 			item.comments.some((child) => {
