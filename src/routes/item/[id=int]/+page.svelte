@@ -4,6 +4,9 @@
     import '../.././../prose.css';
 	import { afterNavigate, beforeNavigate, onNavigate } from "$app/navigation";
 	import { navigating } from "$app/stores";
+	import { navState, scrollY } from "$lib/stores";
+	import { hand } from "$lib/settings";
+	import { fly } from "svelte/transition";
 
     export let data;
 
@@ -45,55 +48,55 @@
         observer && observer.disconnect();
     });
 
-    // afterNavigate(({ from }) => {
-    //     if (!comments) return;
-    //     let topLevelComments = Array.from(comments.querySelectorAll(":scope > article")) as HTMLDivElement[];
+    afterNavigate(({ from }) => {
+        if (!comments) return;
+        let topLevelComments = Array.from(comments.querySelectorAll(":scope > article")) as HTMLDivElement[];
     
-    //     observer = observer || new IntersectionObserver((entries) => {    
-    //         entries.forEach((entry) => {
-    //             const ele = entry.target as HTMLDivElement;
-    //             if (entry.isIntersecting) intersecting.add(ele);
-    //             else intersecting.delete(ele);
-    //             intersecting = intersecting;
-    //         });
-    //     });
+        observer = observer || new IntersectionObserver((entries) => {    
+            entries.forEach((entry) => {
+                const ele = entry.target as HTMLDivElement;
+                if (entry.isIntersecting) intersecting.add(ele);
+                else intersecting.delete(ele);
+                intersecting = intersecting;
+            });
+        });
     
-    //     topLevelComments.forEach(c => observer.observe(c));
+        topLevelComments.forEach(c => observer.observe(c));
     
-    //     cleanupCodeBlocks();
-    // });
+        cleanupCodeBlocks();
+    });
 
     onDestroy(() => {
         observer && observer.disconnect();
     });
 
-    // function cleanupCodeBlocks() {
-    //     let codes = Array.from(document.querySelectorAll("pre > code")) as HTMLDivElement[];
+    function cleanupCodeBlocks() {
+        let codes = Array.from(document.querySelectorAll("pre > code")) as HTMLDivElement[];
         
-    //     let whiteSpaces: number[] = [];
+        let whiteSpaces: number[] = [];
         
-    //     for (let code of codes) {
+        for (let code of codes) {
             
-    //         let minWhite = Infinity;
-    //         let lines = code.innerHTML.split('\n');
+            let minWhite = Infinity;
+            let lines = code.innerHTML.split('\n');
                         
-    //         for (let line of lines) {
-    //             if (line.trim() === "") continue;
-    //             const numWhite = line.search(/\S|$/);
-    //             minWhite = Math.min(numWhite, minWhite);
-    //         }
+            for (let line of lines) {
+                if (line.trim() === "") continue;
+                const numWhite = line.search(/\S|$/);
+                minWhite = Math.min(numWhite, minWhite);
+            }
 
-    //         if (minWhite === Infinity) whiteSpaces.push(0);
-    //         else whiteSpaces.push(minWhite);
-    //     }
+            if (minWhite === Infinity) whiteSpaces.push(0);
+            else whiteSpaces.push(minWhite);
+        }
 
-    //     codes.forEach((c, i) => {
-    //         let minWhite = whiteSpaces[i];
-    //         if (minWhite === 0) return;
-    //         let lines = c.innerHTML.split('\n').map(l => [...l].splice(minWhite).join('')).join('\n');
-    //         c.innerHTML = lines;
-    //     });
-    // }
+        codes.forEach((c, i) => {
+            let minWhite = whiteSpaces[i];
+            if (minWhite === 0) return;
+            let lines = c.innerHTML.split('\n').map(l => [...l].splice(minWhite).join('')).join('\n');
+            c.innerHTML = lines;
+        });
+    }
 
     $: url = data.item.url.startsWith("item") ? "" : data.item.url;
 </script>
@@ -215,7 +218,7 @@
 </div>
 
 
-<!-- {#if next && $scrollY > 200 && data.item.comments.length > 1}
+{#if next && $scrollY > 200 && data.item.comments.length > 1}
     <button 
         in:fly={{ y: 200 }} out:fly={{ y: 200 }}
         class="fixed bottom-5 right-20 p-3 rounded bg-white/50 dark:bg-black/50 backdrop-blur shadow border border-zinc-300 dark:border-zinc-700 z-10" 
@@ -228,4 +231,4 @@
     >
         Next
     </button>
-{/if} -->
+{/if}
