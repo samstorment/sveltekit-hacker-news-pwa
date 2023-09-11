@@ -1,5 +1,5 @@
 <script>
-	import { hand, theme } from "$lib/settings";
+	import { hand, showImagePreviews, theme } from "$lib/settings";
 	import RadioButton from "./radio-button.svelte";
 
 </script>
@@ -41,3 +41,28 @@
     </div>
 </div>
 
+
+<div class="py-2 px-4">
+    <h3 class="text-xl mb-2">Images</h3>
+
+    <label 
+        class="flex-1 text-zinc-600 dark:text-zinc-400 flex justify-between items-center border border-zinc-300 dark:border-zinc-700 cursor-pointer px-3 py-2 rounded"
+        class:selected={$showImagePreviews}
+    >
+        <span>Show preview images</span>
+        <input type="checkbox" class="w-4 h-4" bind:checked={$showImagePreviews}>
+    </label>
+   
+</div>
+
+<style lang="postcss">
+    label:has(input:focus-visible) {
+        @apply outline border-inherit outline-offset-2 outline-blue-500 ring-blue-500;
+    }
+
+    .selected {
+        @apply outline outline-2 outline-blue-500 dark:outline-white
+            border-blue-500 dark:border-inherit
+            text-zinc-900 dark:text-zinc-200;
+    }
+</style>

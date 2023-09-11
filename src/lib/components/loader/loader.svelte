@@ -28,8 +28,6 @@
 
         clearTimeout(timeout);
 
-        console.log(type);
-
         if (!loading || type === "enter") {
             hidden = true;
             return;
@@ -49,7 +47,6 @@
                 hidden = true;
                 progress = 0;
             }, { once: true });
-
 
         }, { once: true });
     });

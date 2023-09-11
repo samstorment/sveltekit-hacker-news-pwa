@@ -4,28 +4,6 @@ import { writable } from "svelte/store";
 export type Hand = 'lefty' | 'righty';
 export type Theme = 'light' | 'dark' | 'system';
 
-type Settings = {
-    posts: {
-        hand: Hand
-    },
-    comments: {
-        hand: Hand,
-        hnLinks: boolean
-    },
-    theme: Theme
-}
-
-export const settings = writable<Settings>({
-    posts: {
-        hand: 'righty'
-    },
-    comments: {
-        hand: 'righty',
-        hnLinks: true
-    },
-    theme: getTheme()
-});
-
 function getTheme(): Theme {
     if (browser) {
         const theme = localStorage.getItem("theme") as Theme ?? "system";
@@ -118,3 +96,32 @@ export const hand = createHandStore();
 
 export type Tab = 'settings' | 'about';
 export const activeTab = writable<Tab>("settings");
+
+
+function imagePreviewPreference() {
+    if (browser) {
+        return localStorage.getItem("image-preview") === "true";
+    }
+
+    return false;
+}
+
+function createImagePreviewStore() {
+    const { subscribe, set, update } = writable<boolean>(imagePreviewPreference());
+
+	return {
+		subscribe,
+        set: (value: boolean | "true" | "false") => {
+            localStorage.setItem("image-preview", `${value}`);
+
+            if (typeof value === "string") {
+                set(value === "true");
+                return;
+            }
+
+            set(value);
+        }
+	};
+} 
+
+export const showImagePreviews = createImagePreviewStore();
