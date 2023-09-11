@@ -28,7 +28,7 @@ export async function load(event) {
 
         if (item.url.startsWith("item")) return { url: undefined };
 
-        const res = await fetch(`/api/og?site=${item.url}`);
+        const res = await fetch(`/api/og?url=${item.url}`);
         const data: { url: string | undefined } = await res.json();
         return data;
     }

@@ -40,7 +40,8 @@
                 <article>
                     <div class="flex lefty:flex-row-reverse">
                         <div 
-                            class="px-4 my-4 flex-1 self-center min-w-0 max-xs:mb-2"
+                            class="px-4 my-4 flex-1 min-w-0 self-center"
+                            class:max-xs:mb-2={showImages}
                             class:article-title={item.id.toString() === viewTransitionTarget}
                         >
                             <hgroup>
@@ -132,17 +133,20 @@
 
                     {#if showImages}
                         <div 
-                            class="flex gap-2 px-4 items-center pb-4 xs:hidden text-zinc-600 dark:text-zinc-400 text-sm"
+                            class="flex gap-2 px-4 items-center pb-4 xs:hidden text-zinc-600 dark:text-zinc-400 text-sm lefty:flex-row-reverse lefty:justify-end"
                         >
                             {#if data.category !== "ask" && data.category !== "jobs"}
-                                <a href="/item/{item.id}" class="px-3 py-1 rounded bg-zinc-200 dark:bg-zinc-900 whitespace-nowrap">
+                                {#if item.points}
+                                    <p class="overflow-hidden text-ellipsis whitespace-nowrap">{item.points} points</p>
+                                {/if}
+                                <p class="overflow-hidden text-ellipsis whitespace-nowrap">{item.time_ago}</p>
+                                {#if item.user}
+                                    <a href="/user/{item.user}" class="overflow-hidden text-ellipsis whitespace-nowrap">by {item.user}</a>
+                                {/if}
+                                <a href="/item/{item.id}" class="px-3 py-1 rounded bg-zinc-200 dark:bg-zinc-900 whitespace-nowrap max-xs:ml-auto lefty:max-xs:ml-0">
                                     <iconify-icon icon="octicon:comment-24" inline></iconify-icon> <span class="leading-none">{item.comments_count}</span> 
                                     <span class="sr-only">Open Post Comments</span>
                                 </a>
-                            
-                                <p class="overflow-hidden text-ellipsis whitespace-nowrap">{item.points} points</p>
-                                <p class="overflow-hidden text-ellipsis whitespace-nowrap">{item.time_ago}</p>
-                                <a href="/user/{item.user}" class="overflow-hidden text-ellipsis whitespace-nowrap">by {item.user}</a>
                             {/if}
                         </div>
                     {/if}
