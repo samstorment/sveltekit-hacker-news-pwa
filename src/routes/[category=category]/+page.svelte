@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { afterNavigate, beforeNavigate, goto, onNavigate } from '$app/navigation';
 	import { hand, showImagePreviews } from '$lib/settings.js';
-	import { transition } from '$lib/stores.js';
+	import { images, transition } from '$lib/stores.js';
     import type { ItemBasic } from '$lib/util.js';
 
     export let data;
@@ -12,20 +12,18 @@
 
     // this feels stinky - should just use redis, but redis is stinky too
     async function getImage(item: ItemBasic) {
-        if (images[item.id] === 'missing') return undefined;
-        if (images[item.id]) return images[item.id];
+        if ($images[item.id] === 'missing') return undefined;
+        if ($images[item.id]) return $images[item.id];
 
         if (item.url.startsWith("item")) return undefined;
 
         const res = await fetch(`/api/og?url=${item.url}`);
         const data: { url: string | undefined } = await res.json();
 
-        images[item.id] = data.url ?? 'missing';
+        $images[item.id] = data.url ?? 'missing';
 
         return data.url;
     }
-
-    let images: Record<number, string> = {};
 
     beforeNavigate(({ from, to }) => {
         if (to?.route.id === "/item/[id=int]") {
@@ -137,7 +135,7 @@
                                                     max-h-full max-sm:max-w-[100px] w-full text-3xl shadow"
                                             on:error={_ => {
                                                 // tricking svelte into a rerender but now its cached - this is icky
-                                                images[item.id] = 'missing';
+                                                $images[item.id] = 'missing';
                                                 item = item;
                                             }}
                                         />
