@@ -49,7 +49,7 @@
     
     <h1 class="text-3xl p-4 sr-only">Page {data.page} of {data.categoryLabel}</h1>
 
-    <pre>{JSON.stringify(images, null, 4)}</pre>
+    <!-- <pre>{JSON.stringify(images, null, 4)}</pre> -->
 
     <ul>
         {#each data.items as item, i (item.id)}
