@@ -24,25 +24,12 @@ export async function load(event) {
     const res = await fetch(`https://api.hnpwa.com/v0/${hnCategory}/${page}.json`);
     const items: ItemBasic[] = await res.json();
 
-    async function getImage(item: ItemBasic) {
-
-        if (item.url.startsWith("item")) return { url: undefined };
-
-        const res = await fetch(`/api/og?url=${item.url}`);
-        const data: { url: string | undefined } = await res.json();
-        return data;
-    }
 
 	return {
 		category: hnCategory,
 		categoryLabel: params.category,
 		page: pageNum,
-		items: items.map(item => {
-            return {
-                ...item,
-                ogImage: getImage(item)
-            }
-        }),
+        items,
 		pageLimit: limit
 	};
 }

@@ -2,12 +2,30 @@
 	import { afterNavigate, beforeNavigate, goto, onNavigate } from '$app/navigation';
 	import { hand, showImagePreviews } from '$lib/settings.js';
 	import { transition } from '$lib/stores.js';
+    import type { ItemBasic } from '$lib/util.js';
 
     export let data;
 
     let viewTransitionTarget: string | undefined;
 
     $: showImages = $showImagePreviews && data.category !== "ask";
+
+    // this feels stinky - should just use redis, but redis is stinky too
+    async function getImage(item: ItemBasic) {
+        if (images[item.id] === 'missing') return undefined;
+        if (images[item.id]) return images[item.id];
+
+        if (item.url.startsWith("item")) return undefined;
+
+        const res = await fetch(`/api/og?url=${item.url}`);
+        const data: { url: string | undefined } = await res.json();
+
+        images[item.id] = data.url ?? 'missing';
+
+        return data.url;
+    }
+
+    let images: Record<number, string> = {};
 
     beforeNavigate(({ from, to }) => {
         if (to?.route.id === "/item/[id=int]") {
@@ -18,7 +36,6 @@
     afterNavigate(async ({ from, to }) => {
         if (from?.route.id === "/item/[id=int]") {
             viewTransitionTarget = from.params?.id;
-
             $transition?.finished.finally(() => viewTransitionTarget = undefined);
         }
     });
@@ -32,8 +49,10 @@
     
     <h1 class="text-3xl p-4 sr-only">Page {data.page} of {data.categoryLabel}</h1>
 
+    <pre>{JSON.stringify(images, null, 4)}</pre>
+
     <ul>
-        {#each data.items as item, i}
+        {#each data.items as item, i (item.id)}
             <li 
                 class="border-b border-zinc-300 dark:border-zinc-700 items-center last:border-none"
             >
@@ -108,15 +127,19 @@
                             </div>
                         {:else}
                             <a href={item.url} class="preview-image flex items-center justify-center self-start lefty:mr-0 lefty:ml-4 mr-4 my-4 max-xs:mb-2 w-[128px] h-[72px] max-sm:w-[100px] max-sm:h-[56px] hover:no-underline max-2xs:hidden">
-                                {#await item.ogImage}
+                                {#await getImage(item)}
                                     <iconify-icon icon="line-md:loading-loop" class="text-2xl"></iconify-icon>
                                 {:then src} 
-                                    {#if src.url}
+                                    {#if src}
                                         <img 
-                                            src={src.url} alt="Open External Post Link" 
+                                            {src} alt="View Post" 
                                             class="object-cover object-center rounded flex items-center justify-center 
                                                     max-h-full max-sm:max-w-[100px] w-full text-3xl shadow"
-                                            on:error={() => src.url = undefined }
+                                            on:error={_ => {
+                                                // tricking svelte into a rerender but now its cached - this is icky
+                                                images[item.id] = 'missing';
+                                                item = item;
+                                            }}
                                         />
                                     {:else}
                                         <div
