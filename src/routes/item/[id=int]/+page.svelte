@@ -7,22 +7,16 @@
 	import { navState, scrollY } from "$lib/stores";
 	import { hand } from "$lib/settings";
 	import { fly } from "svelte/transition";
+    import { comments, points } from "$lib/util";
 
     export let data;
 
-    let comments: HTMLDivElement;
+    let commentsDiv: HTMLDivElement;
     let observer: IntersectionObserver;
     let intersecting = new Set<HTMLDivElement>();
     let curr: Element | undefined = undefined;
     let article: HTMLElement;
 
-    let commentsName: string;
-    $: if (data.item.type === "comment") {
-        commentsName = data.item.comments_count === 1 ? "reply" : "replies";
-    }  else {
-        commentsName = data.item.comments_count === 1 ? "comment" : "comments";
-    }
-    
     $: next = curr?.nextElementSibling;
 
     $: if (intersecting.size === 1) {
@@ -49,8 +43,8 @@
     });
 
     afterNavigate(({ from }) => {
-        if (!comments) return;
-        let topLevelComments = Array.from(comments.querySelectorAll(":scope > article")) as HTMLDivElement[];
+        if (!commentsDiv) return;
+        let topLevelComments = Array.from(commentsDiv.querySelectorAll(":scope > article")) as HTMLDivElement[];
     
         observer = observer || new IntersectionObserver((entries) => {    
             entries.forEach((entry) => {
@@ -143,7 +137,7 @@
                             Deleted Comment
                         {:else}
                             {#if data.item.points}
-                                {data.item.points} points
+                                {points(data.item)}
                             {:else if data.item.type === "comment"}
                                 Comment
                             {/if}
@@ -154,7 +148,7 @@
                     </p>
                     <p>
                         <a href="/item/{data.item.id}">
-                            {data.item.comments_count} {commentsName}
+                            {comments(data.item)}
                             {#if data.pageLimit > 1}
                                 | {data.pageLimit} pages
                             {/if}
@@ -185,7 +179,7 @@
     </article>
 
     {#if data.item.comments.length > 0}
-        <div class="px-4 z-10 relative" id="comments" bind:this={comments}>
+        <div class="px-4 z-10 relative" id="comments" bind:this={commentsDiv}>
             {#each data.item.comments as comment, index}
                 <Comment {comment} {index} group={data.item.comments} item={data.item} />
             {/each}

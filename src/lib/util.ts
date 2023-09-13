@@ -132,3 +132,24 @@ export function findItemInPage(page: Comment[], id: string) {
 
 	return search({ comments: page } as Comment, id);
 }
+
+export function run<T>(fn: () => T): T {
+	return fn();
+}
+
+export function points(item: Item | ItemBasic) {
+	let label = item.points === 1 ? 'point' : 'points';
+	return `${item.points} ${label}`;
+}
+
+export function comments(item: Item | ItemBasic | Comment) {
+
+	let label = run(() => {
+		if (item.type === "comment") {
+			return item.comments_count === 1 ? "reply" : "replies";
+		}  
+		return item.comments_count === 1 ? "comment" : "comments";
+	});
+
+	return `${item.comments_count} ${label}`;
+}

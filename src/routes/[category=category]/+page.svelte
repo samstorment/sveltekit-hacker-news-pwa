@@ -2,7 +2,7 @@
 	import { afterNavigate, beforeNavigate, goto, onNavigate } from '$app/navigation';
 	import { hand, showImagePreviews } from '$lib/settings.js';
 	import { images, transition } from '$lib/stores.js';
-    import type { ItemBasic } from '$lib/util.js';
+    import { points, type ItemBasic, comments } from '$lib/util.js';
 
     export let data;
 
@@ -66,7 +66,6 @@
                     <div class="flex lefty:flex-row-reverse">
                         <div 
                             class="px-4 my-4 flex-1 min-w-0 self-center"
-                            class:max-xs:mb-2={showImages}
                             class:article-title={item.id.toString() === viewTransitionTarget}
                         >
                             <hgroup>
@@ -84,7 +83,7 @@
                             >
                                 <span>
                                     {#if item.points}
-                                        {item.points} points 
+                                        {points(item)}
                                     {/if}
                                     {#if item.user}
                                         by <a href="/user/{item.user}">{item.user}</a> 
@@ -96,7 +95,7 @@
                                 </span>
                                 {#if item.type !== "job"}
                                     <a href="/item/{item.id}" class="inline-block">
-                                        {item.comments_count} {item.comments_count === 1 ? "comment" : "comments"}
+                                        {comments(item)}
                                     </a>
                                 {/if}
                             </p>
@@ -132,7 +131,7 @@
                                 {/if}
                             </div>
                         {:else}
-                            <a href={item.url} class="preview-image flex items-center justify-center self-start lefty:mr-0 lefty:ml-4 mr-4 my-4 max-xs:mb-2 w-[128px] h-[72px] max-sm:w-[100px] max-sm:h-[56px] hover:no-underline max-2xs:hidden">
+                            <a href={item.url} class="preview-image flex items-center justify-center self-start lefty:mr-0 lefty:ml-4 mr-4 my-4 w-[128px] h-[72px] max-sm:w-[100px] max-sm:h-[56px] hover:no-underline max-2xs:hidden">
                                 {#await item.image}
                                     <iconify-icon icon="line-md:loading-loop" class="text-2xl"></iconify-icon>
                                 {:then src} 
@@ -160,23 +159,23 @@
                         {/if}
                     </div>
 
-                    {#if showImages}
+                    {#if showImages && data.category !== "ask" && data.category !== "jobs"}
                         <div 
-                            class="flex gap-2 px-4 items-center pb-4 xs:hidden text-zinc-600 dark:text-zinc-400 text-sm lefty:flex-row-reverse lefty:justify-end"
+                            class="flex gap-2 px-4 items-center pb-4 -mt-2 xs:hidden text-zinc-600 dark:text-zinc-400 text-sm lefty:flex-row-reverse lefty:justify-end"
                         >
-                            {#if data.category !== "ask" && data.category !== "jobs"}
+                            <div class="flex gap-2 items-center min-w-0">
                                 {#if item.points}
-                                    <p class="overflow-hidden text-ellipsis whitespace-nowrap">{item.points} points</p>
+                                    <p class="overflow-hidden text-ellipsis whitespace-nowrap">{points(item)}</p>
                                 {/if}
-                                <p class="overflow-hidden text-ellipsis whitespace-nowrap">{item.time_ago}</p>
                                 {#if item.user}
                                     <a href="/user/{item.user}" class="overflow-hidden text-ellipsis whitespace-nowrap">by {item.user}</a>
                                 {/if}
-                                <a href="/item/{item.id}" class="px-3 py-1 rounded bg-zinc-200 dark:bg-zinc-900 whitespace-nowrap max-xs:ml-auto lefty:max-xs:ml-0">
-                                    <iconify-icon icon="octicon:comment-24" inline></iconify-icon> <span class="leading-none">{item.comments_count}</span> 
-                                    <span class="sr-only">Open Post Comments</span>
-                                </a>
-                            {/if}
+                                <p class="overflow-hidden text-ellipsis whitespace-nowrap">{item.time_ago}</p>
+                            </div>
+                            <a href="/item/{item.id}" class="px-3 py-1 rounded bg-zinc-200 dark:bg-zinc-900 whitespace-nowrap max-xs:ml-auto lefty:max-xs:ml-0 hover:no-underline">
+                                <iconify-icon icon="octicon:comment-24" inline></iconify-icon> <span class="leading-none">{item.comments_count}</span> 
+                                <span class="sr-only">Open Post Comments</span>
+                            </a>
                         </div>
                     {/if}
                 </article>

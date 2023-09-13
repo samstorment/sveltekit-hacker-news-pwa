@@ -2,7 +2,7 @@
 	import { page } from "$app/stores";
 	import { navState } from "$lib/stores";
 	import { slide } from "svelte/transition";
-    import type { Comment } from "$lib/util";
+    import { comments, type Comment } from "$lib/util";
 
     export let index: number;
     export let comment: Comment;
@@ -10,7 +10,7 @@
     export let item: any;
 
     let copied = false;
-    let CUTOFF_DEPTH = 2;
+    let CUTOFF_DEPTH = 4;
     
     $: visible = !!comment;
     $: highlighted = $page.url.hash === `#${comment.id}`;
@@ -193,11 +193,7 @@
                     class="ml-auto whitespace-nowrap overflow-hidden text-ellipsis"
                     class:lefty:max-sm:ml-0={!visible}
                 >
-                    {#if comment.comments_count > 0}
-                        {comment.comments_count} {comment.comments_count === 1 ? "reply" : "replies"}
-                    {:else}
-                        No replies
-                    {/if}
+                    {comments(comment)}
                 </a>
             </div>
         </div>
