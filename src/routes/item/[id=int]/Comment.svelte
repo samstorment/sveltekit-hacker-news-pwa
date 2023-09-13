@@ -10,7 +10,7 @@
     export let item: any;
 
     let copied = false;
-    let CUTOFF_DEPTH = 4;
+    let CUTOFF_DEPTH = 2;
     
     $: visible = !!comment;
     $: highlighted = $page.url.hash === `#${comment.id}`;
