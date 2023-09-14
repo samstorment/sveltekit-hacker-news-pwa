@@ -48,8 +48,22 @@
 
     async function copyLink() {
         const commentUrl = `${$page.url.origin}/item/${item.id}/find/${comment.id}`;
-        await navigator.clipboard.writeText(commentUrl);
-        copied = true;
+        
+        const data: ShareData = {
+            url: commentUrl,
+            text: 'Hacker News Comment',
+            title: 'Hacker News Comment'
+        };
+
+        // if navigator share API works, we use that, otherwise just write URL to clipboard
+        if (navigator.canShare && navigator.canShare(data)) {
+            navigator.share(data)
+                .then(() => copied = true)
+                .catch(() => copied = false);
+        } else {
+            await navigator.clipboard.writeText(commentUrl);
+            copied = true;
+        }
     }
 
     function depthColor(depth: number) {
@@ -90,7 +104,7 @@
                             id="copy-{comment.id}" 
                             class="absolute hidden group-focus-visible:block group-hover:block 
                             left-full bg-white dark:bg-black border border-zinc-300 dark:border-zinc-700 
-                            px-2 shadow dark:shadow-zinc-950 rounded text-zinc-600 dark:text-zinc-400 whitespace-nowrap text-sm"
+                            px-2 py-1 dark:py-0 shadow dark:shadow-zinc-950 rounded text-zinc-600 dark:text-zinc-400 whitespace-nowrap text-sm"
                             class:copy-tooltip={true}
                         >
                             {copied ? "Link Copied!" : "Copy Link"}

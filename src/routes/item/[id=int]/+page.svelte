@@ -3,11 +3,12 @@
 	import Comment from "./Comment.svelte";
     import '../.././../prose.css';
 	import { afterNavigate, beforeNavigate, onNavigate } from "$app/navigation";
-	import { navigating } from "$app/stores";
+	import { navigating, page } from "$app/stores";
 	import { navState, scrollY } from "$lib/stores";
 	import { hand } from "$lib/settings";
 	import { fly } from "svelte/transition";
-    import { comments, points } from "$lib/util";
+    import { comments, findItemInPage, points } from "$lib/util";
+    import { browser } from "$app/environment";
 
     export let data;
 
@@ -93,6 +94,28 @@
     }
 
     $: url = data.item.url.startsWith("item") ? "" : data.item.url;
+
+    let shareData: ShareData;
+    $: shareData = {
+        url: `${$page.url.origin}/item/${data.item.id}`,
+        text: data.item.type === 'comment' ? 'Hacker News Comment' : data.item.title,
+        title: data.item.type === 'comment' ? 'Hacker News Comment' : data.item.title
+    }
+
+    $: shareable = browser && navigator.canShare && navigator.canShare(shareData);
+
+    let copied = false;
+
+    async function copyLink() {
+        if (shareable) {
+            navigator.share(shareData)
+                .then(() => copied = true)
+                .catch(() => copied = false);
+        } else if (shareData?.url) {
+            await navigator.clipboard.writeText(shareData.url);
+            copied = true;
+        }
+    }
 </script>
 
 <svelte:head>
@@ -129,9 +152,9 @@
             {/if}
         </hgroup>
 
-        <div class="px-4 py-2 mb-8 text-zinc-600 dark:text-zinc-400 border-y border-zinc-300 dark:border-zinc-700">
+        <div class="px-4 py-3 mb-8 text-zinc-600 dark:text-zinc-400 border-y border-zinc-300 dark:border-zinc-700">
             {#if data.item.type !== "job"}
-                <div class="flex flex-wrap gap-1 justify-between mb-1">
+                <div class="flex flex-wrap gap-1 justify-between mb-2">
                     <p>
                         {#if data.item.type === "comment" && data.item.deleted}
                             Deleted Comment
@@ -147,7 +170,7 @@
                         {/if}
                     </p>
                     <p>
-                        <a href="/item/{data.item.id}">
+                        <a href="/item/{data.item.id}#comments">
                             {comments(data.item)}
                             {#if data.pageLimit > 1}
                                 | {data.pageLimit} pages
@@ -156,12 +179,25 @@
                     </p>
                 </div>
             {/if}
-            <p>
-                <a href="https://news.ycombinator.com/item?id={data.item.id}">
+            <div class="flex flex-wrap gap-1 items-center">
+                <button 
+                    class="mr-1 px-2 py-1 bg-zinc-200 dark:bg-zinc-900 rounded"
+                    on:click={copyLink}
+                    on:focusout={() => copied = false}
+                >
+                    {#if shareable}
+                        <iconify-icon icon="material-symbols:share" class="w-4" inline></iconify-icon>
+                        <span>Share</span>
+                    {:else}
+                        <iconify-icon icon="material-symbols:share" class="w-4" inline></iconify-icon>
+                        <span>{copied ? "Copied!" : "Copy Link"}</span>
+                    {/if}
+                </button>
+                <a href="https://news.ycombinator.com/item?id={data.item.id}" class="inline-block">
                     <iconify-icon icon="cib:y-combinator" class="w-4" inline></iconify-icon>
                     <span>View on Hacker News</span>
                 </a>
-            </p>
+            </div>
         </div>
 
         {#if data.item.content}
