@@ -19,12 +19,15 @@
         setTimeout(() => $navState = 'auto', 100);
     }
 
-    onNavigate(() => {
+    onNavigate((navigation) => {
         // @ts-ignore
         if (document.startViewTransition) {
             return new Promise(res => {
                 // @ts-ignore
-                $transition = document.startViewTransition(() => new Promise(res));
+                $transition = document.startViewTransition(async () => {
+                    res();
+                    await navigation.complete;
+                });
             });
         }
     });
