@@ -17,6 +17,7 @@
     let intersecting = new Set<HTMLDivElement>();
     let curr: Element | undefined = undefined;
     let article: HTMLElement;
+    let sticky = false;
 
     $: next = curr?.nextElementSibling;
 
@@ -32,18 +33,16 @@
         article.style.top = `${-height}px`;
     }
 
-    afterNavigate(() => {
-       pinArticle();
-    });
-
     beforeNavigate(() => {
         pinArticle();
+        sticky = true;
 
         intersecting.clear();
         observer && observer.disconnect();
     });
 
     afterNavigate(({ from }) => {
+        sticky = false;
         if (!commentsDiv) return;
         let topLevelComments = Array.from(commentsDiv.querySelectorAll(":scope > article")) as HTMLDivElement[];
     
@@ -129,13 +128,10 @@
 </svelte:head>
 
 <div class="max-w-screen-md mx-auto">
-    <article 
-        bind:this={article}
-        class="sticky"
-    >
+    <article bind:this={article} class:sticky>
         <hgroup 
             class="p-4 mb-4"
-            style="view-transition-name: article-title;"
+            class:article-title={data.item.type !== "comment"}
         >
             <h1 class="text-3xl inline">
                 {#if data.item.title}
@@ -262,3 +258,10 @@
         Next
     </button>
 {/if}
+
+
+<style>
+    .article-title {
+        view-transition-name: article-title;
+    }
+</style>
