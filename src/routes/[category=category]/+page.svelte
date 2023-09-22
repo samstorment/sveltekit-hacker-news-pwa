@@ -68,7 +68,7 @@
                             class="px-4 my-4 flex-1 min-w-0 self-center"
                             class:article-title={item.id.toString() === viewTransitionTarget}
                         >
-                            <hgroup>
+                            <hgroup class="break-words">
                                 <h2 class="inline"> 
                                     <a href="{item.url}">{item.title}</a>
                                 </h2>

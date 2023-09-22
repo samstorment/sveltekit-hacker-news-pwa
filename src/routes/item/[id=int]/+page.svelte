@@ -130,7 +130,7 @@
 <div class="max-w-screen-md mx-auto">
     <article bind:this={article} class:sticky>
         <hgroup 
-            class="p-4 mb-4"
+            class="p-4 mb-4 break-words"
             class:article-title={data.item.type !== "comment"}
         >
             <h1 class="text-3xl inline">
