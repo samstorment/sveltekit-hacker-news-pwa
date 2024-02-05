@@ -161,6 +161,8 @@
                     Comment by <a href="/user/{data.item.user}">{data.item.user}</a>
                 {:else if data.item.type === "comment"}
                     Deleted Comment
+                {:else}
+                    [No Title]
                 {/if}
             </h1>
             
