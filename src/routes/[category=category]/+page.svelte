@@ -131,7 +131,12 @@
                                 {/if}
                             </div>
                         {:else}
-                            <a href={item.url} class="preview-image flex items-center justify-center self-start lefty:mr-0 lefty:ml-4 mr-4 my-4 w-[128px] h-[72px] max-sm:w-[100px] max-sm:h-[56px] hover:no-underline max-2xs:hidden">
+                            <a 
+                                href={item.url} 
+                                class="preview-image group flex items-center justify-center self-start 
+                                w-[128px] h-[72px] max-sm:w-[100px] max-sm:h-[56px] max-2xs:hidden
+                                lefty:mr-0 lefty:ml-4 mr-4 my-4 hover:no-underline hocus:outline-none"
+                            >
                                 {#await item.image}
                                     <iconify-icon icon="line-md:loading-loop" class="text-2xl"></iconify-icon>
                                 {:then src} 
@@ -139,8 +144,11 @@
                                         <img 
                                             src={src.url} 
                                             alt="View Post" 
-                                            class="object-cover object-center rounded flex items-center justify-center 
-                                                    max-h-full max-sm:max-w-[100px] w-full text-3xl shadow"
+                                            class="thumbnail object-cover object-center rounded flex items-center justify-center 
+                                                    max-h-full max-sm:max-w-[100px] w-full text-3xl shadow
+                                                    outline outline-transparent outline-0
+                                                    group-hocus:outline-4 group-hocus:outline-zinc-900
+                                                    group-hocus:outline-offset-4 group-hocus:dark:outline-zinc-200"
                                             on:error={_ => {
                                                 $images[item.id] = 'missing';
                                                 src.url = undefined;
@@ -148,7 +156,11 @@
                                         />
                                     {:else}
                                         <div
-                                            class="h-full w-full bg-zinc-200 dark:bg-zinc-900 rounded flex items-center justify-center text-4xl max-sm:text-3xl text-zinc-400"
+                                            class="dumbnail h-full w-full bg-zinc-200 dark:bg-zinc-900 rounded 
+                                            flex items-center justify-center text-4xl max-sm:text-3xl text-zinc-400
+                                            outline outline-transparent outline-0
+                                            group-hocus:outline-4 group-hocus:outline-zinc-900 
+                                            group-hocus:outline-offset-4 group-hocus:dark:outline-zinc-200"
                                         >
                                             <iconify-icon icon="eva:diagonal-arrow-right-up-fill"></iconify-icon>
                                             <span class="sr-only">Open External Post Link</span>
@@ -207,7 +219,7 @@
     </div>
 </div>
 
-<style lang="postcss">
+<style>
     .solo-link {
         margin-left: auto;
     }
@@ -216,9 +228,11 @@
         view-transition-name: article-title;
     }
 
-    .preview-image {
-        transition: width 300ms ease-in-out, height 300ms ease-in-out;
-        transform-origin: right;
+    .thumbnail, .dumbnail {
+        transition: 
+            outline-offset 150ms ease-in-out,
+            outline-width 150ms ease-in-out,
+            outline-color 150ms ease-in-out;
     }
 </style>
 

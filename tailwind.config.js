@@ -17,7 +17,19 @@ export default {
     require('@tailwindcss/typography'),
     plugin(({ addVariant }) => {
       addVariant('lefty', ':is(.lefty &)')
-    })
+      // hocus variants found here https://soorria.com/snippets/tailwindcss-hocus
+      addVariant('hocus', ['&:hover', '&:focus'])
+      addVariant('hocus-within', ['&:hover', '&:focus-within'])
+      addVariant('group-hocus', [
+        ':merge(.group):hover &',
+        ':merge(.group):focus &',
+      ])
+      addVariant('group-hocus-within', [
+        ':merge(.group):hover &',
+        ':merge(.group):focus-within &',
+      ])
+    }),
+    
   ],
   darkMode: 'class'
 }
