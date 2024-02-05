@@ -33,7 +33,9 @@
         article.style.top = `${-height}px`;
     }
 
-    beforeNavigate(() => {
+    beforeNavigate(({ willUnload }) => {
+        if (willUnload) return;
+
         pinArticle();
         sticky = true;
 
