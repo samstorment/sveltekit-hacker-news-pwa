@@ -58,6 +58,8 @@
         topLevelComments.forEach(c => observer.observe(c));
     
         cleanupCodeBlocks();
+        cleanupEmptyParagraphs();
+        cleanupTrailingTextNodes();
     });
 
     onDestroy(() => {
@@ -90,6 +92,25 @@
             let lines = c.innerHTML.split('\n').map(l => [...l].splice(minWhite).join('')).join('\n');
             c.innerHTML = lines;
         });
+    }
+
+    // hacker news api returns annoying empty paragraphs before <pre> elements 
+    function cleanupEmptyParagraphs() {
+        Array.from(document.querySelectorAll(".prose p"))
+            .filter(p => p.textContent?.trim() === "")
+            .forEach(p => p.remove());
+    }
+
+    function cleanupTrailingTextNodes() {
+        let textNodes = Array.from(document.querySelectorAll(".prose pre"))
+            .forEach(pre => {
+                if (pre.nextSibling?.nodeName === "#text" && pre.nextSibling?.textContent) {
+                    let p = document.createElement('p');
+                    p.innerHTML = pre.nextSibling.textContent;
+                    pre.nextSibling.remove();
+                    pre.after(p);
+                }
+            });            
     }
 
     $: url = data.item.url.startsWith("item") ? "" : data.item.url;
@@ -200,7 +221,8 @@
             <div 
                 class="prose prose-a:dark:text-zinc-400 break-words
                 prose-pre:bg-zinc-800 prose-pre:dark:bg-zinc-900 
-                prose-pre:first:mt-0 text-inherit max-w-full px-4 pb-8
+                text-inherit max-w-full px-4 pb-8
+                prose-pre:border prose-pre:border-zinc-700
                 border-zinc-300 dark:border-zinc-700"
                 class:border-b-8={data.item.comments.length > 0}
                 class:mb-8={data.item.comments.length > 0}

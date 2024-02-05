@@ -186,7 +186,7 @@
                 >
                     <div 
                         class="prose text-inherit prose-a:dark:text-zinc-400  
-                        prose-pre:dark:bg-zinc-900 prose-pre:bg-zinc-800 prose-pre:first:mt-0 
+                        prose-pre:dark:bg-zinc-900 prose-pre:bg-zinc-800 
                         prose-pre:border prose-pre:border-zinc-700 prose-pre:text-sm
                         max-w-full break-words p-2"
                     >
