@@ -7,7 +7,8 @@
 }
 
 html {
-    @apply scroll-pt-[68px];
+    /* @apply scroll-pt-[68px]; */
+    scroll-padding-top: 15px;
 }
 
 body {
