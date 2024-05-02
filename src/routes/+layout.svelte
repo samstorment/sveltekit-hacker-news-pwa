@@ -18,31 +18,34 @@
         $scrollY = window.scrollY;
     }
 
-    function pointerDown(down: PointerEvent) {
+    function touchStart(start: TouchEvent) {
 
-        return;
+        console.log('start');
 
-        if (down.pointerType === "mouse") return;
-
-        console.log('down');
-
-        window.addEventListener('pointermove', pointerMove);
-        window.addEventListener('pointerup', pointerUp, { once: true });
+        window.addEventListener('touchmove', touchMove);
+        window.addEventListener('touchend', touchEnd, { once: true });
 
         let change = 0;
-        let prev = down.y;
+        let prev = start.touches[0].clientY;
 
-        function pointerMove(move: PointerEvent) {
-            change = move.y - prev;
+        console.log(prev);
+
+        function touchMove(move: TouchEvent) {
+
+            console.log('move');
+
+            change = move.touches[0].clientY - prev;
             
-            percentTranslateY += change * 1.25;
+            percentTranslateY += change * 2;
 
             percentTranslateY = clamp(percentTranslateY, -100, 0);
 
-            prev = move.y;
+            prev = move.touches[0].clientY;
         }
 
-        async function pointerUp(end: PointerEvent) {
+        async function touchEnd(end: TouchEvent) {
+
+            console.log('end');
             
             if (percentTranslateY === -100 || percentTranslateY === 0) return;
 
@@ -53,7 +56,7 @@
 
             header.addEventListener('transitionend', e => ending = false);
 
-            window.removeEventListener('pointermove', pointerMove);
+            window.removeEventListener('touchmove', touchMove);
         }
 
     }
@@ -61,7 +64,7 @@
     onMount(() => {
         $scrollY = window.scrollY;
         window.addEventListener('scroll', handleScroll);
-        window.addEventListener('pointerdown', pointerDown);
+        window.addEventListener('touchstart', touchStart);
     });
 
 </script>
