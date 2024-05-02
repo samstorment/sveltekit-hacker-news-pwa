@@ -20,6 +20,8 @@
 
     function pointerDown(down: PointerEvent) {
 
+        return;
+
         if (down.pointerType === "mouse") return;
 
         console.log('down');
