@@ -5,17 +5,61 @@
 	import { hand } from "$lib/settings";
 	import { scrollY } from "$lib/stores";
 	import Menu, { openMenu } from "$lib/components/menu/menu.svelte";
-	import { onMount } from "svelte";
+	import { onMount, onDestroy, tick } from "svelte";
+	import { clamp } from "$lib/util";
 
     $: selected = $page.url.pathname.split('/')[1] || "top";
 
+    let percentTranslateY = 0;
+    let ending = false;
+    let header: HTMLElement;
+
     function handleScroll() {
         $scrollY = window.scrollY;
+    }
+
+    function pointerDown(down: PointerEvent) {
+
+        if (down.pointerType === "mouse") return;
+
+        console.log('down');
+
+        window.addEventListener('pointermove', pointerMove);
+        window.addEventListener('pointerup', pointerUp, { once: true });
+
+        let change = 0;
+        let prev = down.y;
+
+        function pointerMove(move: PointerEvent) {
+            change = move.y - prev;
+            
+            percentTranslateY += change * 1.25;
+
+            percentTranslateY = clamp(percentTranslateY, -100, 0);
+
+            prev = move.y;
+        }
+
+        async function pointerUp(end: PointerEvent) {
+            
+            if (percentTranslateY === -100 || percentTranslateY === 0) return;
+
+            ending = true;
+            
+            if (percentTranslateY < -50) percentTranslateY = -100;
+            else percentTranslateY = 0;
+
+            header.addEventListener('transitionend', e => ending = false);
+
+            window.removeEventListener('pointermove', pointerMove);
+        }
+
     }
         
     onMount(() => {
         $scrollY = window.scrollY;
         window.addEventListener('scroll', handleScroll);
+        window.addEventListener('pointerdown', pointerDown);
     });
 
 </script>
@@ -23,6 +67,9 @@
 
 <header 
     class="sticky top-0 bg-white dark:bg-zinc-950 z-50 slide"
+    style="--translate: {percentTranslateY}%"
+    class:ending
+    bind:this={header}
 >
     <nav class="p-2 flex items-center gap-4 max-w-screen-md mx-auto">
         <div class="flex items-center gap-4 flex-wrap p-2">
@@ -66,7 +113,11 @@
 
 <style lang="postcss">
     .slide {
-        transition: transform 300ms ease;
+        translate: 0 var(--translate);
+    }
+
+    .ending {
+        transition: translate 300ms ease-out;
     }
 
     .nav-item {
