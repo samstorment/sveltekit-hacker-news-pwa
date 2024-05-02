@@ -73,7 +73,7 @@
 
 
 <header 
-    class="sticky top-0 bg-white dark:bg-zinc-950 z-50 slide"
+    class="top-0 bg-white dark:bg-zinc-950 z-50 slide"
     style="--translate: {percentTranslateY}%"
     class:ending
     bind:this={header}
