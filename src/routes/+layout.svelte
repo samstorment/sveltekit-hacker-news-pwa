@@ -20,6 +20,8 @@
 
     function touchStart(start: TouchEvent) {
 
+        return;
+
         console.log('start');
 
         window.addEventListener('touchmove', touchMove);
@@ -36,7 +38,7 @@
 
             change = move.touches[0].clientY - prev;
             
-            percentTranslateY += change * 2;
+            percentTranslateY += change;
 
             percentTranslateY = clamp(percentTranslateY, -100, 0);
 
