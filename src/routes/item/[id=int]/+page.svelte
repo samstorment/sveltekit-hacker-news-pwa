@@ -284,10 +284,3 @@
         Next
     </button>
 {/if}
-
-
-<style>
-    .article-title {
-        view-transition-name: article-title;
-    }
-</style>

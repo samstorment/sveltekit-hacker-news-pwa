@@ -1,12 +1,10 @@
 <script lang="ts">
-	import { afterNavigate, beforeNavigate, goto, onNavigate } from '$app/navigation';
 	import { hand, showImagePreviews } from '$lib/settings.js';
-	import { images, transition } from '$lib/stores.js';
+	import { images } from '$lib/stores.js';
     import { points, type ItemBasic, comments } from '$lib/util.js';
 
     export let data;
 
-    let viewTransitionTarget: string | undefined;
 
     $: showImages = $showImagePreviews && data.category !== "ask";
 
@@ -33,18 +31,6 @@
         };
     });
 
-    beforeNavigate(({ from, to }) => {
-        if (to?.route.id === "/item/[id=int]") {
-            viewTransitionTarget = to.params?.id;
-        } 
-    });
-
-    afterNavigate(async ({ from, to }) => {
-        if (from?.route.id === "/item/[id=int]") {
-            viewTransitionTarget = from.params?.id;
-            $transition?.finished.finally(() => viewTransitionTarget = undefined);
-        }
-    });
 </script>
 
 <svelte:head>
@@ -66,7 +52,6 @@
                     <div class="flex lefty:flex-row-reverse">
                         <div 
                             class="px-4 my-4 flex-1 min-w-0 self-center"
-                            class:article-title={item.id.toString() === viewTransitionTarget}
                         >
                             <hgroup class="break-words">
                                 <h2 class="inline"> 
@@ -222,10 +207,6 @@
 <style>
     .solo-link {
         margin-left: auto;
-    }
-
-    .article-title {
-        view-transition-name: article-title;
     }
 
     .thumbnail, .dumbnail {

@@ -85,7 +85,6 @@
 
     dialog {
         z-index: 9999999;
-        view-transition-name: site-menu;
         max-width: min(768px, calc(100% - 2rem)); 
         max-height: min(500px, calc(100% - 2rem));
     }

@@ -1,88 +1,17 @@
 <script lang="ts">
-	import { navigating, page } from "$app/stores";
-	import { onDestroy, onMount, setContext } from "svelte";
+	import { page } from "$app/stores";
     import "../app.css";
 	import { fly } from "svelte/transition";
 	import { hand } from "$lib/settings";
-	import { navState, scrollY, transition } from "$lib/stores";
+	import { scrollY } from "$lib/stores";
 	import Menu, { openMenu } from "$lib/components/menu/menu.svelte";
-	import { beforeNavigate, onNavigate } from "$app/navigation";
-	import { writable } from "svelte/store";
-
-    let uppies = true;
-    let scrollTimeout = 0;
 
     $: selected = $page.url.pathname.split('/')[1] || "top";
-    
-    $: if ($page.url.hash) {
-        $navState = 'visible';
-        setTimeout(() => $navState = 'auto', 100);
-    }
-
-    onNavigate((navigation) => {
-        // @ts-ignore
-        if (document.startViewTransition) {
-            return new Promise(res => {
-                // @ts-ignore
-                $transition = document.startViewTransition(async () => {
-                    res();
-                    await navigation.complete;
-                });
-            });
-        }
-    });
-    
-    beforeNavigate(({ willUnload, to }) => {
-
-        if (willUnload) return;
-        if (!to?.route.id) return;
-
-        // always hide the nav on navigate
-        // handleScroll below will cause the nav to be shown anyway if we're at the top of the page
-        // this is great for back/forward without jarring nav animations
-        $navState = "hidden";
-        clearTimeout(scrollTimeout);
-        scrollTimeout = setTimeout(() => $navState = 'auto', 100);
-    });
-
-
-    function handleScroll() {
-        $scrollY = window.scrollY;
-        
-        window.addEventListener('scroll', (_) => {
-            let change = window.scrollY - $scrollY;
-            $scrollY = window.scrollY;
-
-            const scrollHeight = document.documentElement.scrollHeight;
-            const innerHeight = window.innerHeight;
-
-            // if we are 64 pixels or closer to the bottom, show the nav
-            const atBottom = scrollHeight - 64 <= $scrollY + innerHeight;
-
-            if (window.scrollY <= 16 || atBottom) return uppies = true;
-
-            // return nav state to auto 100ms after last scroll
-            clearTimeout(scrollTimeout);
-            scrollTimeout = setTimeout(() => $navState = 'auto', 100);
-
-            if ($navState === 'visible') return uppies = true;
-            if ($navState === 'hidden') return uppies = false;
-
-            uppies = change <= 0;
-        });
-    }
-
-    onMount(() => {
-        $navState = 'auto';
-        handleScroll();
-    });
 </script>
 
 
-<!-- <Loader /> -->
 <header 
-    class="sticky top-0 bg-white dark:bg-zinc-950 slide z-50 slide"
-    class:-translate-y-full={!uppies}
+    class="sticky top-0 bg-white dark:bg-zinc-950 z-50 slide"
 >
     <nav class="p-2 flex items-center gap-4 max-w-screen-md mx-auto">
         <div class="flex items-center gap-4 flex-wrap p-2">
@@ -112,7 +41,6 @@
         class="fixed p-3 right-6 bottom-5 backdrop-blur shadow bg-white/50 dark:bg-black/50 border border-zinc-300 dark:border-zinc-700 rounded-full flex items-center z-10"
         class:right-6={$hand === "righty"}
         class:left-6={$hand === "lefty"}
-        style="view-transition-name: back-to-top;"
         transition:fly={{ y: 100 }}
         on:click={() => window.scrollTo({
             top: 0,
@@ -126,10 +54,6 @@
 
 
 <style lang="postcss">
-    header {
-        view-transition-name: main-header;
-    }
-
     .slide {
         transition: transform 300ms ease;
     }
@@ -138,14 +62,6 @@
         @apply no-underline;
     }
 
-    .nav-item {
-        animation-duration: 10ms;
-    }
-
-    .nav-item.selected::after {
-        view-transition-name: nav-selected;
-    }
-    
     .nav-item:hover::after,
     .nav-item.selected::after {
         content: '';
