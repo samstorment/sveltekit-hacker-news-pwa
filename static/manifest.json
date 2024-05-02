@@ -2,7 +2,7 @@
     "name": "Hacker News",
     "short_name": "HN",
     "start_url": "/",
-    "display": "minimal-ui",
+    "display": "fullscreen",
     "background_color": "#09090B",
     "theme_color": "#18181b",
     "orientation": "portrait-primary",

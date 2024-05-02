@@ -5,8 +5,19 @@
 	import { hand } from "$lib/settings";
 	import { scrollY } from "$lib/stores";
 	import Menu, { openMenu } from "$lib/components/menu/menu.svelte";
+	import { onMount } from "svelte";
 
     $: selected = $page.url.pathname.split('/')[1] || "top";
+
+    function handleScroll() {
+        $scrollY = window.scrollY;
+    }
+        
+    onMount(() => {
+        $scrollY = window.scrollY;
+        window.addEventListener('scroll', handleScroll);
+    });
+
 </script>
 
 
