@@ -5,90 +5,25 @@
 	import { hand } from "$lib/settings";
 	import { scrollY } from "$lib/stores";
 	import Menu, { openMenu } from "$lib/components/menu/menu.svelte";
-	import { onMount, onDestroy, tick } from "svelte";
+	import { onMount } from "svelte";
 	import { clamp, run } from "$lib/util";
 
     $: selected = $page.url.pathname.split('/')[1] || "top";
-
-    let transY = 0;
-    let ending = false;
-    let header: HTMLElement;
-
-    let NAV_HEIGHT = 56;
-
 
     function handleScroll() {
         $scrollY = window.scrollY;
     }
 
-    function touchStart(start: TouchEvent) {
-
-        // console.log('start');
-
-        window.addEventListener('touchmove', touchMove);
-        window.addEventListener('touchend', touchEnd, { once: true });
-
-        let changeStart = 0;
-        let changePrev = 0;
-        let prev = start.touches[0].clientY;
-
-        function touchMove(move: TouchEvent) {
-
-            // console.log('move');
-
-            changePrev = move.touches[0].clientY - prev;
-            changeStart = move.touches[0].clientY - start.touches[0].clientY;
-            
-            let newTransY = run(() => {
-                const aboveStart = changeStart < 0;
-                const movingTowardsStart = changePrev > 0;
-                const navFullyHidden = transY === -NAV_HEIGHT;
-                const scrolledBeyondNavHeight = window.scrollY > NAV_HEIGHT;
-
-                if (aboveStart && movingTowardsStart && navFullyHidden && scrolledBeyondNavHeight) return transY;
-                return transY + changePrev
-            });
-
-
-            transY = clamp(newTransY, -NAV_HEIGHT, 0);
-
-            prev = move.touches[0].clientY;
-        }
-
-        async function touchEnd(end: TouchEvent) {
-
-            // console.log('end');
-            
-            ending = true;
-            
-            if (transY < -(NAV_HEIGHT / 2)) transY = -NAV_HEIGHT;
-            else transY = 0;
-
-            if (window.scrollY <= NAV_HEIGHT) {
-                transY = 0;
-            }
-
-            header.addEventListener('transitionend', e => ending = false);
-
-            window.removeEventListener('touchmove', touchMove);
-        }
-
-    }
-        
     onMount(() => {
         $scrollY = window.scrollY;
         window.addEventListener('scroll', handleScroll);
-        window.addEventListener('touchstart', touchStart);
     });
 
 </script>
 
 
 <header 
-    class="sticky top-0 bg-white dark:bg-zinc-950 z-50 slide"
-    style="--translate: {transY}px"
-    class:ending
-    bind:this={header}
+    class="bg-white dark:bg-zinc-950 slide"
 >
     <nav class="p-2 flex items-center gap-4 max-w-screen-md mx-auto">
         <div class="flex items-center gap-4 flex-wrap p-2">
@@ -131,14 +66,6 @@
 
 
 <style lang="postcss">
-    .slide {
-        translate: 0 var(--translate);
-    }
-
-    .ending {
-        transition: translate 300ms ease-out;
-    }
-
     .nav-item {
         @apply no-underline;
     }
