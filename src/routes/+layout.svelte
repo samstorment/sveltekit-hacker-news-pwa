@@ -6,13 +6,16 @@
 	import { scrollY } from "$lib/stores";
 	import Menu, { openMenu } from "$lib/components/menu/menu.svelte";
 	import { onMount, onDestroy, tick } from "svelte";
-	import { clamp } from "$lib/util";
+	import { clamp, run } from "$lib/util";
 
     $: selected = $page.url.pathname.split('/')[1] || "top";
 
-    let percentTranslateY = 0;
+    let transY = 0;
     let ending = false;
     let header: HTMLElement;
+
+    let NAV_HEIGHT = 56;
+
 
     function handleScroll() {
         $scrollY = window.scrollY;
@@ -20,41 +23,50 @@
 
     function touchStart(start: TouchEvent) {
 
-        return;
-
-        console.log('start');
+        // console.log('start');
 
         window.addEventListener('touchmove', touchMove);
         window.addEventListener('touchend', touchEnd, { once: true });
 
-        let change = 0;
+        let changeStart = 0;
+        let changePrev = 0;
         let prev = start.touches[0].clientY;
-
-        console.log(prev);
 
         function touchMove(move: TouchEvent) {
 
-            console.log('move');
+            // console.log('move');
 
-            change = move.touches[0].clientY - prev;
+            changePrev = move.touches[0].clientY - prev;
+            changeStart = move.touches[0].clientY - start.touches[0].clientY;
             
-            percentTranslateY += change;
+            let newTransY = run(() => {
+                const aboveStart = changeStart < 0;
+                const movingTowardsStart = changePrev > 0;
+                const navFullyHidden = transY === -NAV_HEIGHT;
+                const scrolledBeyondNavHeight = window.scrollY > NAV_HEIGHT;
 
-            percentTranslateY = clamp(percentTranslateY, -100, 0);
+                if (aboveStart && movingTowardsStart && navFullyHidden && scrolledBeyondNavHeight) return transY;
+                return transY + changePrev
+            });
+
+
+            transY = clamp(newTransY, -NAV_HEIGHT, 0);
 
             prev = move.touches[0].clientY;
         }
 
         async function touchEnd(end: TouchEvent) {
 
-            console.log('end');
+            // console.log('end');
             
-            if (percentTranslateY === -100 || percentTranslateY === 0) return;
-
             ending = true;
             
-            if (percentTranslateY < -50) percentTranslateY = -100;
-            else percentTranslateY = 0;
+            if (transY < -(NAV_HEIGHT / 2)) transY = -NAV_HEIGHT;
+            else transY = 0;
+
+            if (window.scrollY <= NAV_HEIGHT) {
+                transY = 0;
+            }
 
             header.addEventListener('transitionend', e => ending = false);
 
@@ -73,8 +85,8 @@
 
 
 <header 
-    class="top-0 bg-white dark:bg-zinc-950 z-50 slide"
-    style="--translate: {percentTranslateY}%"
+    class="sticky top-0 bg-white dark:bg-zinc-950 z-50 slide"
+    style="--translate: {transY}px"
     class:ending
     bind:this={header}
 >
