@@ -35,11 +35,21 @@
     afterNavigate(({ from }) => {
         if (from?.route.id === '/item/[id=int]') {
             highlight = from.params?.id;
+            return;
         }
+
+        highlight = undefined;
     });
 
-    beforeNavigate(() => {
-        highlight = undefined;
+    beforeNavigate(({ willUnload, to }) => {
+
+        if (!willUnload) return;
+        
+        const item = items.find(i => i.url === to?.url.href);
+
+        if (!item) return;
+
+        highlight = item.id.toString();
     });
 
 
