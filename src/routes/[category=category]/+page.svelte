@@ -3,6 +3,7 @@
 	import { hand, showImagePreviews, highlightLastPost } from '$lib/settings.js';
 	import { images } from '$lib/stores.js';
     import { points, type ItemBasic, comments } from '$lib/util.js';
+    import { scale } from 'svelte/transition';
 
     export let data;
     let highlight: string | undefined;
@@ -67,6 +68,7 @@
                     class="border-b border-zinc-300 dark:border-zinc-700 items-center last:border-none"
                 >
                     <article 
+                        in:scale={{ duration: highlighted ? 300 : 0 }}
                         class:highlighted 
                         class="bg-white dark:bg-zinc-950"
                     >
