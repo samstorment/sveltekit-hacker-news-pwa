@@ -1,10 +1,11 @@
 <script lang="ts">
+    import { afterNavigate, beforeNavigate } from '$app/navigation';
 	import { hand, showImagePreviews } from '$lib/settings.js';
 	import { images } from '$lib/stores.js';
     import { points, type ItemBasic, comments } from '$lib/util.js';
 
     export let data;
-
+    let highlight: string | undefined;
 
     $: showImages = $showImagePreviews && data.category !== "ask";
 
@@ -31,6 +32,20 @@
         };
     });
 
+    afterNavigate(({ willUnload, from }) => {
+        console.log('FROM', from);
+
+        if (from?.route.id === '/item/[id=int]') {
+            highlight = from.params?.id;
+
+            setTimeout(() => highlight = undefined, 25);
+        }
+    });
+
+    beforeNavigate(() => {
+        highlight = undefined;
+    });
+
 </script>
 
 <svelte:head>
@@ -45,10 +60,13 @@
 
     <ul>
         {#each items as item, i (item.id)}
+            {@const highlighted = highlight === item.id.toString()}
+
             <li 
+                class:highlighted
                 class="border-b border-zinc-300 dark:border-zinc-700 items-center last:border-none"
             >
-                <article>
+                <article class:highlighted class="bg-white dark:bg-zinc-950">
                     <div class="flex lefty:flex-row-reverse">
                         <div 
                             class="px-4 my-4 flex-1 min-w-0 self-center"
@@ -204,7 +222,31 @@
     </div>
 </div>
 
-<style>
+<style lang="postcss">
+    li:not(.highlighted) {
+        --trans-dur: 200ms;
+        transition: padding ease-in var(--trans-dur), background-color ease-in var(--trans-dur);
+    }
+
+    article:not(.highlighted) {
+        border-color: transparent;
+        transition: 
+            border ease-in var(--trans-dur), 
+            border-radius ease-in var(--trans-dur),
+            box-shadow ease-in var(--trans-dur),
+            font-size ease-in var(--trans-dur);
+    }
+    
+
+    li.highlighted {
+        @apply bg-zinc-100 dark:bg-zinc-900 p-3;
+    }
+
+    article.highlighted {
+        @apply rounded-lg overflow-hidden border border-zinc-400 dark:border-zinc-700 shadow-md shadow-zinc-500 dark:shadow-black text-sm;
+
+    }
+
     .solo-link {
         margin-left: auto;
     }

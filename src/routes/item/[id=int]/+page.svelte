@@ -17,7 +17,6 @@
     let intersecting = new Set<HTMLDivElement>();
     let curr: Element | undefined = undefined;
     let article: HTMLElement;
-    let sticky = false;
 
     $: next = curr?.nextElementSibling;
 
@@ -26,26 +25,18 @@
     } else {
         curr = undefined;
     }
-
-    // keep article stuck just off the top of the screen so view transitions don't travel ridiculously far/fast
-    function pinArticle() {
-        const { height } = article.getBoundingClientRect();
-        article.style.top = `${-height}px`;
-    }
+   
 
     beforeNavigate(({ willUnload }) => {
         if (willUnload) return;
-
-        pinArticle();
-        sticky = true;
 
         intersecting.clear();
         observer && observer.disconnect();
     });
 
     afterNavigate(({ from }) => {
-        sticky = false;
         if (!commentsDiv) return;
+        
         let topLevelComments = Array.from(commentsDiv.querySelectorAll(":scope > article")) as HTMLDivElement[];
     
         observer = observer || new IntersectionObserver((entries) => {    
@@ -151,7 +142,7 @@
 </svelte:head>
 
 <div class="max-w-screen-md mx-auto">
-    <article bind:this={article} class:sticky>
+    <article bind:this={article}>
         <hgroup 
             class="p-4 mb-4 break-words"
             class:article-title={data.item.type !== "comment"}
