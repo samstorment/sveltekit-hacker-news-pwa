@@ -41,17 +41,6 @@
         highlight = undefined;
     });
 
-    beforeNavigate(({ willUnload, to }) => {
-
-        if (!willUnload) return;
-        
-        const item = items.find(i => i.url === to?.url.href);
-
-        if (!item) return;
-
-        highlight = item.id.toString();
-    });
-
 
 </script>
 
