@@ -1,5 +1,6 @@
 import { browser } from "$app/environment";
 import { writable } from "svelte/store";
+import { run } from "./util";
 
 export type Hand = 'lefty' | 'righty';
 export type Theme = 'light' | 'dark' | 'system';
@@ -98,21 +99,25 @@ export type Tab = 'settings' | 'about';
 export const activeTab = writable<Tab>("settings");
 
 
-function imagePreviewPreference() {
-    if (browser) {
-        return localStorage.getItem("image-preview") === "true";
-    }
 
-    return false;
-}
+function createBooleanLocalStorageStore(key: string, defaultValue = false) {
+    const initialValue = run(() => {
+        if (browser) {
+            const value = localStorage.getItem(key);
 
-function createImagePreviewStore() {
-    const { subscribe, set, update } = writable<boolean>(imagePreviewPreference());
+            if (value !== null) return value === "true";
+        }
 
-	return {
+        return defaultValue;
+    });
+
+    const { subscribe, set, update } = writable<boolean>(initialValue);
+
+    return {
 		subscribe,
         set: (value: boolean | "true" | "false") => {
-            localStorage.setItem("image-preview", `${value}`);
+
+            localStorage.setItem(key, `${value}`);
 
             if (typeof value === "string") {
                 set(value === "true");
@@ -122,6 +127,8 @@ function createImagePreviewStore() {
             set(value);
         }
 	};
-} 
+}
 
-export const showImagePreviews = createImagePreviewStore();
+export const showImagePreviews = createBooleanLocalStorageStore("image-preview");
+
+export const highlightLastPost = createBooleanLocalStorageStore('highlight-last-post', true);

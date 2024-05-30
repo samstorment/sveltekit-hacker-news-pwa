@@ -1,5 +1,5 @@
 <script>
-	import { hand, showImagePreviews, theme } from "$lib/settings";
+	import { hand, showImagePreviews, theme, highlightLastPost } from "$lib/settings";
 	import RadioButton from "./radio-button.svelte";
 
 </script>
@@ -43,16 +43,25 @@
 
 
 <div class="py-2 px-4">
-    <h3 class="text-xl mb-2">Images</h3>
+    <h3 class="text-xl mb-2">Feed</h3>
 
-    <label 
-        class="flex-1 text-zinc-600 dark:text-zinc-400 flex justify-between items-center border border-zinc-300 dark:border-zinc-700 cursor-pointer px-3 py-2 rounded"
-        class:selected={$showImagePreviews}
-    >
-        <span>Show preview images</span>
-        <input type="checkbox" class="w-4 h-4" bind:checked={$showImagePreviews}>
-    </label>
-   
+    <div class="grid gap-2">
+        <label 
+            class="flex-1 text-zinc-600 dark:text-zinc-400 flex justify-between items-center border border-zinc-300 dark:border-zinc-700 cursor-pointer px-3 py-2 rounded"
+            class:selected={$showImagePreviews}
+        >
+            <span>Show Preview Images</span>
+            <input type="checkbox" class="w-4 h-4" bind:checked={$showImagePreviews}>
+        </label>
+    
+        <label 
+            class="flex-1 text-zinc-600 dark:text-zinc-400 flex justify-between items-center border border-zinc-300 dark:border-zinc-700 cursor-pointer px-3 py-2 rounded"
+            class:selected={$highlightLastPost}
+        >
+            <span>Highlight Last Visited Post</span>
+            <input type="checkbox" class="w-4 h-4" bind:checked={$highlightLastPost}>
+        </label>
+    </div>
 </div>
 
 <style lang="postcss">
