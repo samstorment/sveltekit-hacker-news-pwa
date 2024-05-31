@@ -1,77 +1,9 @@
-<script lang="ts">
-	import { onDestroy } from "svelte";
-	import Comment from "./Comment.svelte";
-    import '../.././../prose.css';
-	import { afterNavigate, beforeNavigate, onNavigate } from "$app/navigation";
-	import { navigating, page } from "$app/stores";
-	import { navState, scrollY } from "$lib/stores";
-	import { hand } from "$lib/settings";
-	import { fly } from "svelte/transition";
-    import { comments, findItemInPage, points } from "$lib/util";
-    import { browser } from "$app/environment";
-
-    export let data;
-
-    let commentsDiv: HTMLDivElement;
-    let observer: IntersectionObserver;
-    let intersecting = new Set<HTMLDivElement>();
-    let curr: Element | undefined = undefined;
-    let article: HTMLElement;
-    let comingFrom: string | undefined = undefined;
-
-
-    $: next = curr?.nextElementSibling;
-
-    $: if (intersecting.size === 1) {
-        curr = intersecting.values().next().value;
-    } else {
-        curr = undefined;
-    }
-   
-
-    beforeNavigate(({ willUnload }) => {
-        if (willUnload) return;
-
-        intersecting.clear();
-        observer && observer.disconnect();
-    });
-
-    afterNavigate(({ from }) => {
-
-        if (from?.route.id === '/item/[id=int]') {
-            comingFrom = from.params?.id ?? undefined;
-        }
-
-        if (!commentsDiv) return;
+<script lang="ts" context="module">
+     function cleanupCodeBlocks(rootNode: HTMLElement) {
+        let codes = Array.from(rootNode.querySelectorAll("pre > code")) as HTMLDivElement[];
         
-        observeComments();
-        cleanupCodeBlocks();
-        cleanupEmptyParagraphs();
-        cleanupTrailingTextNodes();
-    });
+        console.log("CODES", codes);
 
-    onDestroy(() => {
-        observer && observer.disconnect();
-    });
-
-    function observeComments() {
-        let topLevelComments = Array.from(commentsDiv.querySelectorAll(":scope > article")) as HTMLDivElement[];
-    
-        observer = observer || new IntersectionObserver((entries) => {    
-            entries.forEach((entry) => {
-                const ele = entry.target as HTMLDivElement;
-                if (entry.isIntersecting) intersecting.add(ele);
-                else intersecting.delete(ele);
-                intersecting = intersecting;
-            });
-        });
-
-        topLevelComments.forEach(c => observer.observe(c));
-    }
-
-    function cleanupCodeBlocks() {
-        let codes = Array.from(document.querySelectorAll("pre > code")) as HTMLDivElement[];
-        
         let whiteSpaces: number[] = [];
         
         for (let code of codes) {
@@ -98,14 +30,14 @@
     }
 
     // hacker news api returns annoying empty paragraphs before <pre> elements 
-    function cleanupEmptyParagraphs() {
+    function cleanupEmptyParagraphs(rootNode: HTMLElement) {
         Array.from(document.querySelectorAll(".prose p"))
             .filter(p => p.textContent?.trim() === "")
             .forEach(p => p.remove());
     }
 
-    function cleanupTrailingTextNodes() {
-        let textNodes = Array.from(document.querySelectorAll(".prose pre"))
+    function cleanupTrailingTextNodes(rootNode: HTMLElement) {
+        Array.from(rootNode.querySelectorAll(".prose pre"))
             .forEach(pre => {
                 if (pre.nextSibling?.nodeName === "#text" && pre.nextSibling?.textContent) {
                     let p = document.createElement('p');
@@ -114,6 +46,77 @@
                     pre.after(p);
                 }
             });            
+    }
+
+    export function cleanupComments(rootNode: HTMLElement) {
+        cleanupCodeBlocks(rootNode);
+        cleanupEmptyParagraphs(rootNode);
+        cleanupTrailingTextNodes(rootNode);
+    }
+</script>
+
+<script lang="ts">
+	import { onDestroy } from "svelte";
+	import Comment from "./Comment.svelte";
+    import '../.././../prose.css';
+	import { afterNavigate, beforeNavigate, onNavigate } from "$app/navigation";
+	import { navigating, page } from "$app/stores";
+	import { navState, scrollY } from "$lib/stores";
+	import { hand } from "$lib/settings";
+	import { fly } from "svelte/transition";
+    import { comments, findItemInPage, points } from "$lib/util";
+    import { browser } from "$app/environment";
+
+    export let data;
+
+    let commentsDiv: HTMLDivElement;
+    let observer: IntersectionObserver;
+    let intersecting = new Set<HTMLDivElement>();
+    let curr: Element | undefined = undefined;
+    let article: HTMLElement;
+
+
+    $: next = curr?.nextElementSibling;
+
+    $: if (intersecting.size === 1) {
+        curr = intersecting.values().next().value;
+    } else {
+        curr = undefined;
+    }
+   
+
+    beforeNavigate(({ willUnload }) => {
+        if (willUnload) return;
+
+        intersecting.clear();
+        observer && observer.disconnect();
+    });
+
+    afterNavigate(({ from }) => {
+
+        if (!commentsDiv) return;
+        
+        observeComments();
+        cleanupComments(document.documentElement);
+    });
+
+    onDestroy(() => {
+        observer && observer.disconnect();
+    });
+
+    function observeComments() {
+        let topLevelComments = Array.from(commentsDiv.querySelectorAll(":scope > article")) as HTMLDivElement[];
+    
+        observer = observer || new IntersectionObserver((entries) => {    
+            entries.forEach((entry) => {
+                const ele = entry.target as HTMLDivElement;
+                if (entry.isIntersecting) intersecting.add(ele);
+                else intersecting.delete(ele);
+                intersecting = intersecting;
+            });
+        });
+
+        topLevelComments.forEach(c => observer.observe(c));
     }
 
     $: url = data.item.url.startsWith("item") ? "" : data.item.url;
@@ -240,7 +243,7 @@
     {#if data.item.comments.length > 0}
         <div class="px-4 z-10 relative" id="comments" bind:this={commentsDiv}>
             {#each data.item.comments as comment, index}
-                <Comment {comment} {index} group={data.item.comments} item={data.item} bind:comingFrom />
+                <Comment {comment} {index} group={data.item.comments} item={data.item} />
             {/each}
         </div>
     {/if}

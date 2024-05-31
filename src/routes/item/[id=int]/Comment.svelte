@@ -3,15 +3,30 @@
 	import { navState } from "$lib/stores";
 	import { fly, scale, slide } from "svelte/transition";
     import { comments, type Comment } from "$lib/util";
+    import { createEventDispatcher, tick } from "svelte";
+    import { cleanupComments } from "./+page.svelte";
 
     export let index: number;
     export let comment: Comment;
     export let group: Comment[];
     export let item: any;
-    export let comingFrom: string | undefined;
+
+    const CUTOFF_DEPTH = 3;
+    // whether or not to show replies when the comment is first rendered
+
+    const showRepliesDefault = 
+        comment.level < CUTOFF_DEPTH || 
+        comment.comments_count === 1;
+
+    const shownByDefault = 
+        comment.level <= CUTOFF_DEPTH || 
+        (comment.level === CUTOFF_DEPTH + 1 && comment.parent?.comments_count === 1);
+
+    let showReplies = showRepliesDefault || comment.comments_count === 1;
 
     let copied = false;
-    let CUTOFF_DEPTH = 2;
+
+    let article: HTMLElement;
 
     $: visible = !!comment;
     $: highlighted = $page.url.hash === `#${comment.id}`;
@@ -48,8 +63,20 @@
     }
 
     async function copyLink() {
-        const commentUrl = `${$page.url.origin}/item/${item.id}/find/${comment.id}`;
+        let commentUrl = `${$page.url.origin}/item/${item.id}/find/${comment.id}`;
         
+        if (!shownByDefault) {
+            let findFrom = comment.parent!;
+
+            // go up as many levels as possible so there's as much context around the comment as possible
+            for (let i = 0; i < CUTOFF_DEPTH; i++) {
+                if (!findFrom.parent) break;
+                findFrom =findFrom.parent
+            }
+
+            commentUrl = `${$page.url.origin}/item/${findFrom.id}/find/${comment.id}`;        
+        }
+
         const data: ShareData = {
             url: commentUrl,
             text: 'Hacker News Comment',
@@ -78,12 +105,18 @@
         if (depth % 8 === 7) return "text-violet-600";
     }
 
+    async function handleShowReplies() {
+        showReplies = true;
+        await tick();
+        cleanupComments(article);
+    }
     
 </script>
 
 <!-- Add border-l here for thread lines - can make this a setting -->
 <article 
     id="{comment.id.toString()}"
+    bind:this={article}
     class:pl-4={comment.level > 0 && comment.level < 10}
 >
     <div class="pb-6">
@@ -216,32 +249,32 @@
         </div>
     </div>
 
-    {#if comment.level < CUTOFF_DEPTH || (comment.level === CUTOFF_DEPTH && comment.comments_count === 1)}
-        {#if comment.comments.length > 0}
-            <ul class:hidden={!visible}>
-                {#each comment.comments as child, index}
-                    <li>
-                        <svelte:self 
-                            comment={{ ...child, parent: comment}} 
-                            {index} 
-                            group={comment.comments}
-                            {item}
-                            bind:comingFrom
-                        />
-                    </li>
-                {/each}
-            </ul>
-        {/if}
+    {#if showReplies}
+        <div in:fly={{ y: 100 }}>
+            {#if comment.comments.length > 0}
+                <ul class:hidden={!visible}>
+                    {#each comment.comments as child, index}
+                        <li>
+                            <svelte:self 
+                                comment={{ ...child, parent: comment}} 
+                                {index} 
+                                group={comment.comments}
+                                {item}
+                            />
+                        </li>
+                    {/each}
+                </ul>
+            {/if}
+        </div>
     {:else if comment.comments_count > 0}
         <div class="pl-4 pb-6" >
-            <a
-                href="/item/{comment.id}"
-                class="border-2 border-blue-500 text-blue-500 dark:text-inherit dark:border-white p-2 rounded flex items-center gap-2 hover:no-underline"
-                class:pulse={comment.id.toString() === comingFrom}
+            <button
+                on:click={handleShowReplies}
+                class="w-full border-2 border-blue-500 text-blue-500 dark:text-inherit dark:border-white p-2 rounded flex items-center gap-2 hover:no-underline"
             >
                 <iconify-icon icon="octicon:comment-24" class="text-2xl w-6"></iconify-icon>
                 {comment.comments_count} more {comment.comments_count === 1 ? "reply" : "replies"}
-            </a>
+            </button>
         </div>
     {/if}
 </article>
@@ -292,27 +325,6 @@
             #09090b 3px,
             #09090b 7px
         );
-    }
-
-    .pulse {
-        animation-name: pulse;
-        animation-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        animation-duration: 400ms;
-        animation-iteration-count: 1;
-    }
-
-    @keyframes pulse {
-        0% {
-            scale: 1;
-        }
-
-        30% {
-            scale: .6;
-        }
-
-        100% {
-            scale: 1;
-        }
     }
 
 </style>
