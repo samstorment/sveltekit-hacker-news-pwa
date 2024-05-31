@@ -17,6 +17,8 @@
     let intersecting = new Set<HTMLDivElement>();
     let curr: Element | undefined = undefined;
     let article: HTMLElement;
+    let comingFrom: string | undefined = undefined;
+
 
     $: next = curr?.nextElementSibling;
 
@@ -35,8 +37,24 @@
     });
 
     afterNavigate(({ from }) => {
+
+        if (from?.route.id === '/item/[id=int]') {
+            comingFrom = from.params?.id ?? undefined;
+        }
+
         if (!commentsDiv) return;
         
+        observeComments();
+        cleanupCodeBlocks();
+        cleanupEmptyParagraphs();
+        cleanupTrailingTextNodes();
+    });
+
+    onDestroy(() => {
+        observer && observer.disconnect();
+    });
+
+    function observeComments() {
         let topLevelComments = Array.from(commentsDiv.querySelectorAll(":scope > article")) as HTMLDivElement[];
     
         observer = observer || new IntersectionObserver((entries) => {    
@@ -47,17 +65,9 @@
                 intersecting = intersecting;
             });
         });
-    
-        topLevelComments.forEach(c => observer.observe(c));
-    
-        cleanupCodeBlocks();
-        cleanupEmptyParagraphs();
-        cleanupTrailingTextNodes();
-    });
 
-    onDestroy(() => {
-        observer && observer.disconnect();
-    });
+        topLevelComments.forEach(c => observer.observe(c));
+    }
 
     function cleanupCodeBlocks() {
         let codes = Array.from(document.querySelectorAll("pre > code")) as HTMLDivElement[];
@@ -230,7 +240,7 @@
     {#if data.item.comments.length > 0}
         <div class="px-4 z-10 relative" id="comments" bind:this={commentsDiv}>
             {#each data.item.comments as comment, index}
-                <Comment {comment} {index} group={data.item.comments} item={data.item} />
+                <Comment {comment} {index} group={data.item.comments} item={data.item} bind:comingFrom />
             {/each}
         </div>
     {/if}

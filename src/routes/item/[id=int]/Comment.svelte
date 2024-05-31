@@ -1,17 +1,18 @@
 <script lang="ts">
 	import { page } from "$app/stores";
 	import { navState } from "$lib/stores";
-	import { slide } from "svelte/transition";
+	import { fly, scale, slide } from "svelte/transition";
     import { comments, type Comment } from "$lib/util";
 
     export let index: number;
     export let comment: Comment;
     export let group: Comment[];
     export let item: any;
+    export let comingFrom: string | undefined;
 
     let copied = false;
     let CUTOFF_DEPTH = 2;
-    
+
     $: visible = !!comment;
     $: highlighted = $page.url.hash === `#${comment.id}`;
 
@@ -76,6 +77,8 @@
         if (depth % 8 === 6) return "text-indigo-700";
         if (depth % 8 === 7) return "text-violet-600";
     }
+
+    
 </script>
 
 <!-- Add border-l here for thread lines - can make this a setting -->
@@ -223,19 +226,23 @@
                             {index} 
                             group={comment.comments}
                             {item}
+                            bind:comingFrom
                         />
                     </li>
                 {/each}
             </ul>
         {/if}
     {:else if comment.comments_count > 0}
-        <a
-            href="/item/{comment.id}"
-            class="border-2 border-blue-500 text-blue-500 dark:text-inherit dark:border-white p-2 ml-4 mb-6 rounded flex items-center gap-2 hover:no-underline"
-        >
-            <iconify-icon icon="octicon:comment-24" class="text-2xl w-6"></iconify-icon>
-            {comment.comments_count} more {comment.comments_count === 1 ? "reply" : "replies"}
-        </a>
+        <div class="pl-4 pb-6" >
+            <a
+                href="/item/{comment.id}"
+                class="border-2 border-blue-500 text-blue-500 dark:text-inherit dark:border-white p-2 rounded flex items-center gap-2 hover:no-underline"
+                class:pulse={comment.id.toString() === comingFrom}
+            >
+                <iconify-icon icon="octicon:comment-24" class="text-2xl w-6"></iconify-icon>
+                {comment.comments_count} more {comment.comments_count === 1 ? "reply" : "replies"}
+            </a>
+        </div>
     {/if}
 </article>
 
@@ -285,6 +292,27 @@
             #09090b 3px,
             #09090b 7px
         );
+    }
+
+    .pulse {
+        animation-name: pulse;
+        animation-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        animation-duration: 400ms;
+        animation-iteration-count: 1;
+    }
+
+    @keyframes pulse {
+        0% {
+            scale: 1;
+        }
+
+        30% {
+            scale: .6;
+        }
+
+        100% {
+            scale: 1;
+        }
     }
 
 </style>
