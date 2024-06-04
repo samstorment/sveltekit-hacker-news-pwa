@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { fly } from "svelte/transition";
+	import { CircleCheck } from "lucide-svelte";
+import { fly } from "svelte/transition";
 
     export let group: string | number;
     export let value: string;
@@ -22,12 +23,9 @@
     </div>
     
     {#if selected}
-        <iconify-icon 
-            icon="ph:check-circle" 
-            class="text-2xl" 
-            in:fly={{y: -25}}
-        >
-        </iconify-icon>
+        <span in:fly={{y: -25}}>
+            <CircleCheck />
+        </span>
     {/if}
 
     <input

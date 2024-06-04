@@ -4,6 +4,7 @@
 	import { closeMenu } from "./menu.svelte";
 	import SettingsPane from "./panes/settings/settings-pane.svelte";
 	import AboutPane from "./panes/about-pane.svelte";
+    import { X } from 'lucide-svelte';
 </script>
 
 <div class="flex-1 flex flex-col min-h-0 min-w-0 bg-white dark:bg-zinc-950">
@@ -14,7 +15,7 @@
             on:click={closeMenu}
             class="text-2xl hover:bg-zinc-200 dark:hover:bg-zinc-900 p-2 rounded flex items-center"
         >
-            <iconify-icon icon="ic:round-close"></iconify-icon>
+            <X />
             <span class="sr-only">Close Site Menu</span>
         </button>
     </header>

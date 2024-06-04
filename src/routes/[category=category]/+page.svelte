@@ -3,6 +3,7 @@
 	import { hand, showImagePreviews, highlightLastPost } from '$lib/settings.js';
 	import { images } from '$lib/stores.js';
     import { points, type ItemBasic, comments } from '$lib/util.js';
+    import { ArrowLeft, ArrowRight, ArrowUp, ArrowUpRight, MessageSquare } from 'lucide-svelte';
     import { scale } from 'svelte/transition';
 
     export let data;
@@ -121,7 +122,7 @@
                                         class:rounded-br-lg={$hand === "lefty" && ((data.category !== "ask" && data.category !== "jobs") || i === data.items.length - 1)}
                                         class:rounded-tr-lg={$hand === "lefty" && i === 0}
                                     >
-                                        <iconify-icon icon="eva:diagonal-arrow-right-up-fill"></iconify-icon>
+                                        <ArrowUpRight />
                                         <span class="sr-only">Open External Post Link</span>
                                     </a>
                                     {#if data.category !== "ask" && data.category !== "jobs"}
@@ -133,7 +134,7 @@
                                             class:rounded-br-lg={$hand === "lefty" && i === data.items.length - 1}
                                             class:rounded-tr-lg={$hand === "lefty"}
                                         >
-                                            <iconify-icon icon="octicon:comment-24"></iconify-icon>
+                                            <MessageSquare />
                                             <span class="sr-only">Open Post Comments</span>
                                         </a>
                                     {/if}
@@ -170,7 +171,7 @@
                                                 group-hocus:outline-4 group-hocus:outline-zinc-900 
                                                 group-hocus:outline-offset-4 group-hocus:dark:outline-zinc-200"
                                             >
-                                                <iconify-icon icon="eva:diagonal-arrow-right-up-fill"></iconify-icon>
+                                                <ArrowUpRight class="w-[1em] h-[1em]" />
                                                 <span class="sr-only">Open External Post Link</span>
                                             </div>
                                         {/if}
@@ -192,8 +193,11 @@
                                     {/if}
                                     <p class="overflow-hidden text-ellipsis whitespace-nowrap">{item.time_ago}</p>
                                 </div>
-                                <a href="/item/{item.id}" class="px-3 py-1 rounded bg-zinc-200 dark:bg-zinc-900 whitespace-nowrap max-xs:ml-auto lefty:max-xs:ml-0 hover:no-underline">
-                                    <iconify-icon icon="octicon:comment-24" inline></iconify-icon> <span class="leading-none">{item.comments_count}</span> 
+                                <a href="/item/{item.id}" class="px-2 py-1 rounded bg-zinc-200 dark:bg-zinc-900 whitespace-nowrap max-xs:ml-auto lefty:max-xs:ml-0 hover:no-underline">
+                                    <div class="flex gap-1 items-center">
+                                        <MessageSquare class="w-4 h-4" /> 
+                                        <span class="leading-none">{item.comments_count}</span> 
+                                    </div>
                                     <span class="sr-only">Open Post Comments</span>
                                 </a>
                             </div>
@@ -210,7 +214,7 @@
                 href="?p={data.page - 1}" 
                 class="px-4 py-4 border border-zinc-300 dark:border-zinc-700 flex-1 rounded hover:no-underline hover:shadow dark:hover:border-white flex justify-between items-center"
             >
-                <iconify-icon icon="ph:arrow-left-bold" class="text-2xl"></iconify-icon>
+                <ArrowLeft />
                 <span>Previous</span>
             </a>
         {/if}
@@ -221,7 +225,7 @@
                 class:solo-link={data.page <= 1}
             >
                 <span>Next</span>
-                <iconify-icon icon="ph:arrow-right-bold" class="text-2xl"></iconify-icon>
+                <ArrowRight />
             </a>
         {/if}
     </div>

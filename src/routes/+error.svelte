@@ -1,5 +1,6 @@
 <script lang="ts">
     import { page } from '$app/stores';
+    import { ArrowLeft } from 'lucide-svelte';
 </script>
 
 <div class="p-4 max-w-screen-md mx-auto">
@@ -15,7 +16,7 @@
         href="/" 
         class="flex items-center gap-2 mt-4 px-4 py-4 border border-zinc-300 dark:border-zinc-700 rounded hover:no-underline hover:shadow dark:hover:border-white"
     >
-        <iconify-icon icon="ph:arrow-left-bold" class="text-2xl"></iconify-icon>
+        <ArrowLeft />
         <span>Go Home</span>
     </a>
 </div>

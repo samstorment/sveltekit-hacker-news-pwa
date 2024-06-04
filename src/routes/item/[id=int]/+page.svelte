@@ -1,9 +1,7 @@
 <script lang="ts" context="module">
-     function cleanupCodeBlocks(rootNode: HTMLElement) {
+    function cleanupCodeBlocks(rootNode: HTMLElement) {
         let codes = Array.from(rootNode.querySelectorAll("pre > code")) as HTMLDivElement[];
         
-        console.log("CODES", codes);
-
         let whiteSpaces: number[] = [];
         
         for (let code of codes) {
@@ -66,6 +64,8 @@
 	import { fly } from "svelte/transition";
     import { comments, findItemInPage, points } from "$lib/util";
     import { browser } from "$app/environment";
+    import { Share, Share2, ArrowRight, ArrowLeft } from "lucide-svelte";
+    import YCombinator from "$lib/components/icons/YCombinator.svelte";
 
     export let data;
 
@@ -206,20 +206,20 @@
             {/if}
             <div class="flex flex-wrap gap-1 items-center">
                 <button 
-                    class="mr-1 px-2 py-1 bg-zinc-200 dark:bg-zinc-900 rounded"
+                    class="mr-1 px-2 py-1 bg-zinc-200 dark:bg-zinc-900 rounded flex gap-1"
                     on:click={copyLink}
                     on:focusout={() => copied = false}
                 >
                     {#if shareable}
-                        <iconify-icon icon="material-symbols:share" class="w-4" inline></iconify-icon>
+                        <Share2 class="w-4"/>
                         <span>Share</span>
                     {:else}
-                        <iconify-icon icon="material-symbols:share" class="w-4" inline></iconify-icon>
+                        <Share2 class="w-4"/>
                         <span>{copied ? "Copied!" : "Copy Link"}</span>
                     {/if}
                 </button>
                 <a href="https://news.ycombinator.com/item?id={data.item.id}" class="inline-block">
-                    <iconify-icon icon="cib:y-combinator" class="w-4" inline></iconify-icon>
+                    <YCombinator class="inline" />
                     <span>View on Hacker News</span>
                 </a>
             </div>
@@ -255,7 +255,7 @@
                     href="?p={data.page - 1}#comments" 
                     class="px-4 py-4 border border-zinc-300 dark:border-zinc-700 flex-1 rounded hover:no-underline hover:shadow dark:hover:border-white flex justify-between items-center"
                 >
-                    <iconify-icon icon="ph:arrow-left-bold" class="text-2xl"></iconify-icon>
+                    <ArrowLeft />
                     <span>Previous</span>
                 </a>
             {/if}
@@ -266,7 +266,7 @@
                     class:solo-link={data.page <= 1}
                 >
                     <span>Next</span>
-                    <iconify-icon icon="ph:arrow-right-bold" class="text-2xl"></iconify-icon>
+                    <ArrowRight />
                 </a>
             {/if}
         </div>
