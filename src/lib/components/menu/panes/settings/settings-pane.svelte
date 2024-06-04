@@ -1,5 +1,6 @@
 <script>
 	import { hand, showImagePreviews, theme, highlightLastPost } from "$lib/settings";
+    import { Monitor, MoonStar, Sun } from "lucide-svelte";
 	import RadioButton from "./radio-button.svelte";
 
 </script>
@@ -10,15 +11,15 @@
     
     <div class="flex gap-2 max-sm:flex-col">
         <RadioButton name="theme" value="light" bind:group={$theme}>
-            <iconify-icon icon="ph:sun" class="text-2xl"></iconify-icon>
+            <Sun />
             Light
         </RadioButton>
         <RadioButton name="theme" value="dark" bind:group={$theme}>
-            <iconify-icon icon="tabler:moon-stars" class="text-2xl"></iconify-icon>
+            <MoonStar />
             Dark
         </RadioButton>
         <RadioButton name="theme" value="system" bind:group={$theme}>
-            <iconify-icon icon="ph:monitor" class="text-2xl"></iconify-icon>
+            <Monitor />
             System
         </RadioButton>
     </div>

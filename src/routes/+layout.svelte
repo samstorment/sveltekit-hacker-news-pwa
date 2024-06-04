@@ -7,6 +7,7 @@
 	import Menu, { openMenu } from "$lib/components/menu/menu.svelte";
 	import { onMount } from "svelte";
 	import { clamp, run } from "$lib/util";
+    import { Menu as Burger, ChevronUp } from 'lucide-svelte';
 
     $: selected = $page.url.pathname.split('/')[1] || "top";
 
@@ -35,7 +36,7 @@
             <a href="/jobs" class="relative nav-item" class:selected={selected === "jobs"}>Jobs</a>
         </div>
         <button on:click={openMenu} title="Site Menu" class="ml-auto text-2xl p-2 hover:bg-zinc-200 dark:hover:bg-zinc-900 rounded aspect-square flex items-center">
-            <iconify-icon icon="lucide:menu"></iconify-icon>
+            <Burger />
             <span class="sr-only">Open Site Menu</span>
         </button>
         <Menu />
@@ -60,7 +61,7 @@
         })}
     >
         <span class="sr-only">Scroll to top of page</span>
-        <iconify-icon icon="ion:chevron-up" class="text-2xl"></iconify-icon>
+        <ChevronUp />
     </button>
 {/if}
 

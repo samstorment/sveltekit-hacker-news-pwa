@@ -2,7 +2,6 @@
 	import { activeTab, type Tab } from "$lib/settings";
 
     export let tab: Tab;
-    export let icon: string;
     export let text: string = tab;
 
     function activate(tabName: Tab) {
@@ -17,8 +16,7 @@
     class:active={$activeTab === tab}
     on:click={() => activate(tab)}
 >
-    <slot name="icon" />
-    <iconify-icon {icon} class="text-2xl"></iconify-icon>
+    <slot name="icon"></slot>
     <span class="max-sm:sr-only sm:min-w-[100px] text-left capitalize">{text}</span>
 </button>
 
