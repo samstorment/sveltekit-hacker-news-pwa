@@ -2,8 +2,6 @@
     function cleanupCodeBlocks(rootNode: HTMLElement) {
         let codes = Array.from(rootNode.querySelectorAll("pre > code")) as HTMLDivElement[];
         
-        console.log("CODES", codes);
-
         let whiteSpaces: number[] = [];
         
         for (let code of codes) {
@@ -67,6 +65,7 @@
     import { comments, findItemInPage, points } from "$lib/util";
     import { browser } from "$app/environment";
     import { Share, Share2, ArrowRight, ArrowLeft } from "lucide-svelte";
+    import YCombinator from "$lib/components/icons/YCombinator.svelte";
 
     export let data;
 
@@ -220,7 +219,7 @@
                     {/if}
                 </button>
                 <a href="https://news.ycombinator.com/item?id={data.item.id}" class="inline-block">
-                    <iconify-icon icon="cib:y-combinator" class="w-4" inline></iconify-icon>
+                    <YCombinator class="inline" />
                     <span>View on Hacker News</span>
                 </a>
             </div>

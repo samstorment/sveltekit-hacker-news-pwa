@@ -6,6 +6,7 @@
     import { createEventDispatcher, tick } from "svelte";
     import { cleanupComments } from "./+page.svelte";
     import { Link, MessageSquare } from "lucide-svelte";
+    import YCombinator from "$lib/components/icons/YCombinator.svelte";
 
     export let index: number;
     export let comment: Comment;
@@ -234,7 +235,7 @@
             <div 
                 class="text-zinc-600 dark:text-zinc-400 text-sm flex items-center gap-1 mt-1" 
             >
-                <iconify-icon icon="cib:y-combinator" class="text-base w-4"></iconify-icon>
+                <YCombinator />
                 <a href="https://news.ycombinator.com/reply?id={comment.id}&goto=item?id={item.id}#{comment.id}">Reply</a>
                 <a href="https://news.ycombinator.com/item?id={item.id}#{comment.id}">View</a>
                 <span class="hidden" class:lefty:max-sm:block={!visible}>|</span>
