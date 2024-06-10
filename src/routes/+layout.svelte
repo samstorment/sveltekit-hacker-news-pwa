@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from "$app/stores";
     import "../app.css";
-	import { fly } from "svelte/transition";
+	import { fly, scale, slide } from "svelte/transition";
 	import { hand } from "$lib/settings";
 	import { scrollY } from "$lib/stores";
 	import Menu, { openMenu } from "$lib/components/menu/menu.svelte";
@@ -44,9 +44,15 @@
 </header>
 
 
-<div class="pb-16">
-    <slot />
-</div>
+{#if $page.route.id === '/item/[id=int]'}
+    <div class="pb-16" in:fly={{ y: 50, duration: 200 }}>
+        <slot />
+    </div>
+{:else}
+    <div class="pb-16">
+        <slot />
+    </div>
+{/if}
 
 {#if $scrollY > 200}
     <button 
