@@ -69,7 +69,7 @@
                     class="border-b border-zinc-300 dark:border-zinc-700 items-center last:border-none"
                 >
                     <article 
-                        in:scale={{ duration: highlighted ? 300 : 0 }}
+                        in:scale={{ duration: highlighted ? 200 : 0 }}
                         class:highlighted 
                         class="bg-white dark:bg-zinc-950"
                     >
