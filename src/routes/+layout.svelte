@@ -43,16 +43,9 @@
     </nav>
 </header>
 
-
-{#if $page.route.id === '/item/[id=int]'}
-    <div class="pb-16" in:fly={{ y: 50, duration: 200 }}>
-        <slot />
-    </div>
-{:else}
-    <div class="pb-16">
-        <slot />
-    </div>
-{/if}
+<div class="pb-16">
+    <slot />
+</div>
 
 {#if $scrollY > 200}
     <button 
