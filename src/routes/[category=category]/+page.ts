@@ -10,13 +10,13 @@ export async function load(event) {
     const category = params.category as Category;
     
     if (isNaN(pageNum) || pageNum <= 0) {
-        throw redirect(301, `/${params.category}?p=1`)
+        redirect(301, `/${params.category}?p=1`);
     }
     
     const limit = pageLimit(category);
     
     if (pageNum > limit) {
-        throw redirect(301, `/${params.category}?p=${limit}`);
+        redirect(301, `/${params.category}?p=${limit}`);
     }
 
     const hnCategory = categoryName(category);

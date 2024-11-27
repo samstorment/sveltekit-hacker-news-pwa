@@ -15,7 +15,7 @@ export async function load({ params, fetch, url }) {
 	const item: Item = await res.json();
 
 	if (!item) {
-		throw error(404, "Not Found");
+		error(404, "Not Found");
 	}
 
 	const pages = getPages(item);
