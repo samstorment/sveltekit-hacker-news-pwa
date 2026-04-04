@@ -1,3 +1,53 @@
+export type AlgoliaTag =
+    | "story"
+    | "comment"
+    | "poll"
+    | "pollopt"
+    | "show_hn"
+    | "ask_hn"
+    | "front_page"
+    | `author_${string}`
+    | `story_${string}`;
+
+export interface AlgoliaSearchHit {
+    _tags: AlgoliaTag[];
+    author: string;
+    children: number[];
+    created_at: string;
+    created_at_i: number;
+    num_comments: number;
+    objectID: string;
+    points: number;
+    story_id: number;
+    title: string;
+    updated_at: string;
+    url: string;
+}
+
+export type AlgoliaSearchResults = {
+    exhaustive: {
+        nbHits: boolean;
+        typo: boolean;
+    };
+    exhaustiveNbHits: boolean;
+    exhaustiveTypo: boolean;
+    hits: AlgoliaSearchHit[];
+    hitsPerPage: number;
+    nbHits: number;
+    nbPages: number;
+    page: number;
+    params: string;
+    processingTimeMS: number;
+    processingTimingsMS: {
+        _request: {
+            roundTrip: number;
+        };
+        total: number;
+    };
+    query: string;
+    serverTimeMS: number;
+};
+
 export interface ItemBasic {
 	id: number,
 	title: string,
@@ -8,7 +58,7 @@ export interface ItemBasic {
 	comments_count: number,
 	type: ItemType,
 	url: string,
-	domain: string
+	domain?: string
 }
 
 export interface Item extends ItemBasic {
@@ -154,7 +204,56 @@ export function comments(item: Item | ItemBasic | Comment) {
 	return `${item.comments_count} ${label}`;
 }
 
+export function algoliaSearchHitToItemBasic(src: AlgoliaSearchHit): ItemBasic {
+
+	let itemType: ItemType = 'link';
+	if (src._tags.includes('poll')) itemType = 'poll';
+	else if (src._tags.includes('comment')) itemType = 'comment';
+
+	let url = src.url ? new URL(src.url) : null;
+
+	return {
+		id: src.story_id,
+		title: src.title,
+		points: src.points,
+		user: src.author,
+		time: src.created_at_i,
+		time_ago: timeAgo(src.created_at),
+		comments_count: src.num_comments,
+		type: itemType,
+		url: src.url ?? `/item/${src.story_id}`,
+		domain: url?.hostname
+	}
+}
+
 
 export function clamp(value: number, min: number, max: number) {
 	return Math.min(Math.max(value, min), max);
+};
+
+
+export const timeAgo = (date: Date | string): string => {
+
+	const rtf = new Intl.RelativeTimeFormat("en", { numeric: "auto" });
+    
+    const unixSeconds = Math.floor(new Date(date).getTime() / 1000);
+
+    const seconds = unixSeconds - Math.floor(Date.now() / 1000);
+    const units: [Intl.RelativeTimeFormatUnit, number][] = [
+        ["year", 60 * 60 * 24 * 365],
+        ["month", 60 * 60 * 24 * 30],
+        ["week", 60 * 60 * 24 * 7],
+        ["day", 60 * 60 * 24],
+        ["hour", 60 * 60],
+        ["minute", 60],
+        ["second", 1],
+    ];
+
+    for (const [unit, threshold] of units) {
+        if (Math.abs(seconds) >= threshold) {
+            return rtf.format(Math.round(seconds / threshold), unit);
+        }
+    }
+
+    return "just now";
 };
