@@ -9,7 +9,7 @@ export async function load(event) {
 	const pageNum = parseInt(page);
     const category = params.category as Category;
     // defaulting to algolia right now because api.hnpwa.com has had stale data lately
-    const useAlgoliaFrontPage = url.searchParams.get('algolia')?.toLowerCase() !== 'false'
+    const useAlgoliaFrontPage = url.searchParams.get('algolia')?.toLowerCase() === 'true';
 
     
     if (isNaN(pageNum) || pageNum <= 0) {
