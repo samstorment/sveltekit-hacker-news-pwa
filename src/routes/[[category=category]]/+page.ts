@@ -7,7 +7,7 @@ export async function load(event) {
 
     const page = url.searchParams.get('p') ?? "1";
 	const pageNum = parseInt(page);
-    const category = params.category as Category;
+    const category = params.category as Category ?? 'top';
     // defaulting to algolia right now because api.hnpwa.com has had stale data lately
     const useAlgoliaFrontPage = url.searchParams.get('algolia')?.toLowerCase() === 'true';
 
@@ -45,7 +45,7 @@ export async function load(event) {
 
 	return {
 		category: hnCategory,
-		categoryLabel: params.category,
+		categoryLabel: category,
 		page: pageNum,
         items,
 		pageLimit: limit
